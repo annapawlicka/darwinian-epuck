@@ -117,6 +117,7 @@ public class EpuckController extends Robot {
             int m = gameReceiver.getQueueLength();
             if(m > 0){
                 byte[] flag = gameReceiver.getData();
+
                 if(flag[0]==1){
                     // Start evolution of games
                     // Sort populationOfNN by fitness
@@ -150,6 +151,7 @@ public class EpuckController extends Robot {
                     bestGame = 0;
                     minFitGame = 0;
                 }
+                gameReceiver.nextPacket();
             }
 
             if (step == 0 && currentGame == 0) {
