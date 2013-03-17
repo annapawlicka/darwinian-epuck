@@ -85,5 +85,12 @@ public class Game {
 
     }
 
+    public String toString(){
+        String s = "";
+        for(int i=0; i< constants.length; i++) s+=" "+constants[i];
+
+        return s;
+    }
+
 
 }

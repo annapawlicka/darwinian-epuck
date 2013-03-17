@@ -1,8 +1,7 @@
 import com.cyberbotics.webots.controller.*;
-import games.Game;
 import nn.NeuralNetwork;
-import utils.Util;
 import utils.FilesFunctions;
+import utils.Util;
 
 import java.io.*;
 import java.util.Random;
@@ -19,8 +18,6 @@ public class SupervisorController extends Supervisor {
 
     // Devices
     private Emitter emitter;
-    private Emitter gamesEmitter;
-    private Receiver gamesReceiver;
     private Receiver receiver;
     private Node epuck;
     private Field fldTranslation;
@@ -36,11 +33,8 @@ public class SupervisorController extends Supervisor {
     private int NB_GENES;
     private double[][] locations;                           // Last 5 GPS coordinates
     private NeuralNetwork[] populationOfNN;
-    private Game[] populationOfGames;
     private double[] fitnessNN;
-    private double[] fitnessGames;
     private double[][] sortedfitnessNN;                     // Population sorted by fitness
-    private double[][] sortedfitnessGames;                  // Population of games sorted byte fitness
     private double ELITISM_RATIO = 0.1;
     private double REPRODUCTION_RATIO = 0.4;                // If not using roulette wheel (truncation selection), we need reproduction ratio
     private double CROSSOVER_PROBABILITY = 0.5;             // Probability of having a crossover
@@ -48,7 +42,7 @@ public class SupervisorController extends Supervisor {
     private int GENE_MIN = -1;                              // Range of genes: minimum value
     private int GENE_MAX = 1;                               // Range of genes: maximum value
     private double MUTATION_SIGMA = 0.2;                    // Mutations follow a Box-Muller distribution from the gene with this sigma
-    private int evaluatedNN = 0, evaluatedGame = 0;         // Evaluated individuals
+    private int evaluatedNN = 0;                            // Evaluated individuals
     private int generation = 0;                             // Generation counter
     //If 1, evolution takes place. If 0, then the best individual obtained during the previous evolution is tested for an undetermined amount of time.
     private int EVOLVING = 1;
@@ -73,23 +67,23 @@ public class SupervisorController extends Supervisor {
     public void run() {
 
         while (step(TIME_STEP) != -1) {
-            byte[] fit;
+            byte[] nnFit;
             float finished = 0;
 
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();
             if (n > 0) {
-                fit = receiver.getData();
+                nnFit = receiver.getData();
                 // Convert bytes into floats
-                if (fit.length == 8) {
+                if (nnFit.length == 8) {
                     byte[] currFitness = new byte[4];
                     for (int i = 0; i < 4; i++) {
-                        currFitness[i] = fit[i];
+                        currFitness[i] = nnFit[i];
                     }
                     byte[] flag = new byte[4];
                     int m = 0;
                     for (int j = 4; j < 8; j++) {
-                        flag[m] = fit[j];
+                        flag[m] = nnFit[j];
                         m++;
                     }
                     fitnessNN[evaluatedNN] = Util.bytearray2float(currFitness);
@@ -130,21 +124,17 @@ public class SupervisorController extends Supervisor {
                         generation++;
                         System.out.println("\nGENERATION \n" + generation);
                         evaluatedNN = 0;
-                        evaluatedGame = 0;
                         avgFitNN = 0.0;
                         bestFitNN = 0;
                         bestNN = 0;
                         minFitNN = 0;
 
                         resetRobotPosition();
-                        // Send new games
-                        byte[] msgInBytes = Util.float2Byte(populationOfGames[evaluatedGame].getConstants());
-                        gamesEmitter.send(msgInBytes);
-                        System.out.println("Sent new games.");
 
                         // Send new weights
-                        msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                        byte[] msgInBytes= Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
                         emitter.send(msgInBytes);
+
                     } else {
                         // Assign received fitness to individual
                         System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
@@ -176,13 +166,8 @@ public class SupervisorController extends Supervisor {
             System.out.println("GENERATION 0\n");
             resetRobotPosition();
 
-            // First, send games to experiment
-            byte[] msgInBytes = Util.float2Byte(populationOfGames[evaluatedGame].getConstants());
-            gamesEmitter.send(msgInBytes);
-
-            // Then, send weights of NNs to experiment - sending on channel 1
-            emitter.setChannel(1);
-            msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+            // Then, send weights of NNs to experiment
+            byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
             emitter.send(msgInBytes);
 
         } else { // Testing best individual
@@ -360,28 +345,12 @@ public class SupervisorController extends Supervisor {
             }
         }
 
-        // Games
-        populationOfGames = new Game[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(true);
-        fitnessGames = new double[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) fitnessGames[i] = 0.0;
-        sortedfitnessGames = new double[GAME_POP_SIZE][2];
-        for (i = 0; i < GAME_POP_SIZE; i++) {
-            for (j = 0; j < 2; j++) {
-                sortedfitnessNN[i][j] = 0.0;
-            }
-        }
-
-
         // Nodes
         receiver = getReceiver("receiver");
         receiver.enable(TIME_STEP);
         emitter = getEmitter("emitter");
         epuck = getFromDef("EPUCK");
         fldTranslation = epuck.getField("translation");
-        gamesEmitter = getEmitter("gamesemittersuper");
-        gamesReceiver = getReceiver("gamesreceiversuper");
-        gamesReceiver.enable(TIME_STEP);
 
         // Initialise gps coordinates arrays
         locations = new double[5][2];
