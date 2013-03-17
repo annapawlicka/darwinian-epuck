@@ -53,6 +53,19 @@ public class Util {
         return b;
     }
 
+    /**
+     * Copy one array into another
+     * @param a
+     * @return
+     */
+    public static float[] copy(float [] a) {
+        float [] b = new float[a.length];
+        for (int i = 0; i < a.length; i++) {
+            b[i] = a[i];
+        }
+        return b;
+    }
+
     /* Sum of array elements */
     public static double sum(double in[]) {
         double sum = 0;

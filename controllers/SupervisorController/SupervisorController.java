@@ -18,7 +18,9 @@ public class SupervisorController extends Supervisor {
 
     // Devices
     private Emitter emitter;
+    private Emitter gameEmitter;
     private Receiver receiver;
+    private Receiver gameReceiver;
     private Node epuck;
     private Field fldTranslation;
     private double[] initTranslation;
@@ -130,6 +132,9 @@ public class SupervisorController extends Supervisor {
                         minFitNN = 0;
 
                         resetRobotPosition();
+                        // Send flag to start evolution of games
+                        byte[] flag = {1};
+                        gameEmitter.send(flag);
 
                         // Send new weights
                         byte[] msgInBytes= Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
@@ -351,6 +356,12 @@ public class SupervisorController extends Supervisor {
         emitter = getEmitter("emitter");
         epuck = getFromDef("EPUCK");
         fldTranslation = epuck.getField("translation");
+
+        gameEmitter = getEmitter("gamesemittersuper");
+        gameEmitter.setChannel(1);
+        gameReceiver = getReceiver("gamesreceiversuper");
+        gameReceiver.setChannel(1);
+        gameReceiver.enable(TIME_STEP);
 
         // Initialise gps coordinates arrays
         locations = new double[5][2];

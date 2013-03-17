@@ -2,6 +2,9 @@ import com.cyberbotics.webots.controller.*;
 import games.Game;
 import util.Util;
 
+import java.io.BufferedWriter;
+import java.util.Random;
+
 /**
  * Created with IntelliJ IDEA.
  * User: annapawlicka
@@ -36,6 +39,7 @@ public class EpuckController extends Robot {
     private double REPRODUCTION_RATIO = 0.4;                // If not using roulette wheel (truncation selection), we need reproduction ratio
     private double CROSSOVER_PROBABILITY = 0.5;             // Probability of having a crossover
     private double MUTATION_PROBABILITY = 0.1;              // Probability of mutating each weight-value in a genome    private int GENE_MIN = -1;                              // Range of genes: minimum value
+    private int GENE_MIN = -1;
     private int GENE_MAX = 1;                               // Range of genes: maximum value
     private double MUTATION_SIGMA = 0.2;                    // Mutations follow a Box-Muller distribution from the gene with this sigma
     private int evaluatedGame = 0;                          // Evaluated individuals
@@ -84,8 +88,15 @@ public class EpuckController extends Robot {
     // Emitter and Receiver
     private Emitter emitter;
     private Receiver receiver;
+    private Emitter gameEmitter;
+    private Receiver gameReceiver;
+
+    // Logging
+    private BufferedWriter out1, out2, out3;
 
     private int step;
+    private Random random = new Random();
+
 
     public void run() {
 
@@ -100,6 +111,44 @@ public class EpuckController extends Robot {
                 } else if (mode == REALITY) {
                     for (i = 0; i < NB_DIST_SENS; i++) ps_offset[i] = PS_OFFSET_REALITY[i];
                     System.out.println("\nSwitching to REALITY.\n\n");
+                }
+            }
+
+            int m = gameReceiver.getQueueLength();
+            if(m > 0){
+                byte[] flag = gameReceiver.getData();
+                if(flag[0]==1){
+                    // Start evolution of games
+                    // Sort populationOfNN by fitness
+                    sortPopulation(sortedfitnessGames, fitnessGames);
+                    // Find and log current and absolute best individual
+                    bestFitGame = sortedfitnessGames[0][0];
+                    minFitGame = sortedfitnessGames[GAME_POP_SIZE - 1][0];
+                    bestGame = (int) sortedfitnessGames[0][1];
+                    avgFitGame = util.Util.mean(fitnessGames);
+                    if (bestFitGame > absBestFitGame) {
+                        absBestFitGame = bestFitGame;
+                        absBestGame = bestGame;
+                       // FilesFunctions.logBest(out3, generation, NB_CONSTANTS, absBestGame, populationOfGames);
+                    }
+                    System.out.println("Best game fitness score: \n" + bestFitGame);
+                    System.out.println("Average game fitness score: \n" + avgFitGame);
+                    System.out.println("Worst game fitness score: \n" + minFitGame);
+
+                    // Write data to files
+                    //FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, fitnessGames,
+                    //        bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
+
+                    // Rank populationOfNN, select best individuals and create new generation
+                    createNewPopulation();
+
+                    generation++;
+                    System.out.println("\nGAME GENERATION \n" + generation);
+                    evaluatedGame = 0;
+                    avgFitGame = 0.0;
+                    bestFitGame = 0;
+                    bestGame = 0;
+                    minFitGame = 0;
                 }
             }
 
@@ -203,6 +252,123 @@ public class EpuckController extends Robot {
         }
         return fitness;
     }
+
+    /**
+     * Sort whole population according to fitness score of each individual. Uses quickSort.
+     */
+    private void sortPopulation(double[][] sortedfitness, double[] fitness) {
+        int i;
+        //sort populationOfNN by fitness
+        for (i = 0; i < sortedfitness.length; i++) {
+            sortedfitness[i][0] = fitness[i];
+            sortedfitness[i][1] = (float) i; //keep index
+        }
+        quickSort(sortedfitness, 0, sortedfitness.length - 1);
+    }
+
+    /**
+     * Standard fast algorithm to sort populationOfNN by fitness
+     *
+     * @param fitness Array that stores fitness and index of each individual.
+     * @param left    Min index of the array
+     * @param right   Max index of the array
+     */
+    private void quickSort(double fitness[][], int left, int right) {
+        double[] pivot = new double[2];
+        int l_hold, r_hold;
+
+        l_hold = left;
+        r_hold = right;
+        pivot[0] = fitness[left][0];
+        pivot[1] = fitness[left][1];
+        while (left < right) {
+            while ((fitness[right][0] <= pivot[0]) && (left < right))
+                right--;
+            if (left != right) {
+                fitness[left][0] = fitness[right][0];
+                fitness[left][1] = fitness[right][1];
+                left++;
+            }
+            while ((fitness[left][0] >= pivot[0]) && (left < right))
+                left++;
+            if (left != right) {
+                fitness[right][0] = fitness[left][0];
+                fitness[right][1] = fitness[left][1];
+                right--;
+            }
+        }
+        fitness[left][0] = pivot[0];
+        fitness[left][1] = pivot[1];
+        pivot[0] = left;
+        left = l_hold;
+        right = r_hold;
+        if (left < (int) pivot[0]) quickSort(fitness, left, (int) pivot[0] - 1);
+        if (right > (int) pivot[0]) quickSort(fitness, (int) pivot[0] + 1, right);
+    }
+
+    /**
+     * Based on the fitness of the last generation, generate a new populationOfNN of genomes for the next generation.
+     */
+    private void createNewPopulation() {
+
+        Game[] newpop = new Game[GAME_POP_SIZE];
+        for (int i = 0; i < newpop.length; i++) {
+            newpop[i] = new Game(true);
+        }
+        double elitism_counter = GAME_POP_SIZE * ELITISM_RATIO;
+        int i, j;
+
+        // Create new populationOfNN
+        for (i = 0; i < GAME_POP_SIZE; i++) {
+
+            // The elitism_counter best individuals are simply copied to the new populationOfNN
+            if (i < elitism_counter) {
+                for (j = 0; j < NB_CONSTANTS; j++)
+                    newpop[i].setConstants(j, populationOfGames[(int) sortedfitnessGames[i][1]].getConstants()[j]);
+            }
+            // The other individuals are generated through the crossover of two parents
+            else {
+
+                // Select non-elitist individual
+                int ind1;
+                ind1 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+
+                // If we will do crossover, select a second individual
+                if (random.nextFloat() < CROSSOVER_PROBABILITY) {
+                    int ind2;
+                    do {
+                        ind2 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+                    } while (ind1 == ind2);
+                    ind1 = (int) sortedfitnessGames[ind1][1];
+                    ind2 = (int) sortedfitnessGames[ind2][1];
+                    newpop[i].crossover(ind1, ind2, newpop[i], NB_CONSTANTS, populationOfGames);
+                } else { //if no crossover was done, just copy selected individual directly
+                    for (j = 0; j < NB_CONSTANTS; j++)
+                        newpop[i].setConstants(j, populationOfGames[(int) sortedfitnessGames[ind1][1]].getConstants()[j]);
+                }
+            }
+        }
+
+        // Mutate new populationOfNN and copy back to pop
+        for (i = 0; i < GAME_POP_SIZE; i++) {
+            if (i < elitism_counter) { //no mutation for elitists
+                for (j = 0; j < NB_CONSTANTS; j++) {
+                    populationOfGames[i].copy(newpop[i]);
+                }
+            } else { // Mutate others with probability per gene
+                for (j = 0; j < NB_CONSTANTS; j++)
+                    if (random.nextFloat() < MUTATION_PROBABILITY)
+                        populationOfGames[i].setConstants(j, populationOfGames[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getConstants()[j], MUTATION_SIGMA));
+                    else
+                        populationOfGames[i].copy(newpop[i]);
+            }
+
+            // Reset fitness
+            fitnessGames[i] = 0;
+        }
+        return;
+    }
+
 
     /**
      * Read values from sensors into arrays.
@@ -325,6 +491,12 @@ public class EpuckController extends Robot {
         emitter = getEmitter("emitterepuck");
         receiver = getReceiver("receiver");
         receiver.enable(TIME_STEP);
+
+        gameEmitter = getEmitter("gamesemitterepuck");
+        gameEmitter.setChannel(1);
+        gameReceiver = getReceiver("gamesreceiverepuck");
+        gameReceiver.setChannel(1);
+        gameReceiver.enable(TIME_STEP);
 
         weights = new float[NB_WEIGHTS];
 

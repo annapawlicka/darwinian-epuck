@@ -1,5 +1,7 @@
 package games;
 
+import util.Util;
+
 import java.util.Random;
 
 /**
@@ -38,16 +40,16 @@ public class Game {
      * @param MUTATION_SIGMA
      * @return
      */
-    public double mutate(int GENE_MIN, int GENE_MAX, double gene, double MUTATION_SIGMA){
+    public float mutate(int GENE_MIN, int GENE_MAX, double gene, double MUTATION_SIGMA){
 
-        double x1, x2, w, y1;
+        float x1, x2, w, y1;
         do {
             x1 = (float) (GENE_MAX - GENE_MIN * rand.nextDouble() - (GENE_MAX - GENE_MIN) / 2.0);
             x2 = (float) (GENE_MAX - GENE_MIN * rand.nextDouble() - (GENE_MAX - GENE_MIN) / 2.0);
             w = x1 * x1 + x2 * x2;
         } while (w > 1.0 || w == 0);
 
-        y1 = (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
+        y1 = (float)(gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
 
         if (y1 > GENE_MAX) return GENE_MAX;
         if (y1 < GENE_MIN) return GENE_MIN;
@@ -74,6 +76,18 @@ public class Game {
             if (i <= crossover_point) new_ind.setConstants(i, population[ind1].getConstants()[i]);
             else new_ind.setConstants(i, population[ind2].getConstants()[i]);
         }
+    }
+
+    /**
+     * Method to create an offspring
+     *
+     * @param parent - parent whose information is being copied over to offspring
+     */
+    public void copy(Game parent) {
+
+    	/* Transformation */
+        this.constants = Util.copy(parent.constants);
+
     }
 
     public float[] getConstants(){
