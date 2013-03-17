@@ -84,14 +84,14 @@ public class NeuralNetwork {
 
 
     /**
-     * Mehod to mutate weights of the neural network
-     *
-     * @param min
-     * @param max
-     * @param gene Weights
+     * Method to mutate weights of the neural network
+     * @param GENE_MIN
+     * @param GENE_MAX
+     * @param gene
+     * @param MUTATION_SIGMA
      * @return
      */
-    public float mutate(float min, float max, float gene, int GENE_MIN, int GENE_MAX, double MUTATION_SIGMA) {
+    public float mutate(float GENE_MIN, float GENE_MAX, float gene, double MUTATION_SIGMA) {
         float x1, x2, w, y1;
 
         do {
@@ -102,8 +102,8 @@ public class NeuralNetwork {
 
         y1 = (float) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
 
-        if (y1 > max) return max;
-        if (y1 < min) return min;
+        if (y1 > GENE_MAX) return GENE_MAX;
+        if (y1 < GENE_MIN) return GENE_MIN;
 
         return y1;
     }
@@ -117,7 +117,7 @@ public class NeuralNetwork {
      */
     public void crossover(int ind1, int ind2, NeuralNetwork new_ind, float NB_GENES, NeuralNetwork[] population) {
 
-        int crossover_point = 0;
+        int crossover_point;
         float nb_genes = NB_GENES;
 
         crossover_point = (int) Math.floor(nb_genes * random.nextFloat());
