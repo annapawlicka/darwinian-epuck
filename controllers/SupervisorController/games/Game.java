@@ -1,7 +1,5 @@
 package games;
 
-import util.Util;
-
 import java.util.Random;
 
 /**
@@ -16,41 +14,21 @@ public class Game {
     private final int LEFT = 0;
     private final int RIGHT = 1;
 
-    private double [] constants;    // Constants used in evolution
+    private float [] constants;    // Constants used in evolution
 
 
     Random rand = new Random();
 
     public Game(boolean init) {
+        constants = new float[4];
         if(init) initialise();
     }
 
     public void initialise(){
-        for(int i=0; i< constants.length; i++) constants[i] = rand.nextDouble();
+        for(int i=0; i< constants.length; i++) constants[i] = rand.nextFloat();
     }
 
 
-    /**
-     * Method to calculate fitness score
-     * @param speed
-     * @param position
-     * @param maxIRActivation
-     * @return
-     */
-    public double computeFitness(double [] speed, double [] position, double maxIRActivation, double distanceTravelled) {
-
-        double fitness = 0.0;
-
-        try {
-            fitness = (float) ((constants[0] * Util.mean(speed)) * (constants[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) *
-                    (constants[2] - Util.normalize(0, 4000, maxIRActivation))) + (constants[3] * distanceTravelled));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-
-
-        return fitness;
-    }
 
     /**
      * Method to mutate game
@@ -69,7 +47,7 @@ public class Game {
             w = x1 * x1 + x2 * x2;
         } while (w > 1.0 || w == 0);
 
-        y1 = (double) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
+        y1 = (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
 
         if (y1 > GENE_MAX) return GENE_MAX;
         if (y1 < GENE_MIN) return GENE_MIN;
@@ -98,11 +76,11 @@ public class Game {
         }
     }
 
-    public double[] getConstants(){
+    public float[] getConstants(){
         return constants;
     }
 
-    public void setConstants(int i, double constant){
+    public void setConstants(int i, float constant){
         constants[i] = constant;
 
     }

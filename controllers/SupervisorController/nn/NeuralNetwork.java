@@ -50,23 +50,6 @@ public class NeuralNetwork {
     }
 
     /**
-     *  Method to run neural network.
-     */
-    public void runNeuralNetwork(double[] inputs) {
-
-        int weight_counter = 0;
-        for (int i = 0; i < outputsNo; i++) {
-            float sum = 0.0f;
-            for (int j = 0; j < inputsNo; j++) {
-                sum += inputs[j] * weights[weight_counter];
-                weight_counter++;
-            }
-            outputs[i] = (float)(Math.tanh((sum + weights[weight_counter])));
-            weight_counter++;
-        }
-    }
-
-    /**
      * Method to create an offspring
      *
      * @param parent - parent whose information is being copied over to offspring

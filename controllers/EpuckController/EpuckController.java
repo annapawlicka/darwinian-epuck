@@ -22,7 +22,9 @@ public class EpuckController extends Robot {
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
+    private int NB_CONSTANTS = 4;
     private float weights[];
+    private double fitnessConstants[];
     private float currentFitness;
 
     // Mode of robot
@@ -56,12 +58,16 @@ public class EpuckController extends Robot {
     private GPS gps;
     private double[] position;
     private double[] states = new double[11];               // The sensor values  8+3
+    private double distanceTravelled;
 
     // Emitter and Receiver
     private Emitter emitter;
+    private Emitter gamesEmitter;
     private Receiver receiver;
+    private Receiver gamesReceiver;
 
     private int step;
+    private boolean ifAllGamesPlayed;
 
     public void run() {
 
@@ -79,9 +85,20 @@ public class EpuckController extends Robot {
                 }
             }
 
+            //if(ifAllGamesPlayed){
+                int n = gamesReceiver.getQueueLength();
+                // Wait for new genome
+                if (n > 0) {
+                    byte[] genes = gamesReceiver.getData();
+                    System.out.println("Received games.");
+                    // Set neural network weights
+                    for (i = 0; i < NB_CONSTANTS; i++) fitnessConstants[i] = genes[i];
+                    gamesReceiver.nextPacket();
+                }
+            //}
             // If we're testing a new genome, receive weights and initialize trial
             if (step == 0) {
-                int n = receiver.getQueueLength();
+                n = receiver.getQueueLength();
                 // Wait for new genome
                 if (n > 0) {
                     byte[] genes = receiver.getData();
@@ -93,7 +110,6 @@ public class EpuckController extends Robot {
             }
 
             step++;
-            //System.out.println("Step: "+step);
 
             if (step < TRIAL_DURATION / TIME_STEP) {
                 // Drive robot
@@ -108,6 +124,7 @@ public class EpuckController extends Robot {
                 emitter.send(msgInBytes);
                 // Reinitialize counter
                 step = 0;
+                //ifAllGamesPlayed = true;    // Indicate that all games have been played
             }
 
         }
@@ -145,32 +162,30 @@ public class EpuckController extends Robot {
 
         updateSenorReadings();
 
-        return computeFitness(speed, position, maxIRActivation);
+        return computeFitness(speed, position, maxIRActivation, distanceTravelled);
     }
 
 
     /**
-     * @param speed           Speed of both wheels
-     * @param position        Current GPS position
-     * @param maxIRActivation Maximum activation of IR proximity sensors
-     * @return Current fitness score (for this trial)
+     * Method to calculate fitness score
+     * @param speed
+     * @param position
+     * @param maxIRActivation
+     * @return
      */
-    private float computeFitness(double[] speed, double[] position, double maxIRActivation) {
+    public float computeFitness(double [] speed, double [] position, double maxIRActivation, double distanceTravelled) {
 
-        float fitnessScore = 0.0f;
+        float fitness = 0.0f;
 
         try {
-            //fitnessScore = (Util.mean(speed) * (1 - Math.pow((speed[LEFT]-speed[RIGHT]), 2) * (1 - Util.normalize(0, 4000, maxIRActivation))));
-            fitnessScore = (float)(Util.mean(speed) * (1 - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) * (1 - Util.normalize(0, 4000, maxIRActivation))));
-
+            fitness = (float) ((fitnessConstants[0] * util.Util.mean(speed)) * (fitnessConstants[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) *
+                    (fitnessConstants[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (fitnessConstants[3] * distanceTravelled));
         } catch (Exception e) {
-            e.getMessage();
+            System.out.println(e.getMessage());
         }
 
-        // Follow black line - value of above 200 indicates white colour //TODO check if values are right!!
-        //if(fs_value[0] < 200 || fs_value[1] < 200 || fs_value[2] < 200) fitnessScore += 0.01;
 
-        return fitnessScore;
+        return fitness;
     }
 
     /**
@@ -281,8 +296,14 @@ public class EpuckController extends Robot {
         emitter = getEmitter("emitterepuck");
         receiver = getReceiver("receiver");
         receiver.enable(TIME_STEP);
+        gamesEmitter = getEmitter("gamesemitterepuck");
+        //gamesEmitter.setChannel(1);
+        gamesReceiver = getReceiver("gamesreceiverepuck");
+        gamesReceiver.enable(TIME_STEP);
+        //gamesReceiver.setChannel(1);
 
         weights = new float[NB_WEIGHTS];
+        fitnessConstants = new double[NB_CONSTANTS];
 
         System.out.println("e-puck has been initialised.");
     }
