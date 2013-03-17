@@ -245,7 +245,7 @@ public class SupervisorController extends Supervisor {
             } else { // Mutate others with probability per gene
                 for (j = 0; j < NB_GENES; j++)
                     if (random.nextFloat() < MUTATION_PROBABILITY)
-                        population[i].setWeights(j, population[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], GENE_MIN, GENE_MAX, MUTATION_SIGMA));
+                        population[i].setWeights(j, population[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
                     else
                         population[i].copy(newpop[i]);
             }
@@ -327,28 +327,9 @@ public class SupervisorController extends Supervisor {
         NB_INPUTS = 7;
         NB_OUTPUTS = 2;
         NB_GENES = 10;
-
-        receiver = getReceiver("receiver");
-        receiver.enable(TIME_STEP);
-        emitter = getEmitter("emitter");
-        epuck = getFromDef("EPUCK");
-        double[] d = epuck.getPosition();
-        for(double number : d) System.out.println(number);
-
-        fldTranslation = epuck.getField("translation");
-
-        //initTranslation = epuck.getPosition();
         population = new NeuralNetwork[POP_SIZE];
         for (i = 0; i < POP_SIZE; i++) {
             population[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
-        }
-
-        // Initialise gps coordinates array
-        locations = new double[5][2];
-        for (i = 0; i < 5; i++) {
-            for (j = 0; j < 2; j++) {
-                locations[i][j] = 0;
-            }
         }
 
         fitness = new double[POP_SIZE];
@@ -361,13 +342,20 @@ public class SupervisorController extends Supervisor {
                 sortedfitness[i][j] = 0.0;
             }
         }
+
+        // Nodes
+        receiver = getReceiver("receiver");
+        receiver.enable(TIME_STEP);
+        emitter = getEmitter("emitter");
+        epuck = getFromDef("EPUCK");
+        fldTranslation = epuck.getField("translation");
+
+        // Initialise gps coordinates arrays
+        locations = new double[5][2];
         initTranslation = new double[3];
-        for (i = 0; i < initTranslation.length; i++) {
-            initTranslation[i] = 0;
-        }
         initTranslation = fldTranslation.getSFVec3f();
 
-
+        // Logging
         try {
             file1 = new FileWriter("results:fitness.txt");
         } catch (IOException e) {
