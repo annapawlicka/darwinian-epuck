@@ -267,6 +267,12 @@ DEF EPUCK DifferentialWheels {
   rotation -0.0141843 0.999867 -0.00803421 -0.92268
   children [
     Receiver {
+      name "gamesreceiverepuck"
+    }
+    Receiver {
+    }
+    Emitter {
+      name "gamesemitterepuck"
     }
     Emitter {
       name "emitterepuck"
@@ -1796,6 +1802,12 @@ Supervisor {
     Receiver {
     }
     Emitter {
+    }
+    Receiver {
+      name "gamesreceiversuper"
+    }
+    Emitter {
+      name "gamesemittersuper"
     }
   ]
   controller "SupervisorController"
