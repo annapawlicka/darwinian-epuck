@@ -177,6 +177,9 @@ public class EpuckController extends Robot {
                 emitter.send(msgInBytes);
             }
             else if(step >= TRIAL_DURATION / TIME_STEP && currentGame < GAME_POP_SIZE){
+                // Send flag to supervisor to reset robot's position
+                byte[] flag = {1};
+                gameEmitter.send(flag);
                 // Play the next game
                 currentGame++;
                 step=0;
@@ -252,6 +255,18 @@ public class EpuckController extends Robot {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+        return fitness;
+    }
+
+    /**
+     * Fitness calculation for games - the variance of overall actor performance on that game.
+     * @return
+     */
+    //TODO fitness calculation for games - the variance of overall actor performance on that game. Should be computed straight
+    //TODO after
+    public float computeGameFitness(){
+        float fitness = 0.0f;
+
         return fitness;
     }
 

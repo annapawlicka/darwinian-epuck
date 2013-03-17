@@ -72,6 +72,16 @@ public class SupervisorController extends Supervisor {
             byte[] nnFit;
             float finished = 0;
 
+            // Wait for a flag from e-puck and reset robot's position after each game
+            int m = gameReceiver.getQueueLength();
+            if (m > 0) {
+                byte[] resetFlag = gameReceiver.getData();
+                if (resetFlag[0] == 1) {
+                    resetRobotPosition();
+                }
+                gameReceiver.nextPacket();
+            }
+
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();
             if (n > 0) {
@@ -83,10 +93,10 @@ public class SupervisorController extends Supervisor {
                         currFitness[i] = nnFit[i];
                     }
                     byte[] flag = new byte[4];
-                    int m = 0;
+                    int l = 0;
                     for (int j = 4; j < 8; j++) {
-                        flag[m] = nnFit[j];
-                        m++;
+                        flag[l] = nnFit[j];
+                        l++;
                     }
                     fitnessNN[evaluatedNN] = Util.bytearray2float(currFitness);
                     finished = Util.bytearray2float(flag);
@@ -132,12 +142,15 @@ public class SupervisorController extends Supervisor {
                         minFitNN = 0;
 
                         resetRobotPosition();
-                        // Send flag to start evolution of games
-                        byte[] flag = {1};
-                        gameEmitter.send(flag);
+                        // Evolve games every 5 NN generations (gives them time to learn)
+                        if (generation % 5 == 0) {
+                            // Send flag to start evolution of games
+                            byte[] flag = {1};
+                            gameEmitter.send(flag);
+                        }
 
                         // Send new weights
-                        byte[] msgInBytes= Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                        byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
                         emitter.send(msgInBytes);
 
                     } else {
