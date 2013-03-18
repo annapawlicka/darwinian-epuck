@@ -3,8 +3,15 @@ package util;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+
 public class StringUtil {
 
+    /**
+     * Method to convert an array of doubles to single String
+     *
+     * @param a
+     * @return
+     */
     public static String arrayToString(double[] a) {
         StringBuilder b = new StringBuilder();
         b.append("[ ");
@@ -15,6 +22,12 @@ public class StringUtil {
         return b.toString();
     }
 
+    /**
+     * Method to convert 2D array of doubles to single String
+     *
+     * @param a
+     * @return
+     */
     public static String arrayToString(double[][] a) {
         StringBuilder b = new StringBuilder();
         b.append("[ ");
@@ -29,6 +42,12 @@ public class StringUtil {
         return b.toString();
     }
 
+    /**
+     * Method to convert an array to single String
+     *
+     * @param a
+     * @return
+     */
     public static String arrayToString(int[] a) {
         StringBuilder b = new StringBuilder();
         b.append("[ ");
@@ -39,6 +58,12 @@ public class StringUtil {
         return b.toString();
     }
 
+    /**
+     * Method to convert 2D array of integers to single String
+     *
+     * @param a
+     * @return
+     */
     public static String arrayToString(int[][] a) {
         StringBuilder b = new StringBuilder();
         b.append("[ ");
@@ -53,6 +78,14 @@ public class StringUtil {
         return b.toString();
     }
 
+    /**
+     * Method to write an array to file
+     *
+     * @param f
+     * @param a
+     * @param epoch
+     * @param ts
+     */
     public static void arrayToFile(FileWriter f, double[] a, int epoch, int ts) {
         try {
             BufferedWriter out = new BufferedWriter(f);
@@ -68,6 +101,14 @@ public class StringUtil {
         }
     }
 
+    /**
+     * Method to write a 2D array to file.
+     *
+     * @param f     FileWriter object
+     * @param a     Array that will be written to file
+     * @param epoch Epoch - represents a period of generating a set number of generations
+     * @param ts    TIMESTEP [ms]
+     */
     public static void arrayToFile(FileWriter f, double[][] a, int epoch, int ts) {
         try {
             // Create file
