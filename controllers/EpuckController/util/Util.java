@@ -121,6 +121,43 @@ public class Util {
     }
 
     /**
+     * Computes the arithmetic mean of a set of values. Uses the definitional formula: mean = sum(x_i) / n
+     * @param values    An array of floats
+     * @return          Arithmetic mean (float)
+     */
+    public static float mean(float [] values){
+        float sum = 0.0f;
+        for(int i=0; i<values.length; i++){
+            sum+=values[i];
+        }
+        return (sum) / values.length;
+    }
+
+    /**
+     * Method to calculate variance
+     * @param values    An array of doubles
+     * @return          Variance - double
+     */
+    public static float variance(float [] values)
+    {
+        float mean = mean(values);
+        float temp = 0;
+        for(float a :values)
+            temp += (mean-a)*(mean-a);
+        return temp/values.length;
+    }
+
+    /**
+     * Method to calculate standard deviation
+     * @param values    An array of doubles
+     * @return          Standard deviation - double
+     */
+    public static double stdDev(float  [] values)
+    {
+        return Math.sqrt(variance(values));
+    }
+
+    /**
      * Makes a three's rule to normalize a value in a 0..1 interval
      *
      * @param min   lowest saturation point. Values below this will return 0
