@@ -127,7 +127,7 @@ public class EpuckController extends Robot {
                     indiv = -1;
                     // Sort populationOfNN by fitness
                     sortPopulation(sortedfitnessGames, gameFitness);
-                    // Find and log current and absolute best individual
+                    // TODO Find and log current and absolute best individual
                     bestFitGame = sortedfitnessGames[0][0];
                     minFitGame = sortedfitnessGames[GAME_POP_SIZE - 1][0];
                     bestGame = (int) sortedfitnessGames[0][1];
@@ -141,7 +141,7 @@ public class EpuckController extends Robot {
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
 
-                    // Write data to files
+                    // TODO Write data to files
                     //FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
                     //        bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
 
@@ -257,6 +257,7 @@ public class EpuckController extends Robot {
 
         float fitness = 0.0f;
 
+        //TODO better way of representin game's polynomial. Maybe different values for constants? Not floats?
         try {
             fitness = (float) ((populationOfGames[currentGame].getConstants()[0] * util.Util.mean(speed)) * (populationOfGames[currentGame].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) *
                     (populationOfGames[currentGame].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[currentGame].getConstants()[3] * distanceTravelled));

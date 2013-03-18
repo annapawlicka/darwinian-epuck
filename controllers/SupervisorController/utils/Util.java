@@ -179,27 +179,4 @@ public class Util {
         return buf.getFloat();
     }
 
-    /**
-     * doubleToByteArray - converts float array into a byte array
-     * @param inData
-     * @return
-     */
-    public static byte[] doubleToByteArray(double[] inData) {
-        int j=0;
-        int length=inData.length;
-        byte[] outData = new byte[length*8];
-        for (int i=0;i<length;i++) {
-            int data=(int)Double.doubleToLongBits(inData[i]);
-            outData[j++]=(byte)(data>>>24);
-            outData[j++]=(byte)(data>>>16);
-            outData[j++]=(byte)(data>>>8);
-            outData[j++]=(byte)(data>>>0);
-        }
-        return outData;
-    }
-
-    public static double toDouble(byte[] bytes) {
-        return ByteBuffer.wrap(bytes).getDouble();
-    }
-
 }

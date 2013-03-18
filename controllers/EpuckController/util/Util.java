@@ -66,7 +66,11 @@ public class Util {
         return b;
     }
 
-    /* Sum of array elements */
+    /**
+     * Sum of array elements
+     * @param in    Array of doubles
+     * @return      Sum (double)
+     */
     public static double sum(double in[]) {
         double sum = 0;
         for (int i = 0; i < in.length; i++)
