@@ -13,9 +13,6 @@ import java.util.Random;
  */
 public class Game {
 
-    private final int LEFT = 0;
-    private final int RIGHT = 1;
-
     private float [] constants;    // Constants used in evolution
 
 
@@ -89,6 +86,8 @@ public class Game {
         this.constants = Util.copy(parent.constants);
 
     }
+
+    /* Getters and setters */
 
     public float[] getConstants(){
         return constants;

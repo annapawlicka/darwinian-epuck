@@ -1,8 +1,11 @@
 import com.cyberbotics.webots.controller.*;
 import games.Game;
+import util.FilesFunctions;
 import util.Util;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Random;
 
 /**
@@ -94,6 +97,7 @@ public class EpuckController extends Robot {
 
     // Logging
     private BufferedWriter out1, out2, out3;
+    private FileWriter file1, file2, file3;
 
     private int step;
     private Random random = new Random();
@@ -125,9 +129,8 @@ public class EpuckController extends Robot {
                     // Start evolution of games
                     for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(sumOfFitnesses[i]);
                     indiv = -1;
-                    // Sort populationOfNN by fitness
+                    // Sort populationOfGames by fitness
                     sortPopulation(sortedfitnessGames, gameFitness);
-                    // TODO Find and log current and absolute best individual
                     bestFitGame = sortedfitnessGames[0][0];
                     minFitGame = sortedfitnessGames[GAME_POP_SIZE - 1][0];
                     bestGame = (int) sortedfitnessGames[0][1];
@@ -135,15 +138,14 @@ public class EpuckController extends Robot {
                     if (bestFitGame > absBestFitGame) {
                         absBestFitGame = bestFitGame;
                         absBestGame = bestGame;
-                        // FilesFunctions.logBest(out3, generation, NB_CONSTANTS, absBestGame, populationOfGames);
+                        FilesFunctions.logBest(out3, generation, NB_CONSTANTS, absBestGame, populationOfGames);
                     }
                     System.out.println("Best game fitness score: \n" + bestFitGame);
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
 
-                    // TODO Write data to files
-                    //FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
-                    //        bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
+                    FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
+                            bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
 
                     // Rank populationOfNN, select best individuals and create new generation
                     createNewPopulation();
@@ -522,6 +524,39 @@ public class EpuckController extends Robot {
 
         weights = new float[NB_WEIGHTS];
         indiv = -1;
+
+        // Logging
+        try {
+            file1 = new FileWriter("results:fitness_games.txt");
+        } catch (IOException e) {
+            System.out.println("Cannot open fitness_games.txt file.");
+        }
+
+        out1 = new BufferedWriter(file1);
+        try {
+            out1.write("generation , average fitness, worst fitness, best fitness");
+            out1.write("\n");
+
+        } catch (IOException e) {
+            System.out.println("" + e.getMessage());
+        }
+
+        try {
+            file2 = new FileWriter("results:genomes_games.txt");
+        } catch (IOException e) {
+            System.out.println("Cannot open genomes_games.txt file.");
+        }
+
+        out2 = new BufferedWriter(file2);
+
+
+        try {
+            file3 = new FileWriter("results:bestgenome_games.txt");
+        } catch (IOException e) {
+            System.out.println("Cannot open bestgenome_games.txt file.");
+        }
+
+        out3 = new BufferedWriter(file3);
 
         System.out.println("e-puck has been initialised.");
     }

@@ -1,13 +1,13 @@
 package util;
 
-import nn.NeuralNetwork;
+import games.Game;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class FilesFunctions {
 
-    public static void logBest(BufferedWriter out3, int generation, int NB_GENES, int absBestInd, NeuralNetwork[] population) {
+    public static void logBest(BufferedWriter out3, int generation, int NB_GAMES, int absBestInd, Game[] population) {
 
         //best genome
         try {
@@ -15,8 +15,8 @@ public class FilesFunctions {
             out3.write("\n");
             out3.write("" + generation + " " + absBestInd);
             out3.write("\n");
-            for (int j = 0; j < NB_GENES; j++){
-                out3.write("" + population[absBestInd].getWeights()[j]);
+            for (int j = 0; j < NB_GAMES; j++){
+                out3.write("" + population[absBestInd].getConstants()[j]);
                 out3.write("\n");
             }
             out3.write("\n");
@@ -33,8 +33,8 @@ public class FilesFunctions {
      * Write all genomes and fitnesses to file
      */
     public static void logPopulation(BufferedWriter out1, BufferedWriter out2, int populationSize, double avgFit,
-                                     int generation, double[] fitness,
-                                     double bestFit, double minFit, int NB_GENES, NeuralNetwork[] population, int bestInd) {
+                                     int generation, float[][] fitness,
+                                     double bestFit, double minFit, int NB_GENES, Game[] population, int bestInd) {
 
         //fitness
         try {
@@ -46,14 +46,14 @@ public class FilesFunctions {
         }
 
         //all genomes
-        try {
+        /*try {
             out2.write("generation: "+ generation + "\n");
             out2.write("individual , fitness, weights");
             out2.write("\n");
             for (int i = 0; i < populationSize; i++) {
                 out2.write("" + i + ", " + fitness[i] + ", ");
                 for (int j = 0; j < NB_GENES; j++)
-                    out2.write("" + population[i].getWeights()[j]+", ");
+                    out2.write("" + population[i].getConstants()[j]+", ");
                 out2.write("\n");
             }
             out2.write("best ind: "+ bestInd + "\n" + "best fitness: " + bestFit);
@@ -61,38 +61,7 @@ public class FilesFunctions {
 
         } catch (IOException e) {
             System.err.println("Buffer Error: " + e.getMessage());
-        }
-    }
-
-    public static void writeErrors(BufferedWriter out, double err_pe, int na_hist) {
-        try {
-            out.write("Active predictor error: " + (err_pe) + "\n");
-            out.write("Active predictors:      " + (na_hist) + "\n");
-            out.write("\n");
-
-        } catch (Exception e) {
-            System.err.println("Buffer Error: " + e.getMessage());
-        }
-    }
-
-    public static void writeBestLoop(BufferedWriter out, int generation, int abs_bestind){
-        try {
-            out.write(""+generation+abs_bestind);
-            out.write("\n");
-        } catch (IOException e) {
-            System.err.println("Buffer Error: " + e.getMessage());
-        }
-    }
-
-    public static void writeFitness(BufferedWriter out, int fitnessScore, int timeStep) {
-        try {
-            //out.write("Epoch: "+ timeStep);
-            out.write("Actor fitness: " + (fitnessScore) + "\n");
-            out.write("\n");
-
-        } catch (Exception e) {
-            System.err.println("Buffer Error: " + e.getMessage());
-        }
+        }*/
     }
 
 }
