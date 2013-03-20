@@ -143,7 +143,7 @@ public class SupervisorController extends Supervisor {
 
                         resetRobotPosition();
                         // Evolve games every 5 NN generations (gives them time to learn)
-                        if (generation % 1 == 0) {
+                        if (generation % 5 == 0) {
                             // Send flag to start evolution of games
                             byte[] flag = {1};
                             gameEmitter.send(flag);

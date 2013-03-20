@@ -26,7 +26,8 @@ public class EpuckController extends Robot {
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
     private final double OBSTACLE_THRESHOLD = 3000;
-    private final int TRIAL_DURATION = 30000;       // Evaluation duration of one individual [ms]
+    private final int TRIAL_DURATION = 30000;       // Evaluation duration of one individual - 30 sec [ms]
+    //TODO longer time per game!
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
@@ -37,7 +38,7 @@ public class EpuckController extends Robot {
     // Evolution of games
     private Game[] populationOfGames;
     private float[] gameFitness;                            // Fitness of games (variance of actors)
-    private float[][] sumOfFitnesses;                         // Sum of fitnesses of each actor for each game
+    private float[][] sumOfFitnesses;                       // Sum of fitnesses of each actor for each game
     private float[][] sortedfitnessGames;                   // Population of games sorted byte fitness
     private double ELITISM_RATIO = 0.1;
     private double REPRODUCTION_RATIO = 0.4;                // If not using roulette wheel (truncation selection), we need reproduction ratio
@@ -86,8 +87,8 @@ public class EpuckController extends Robot {
     // GPS
     private GPS gps;
     private double[] position;
+    private double[] initialPosition;
     private double[] states = new double[11];               // The sensor values  8+3
-    private double distanceTravelled;
 
     // Emitter and Receiver
     private Emitter emitter;
@@ -144,11 +145,11 @@ public class EpuckController extends Robot {
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
 
-                    FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
-                            bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
+                    //FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
+                    //        bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
 
                     // Rank populationOfNN, select best individuals and create new generation
-                    createNewPopulation();
+                    //createNewPopulation();
 
                     generation++;
                     System.out.println("\nGAME GENERATION \n" + generation);
@@ -194,7 +195,7 @@ public class EpuckController extends Robot {
                 float msg[] = {currentFitness, 0.0f};
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
-                System.out.println("Current game: " + currentGame);
+                //System.out.println("Current game: " + currentGame);
                 currentGame++;
                 step = 0;
             } else {
@@ -241,28 +242,30 @@ public class EpuckController extends Robot {
             }
         }
 
-        updateSenorReadings();
+        double floorColour = fs_value[1]; // Middle floor colour sensor [black < 300]
+        System.out.println("Floor colour:"+floorColour);
+        //updateSenorReadings();
 
-        return computeFitness(speed, position, maxIRActivation, distanceTravelled);
+        return computeFitness(speed, position, maxIRActivation, floorColour);
     }
 
 
     /**
      * Method to calculate fitness score
-     *
      * @param speed
      * @param position
      * @param maxIRActivation
+     * @param floorColour
      * @return
      */
-    public float computeFitness(double[] speed, double[] position, double maxIRActivation, double distanceTravelled) {
+    public float computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
 
         float fitness = 0.0f;
 
         //TODO better way of representin game's polynomial. Maybe different values for constants? Not floats?
         try {
             fitness = (float) ((populationOfGames[currentGame].getConstants()[0] * util.Util.mean(speed)) * (populationOfGames[currentGame].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) *
-                    (populationOfGames[currentGame].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[currentGame].getConstants()[3] * distanceTravelled));
+                    (populationOfGames[currentGame].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) * (populationOfGames[currentGame].getConstants()[3] * floorColour));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -393,6 +396,7 @@ public class EpuckController extends Robot {
      */
     private void updateSenorReadings() {
 
+        //TODO get floor colour readings from sensors and pass to games - need to modify polynomial too.yeah??
         maxIRActivation = 0;
         for (int j = 0; j < NB_INPUTS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
@@ -404,12 +408,16 @@ public class EpuckController extends Robot {
             fs_value[i] = fs[i].getValue();
         }
 
-        states[8] = fs_value[0];
-        states[9] = fs_value[1];
-        states[10] = fs_value[2];
+        states[8] = fs_value[0];    // LEFT sensor
+        states[9] = fs_value[1];    // MIDDLE sensor
+        states[10] = fs_value[2];   // RIGHT sensor
 
         //Get position of the e-puck
         position = gps.getValues();
+        // Distance travelled
+        //TODO Evaluates to NaN!!!
+        //distanceTravelled = (position[0] - initialPosition[0]) + (position[1] - initialPosition[1]);
+        //System.out.println(position[0]+"    "+position[1]+"     "+ position[2]);
 
     }
 
@@ -427,7 +435,6 @@ public class EpuckController extends Robot {
             weight_counter++;
         }
     }
-
 
     /**
      * Method to initialise e-puck's sensors and data structures/variables.
@@ -490,6 +497,8 @@ public class EpuckController extends Robot {
         for (i = 0; i < position.length; i++) {
             position[i] = 0.0f;
         }
+        initialPosition = new double[3];
+        initialPosition = gps.getValues();
 
         /* Initialise LED lights */
         for (i = 0; i < ledsNo; i++) {
