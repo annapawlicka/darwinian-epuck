@@ -72,7 +72,7 @@ public class SupervisorController extends Supervisor {
             byte[] nnFit;
             float finished = 0;
 
-            // Wait for a flag from e-puck and reset robot's position after each game
+            /*// Wait for a flag from e-puck and reset robot's position after each game
             int m = gameReceiver.getQueueLength();
             if (m > 0) {
                 byte[] resetFlag = gameReceiver.getData();
@@ -80,7 +80,7 @@ public class SupervisorController extends Supervisor {
                     resetRobotPosition();
                 }
                 gameReceiver.nextPacket();
-            }
+            }*/
 
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();

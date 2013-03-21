@@ -1,6 +1,5 @@
 import com.cyberbotics.webots.controller.*;
 import games.Game;
-import util.FilesFunctions;
 import util.Util;
 
 import java.io.BufferedWriter;
@@ -18,7 +17,8 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 10;
+    private int GAME_POP_SIZE = 3;
+    private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
     private final int TIME_STEP = 128;              // [ms]
@@ -26,14 +26,14 @@ public class EpuckController extends Robot {
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
     private final double OBSTACLE_THRESHOLD = 3000;
-    private final int TRIAL_DURATION = 30000;       // Evaluation duration of one individual - 30 sec [ms]
+    private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
     //TODO longer time per game!
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
     private int NB_CONSTANTS = 4;
     private float weights[];
-    private float currentFitness;
+    private float[] currentFitness;
 
     // Evolution of games
     private Game[] populationOfGames;
@@ -51,7 +51,6 @@ public class EpuckController extends Robot {
     private int generation = 0;                             // Generation counter
     //If 1, evolution takes place. If 0, then the best individual obtained during the previous evolution is tested for an undetermined amount of time.
     private int EVOLVING = 1;
-    private int currentGame;
 
     //Log variables
     private double minFitGame = 0.0, avgFitGame = 0.0, bestFitGame = 0.0, absBestFitGame = 0.0;
@@ -87,7 +86,6 @@ public class EpuckController extends Robot {
     // GPS
     private GPS gps;
     private double[] position;
-    private double[] initialPosition;
     private double[] states = new double[11];               // The sensor values  8+3
 
     // Emitter and Receiver
@@ -122,14 +120,13 @@ public class EpuckController extends Robot {
                 }
             }
 
-            int m = gameReceiver.getQueueLength();
+            /*int m = gameReceiver.getQueueLength();
             if (m > 0) {
                 byte[] flag = gameReceiver.getData();
 
                 if (flag[0] == 1) {
                     // Start evolution of games
                     for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(sumOfFitnesses[i]);
-                    indiv = -1;
                     // Sort populationOfGames by fitness
                     sortPopulation(sortedfitnessGames, gameFitness);
                     bestFitGame = sortedfitnessGames[0][0];
@@ -160,9 +157,9 @@ public class EpuckController extends Robot {
                     minFitGame = 0;
                 }
                 gameReceiver.nextPacket();
-            }
+            }*/
 
-            if (step == 0 && currentGame == 0) {
+            if (step == 0) {
                 int n = receiver.getQueueLength();
                 // Wait for new genome
                 if (n > 0) {
@@ -172,40 +169,26 @@ public class EpuckController extends Robot {
                     receiver.nextPacket();
                     indiv++;
                 }
-                currentFitness = 0;
-                //System.out.println("Current game: " + currentGame);
+                currentFitness = new float[NN_POP_SIZE];
+                for (i = 0; i < NN_POP_SIZE; i++) currentFitness[i] = 0.0f;
             }
 
             step++;
 
-            if (step < TRIAL_DURATION / TIME_STEP && currentGame < GAME_POP_SIZE && indiv < 50) {
+            if (step < TRIAL_DURATION / TIME_STEP) {
                 // Drive robot
-                currentFitness += runTrial();                // Send message with current fitness
-                sumOfFitnesses[currentGame][indiv] += currentFitness;
-                float msg[] = {currentFitness, 0.0f};
+                runTrial();
+                //sumOfFitnesses[currentGame][indiv] += currentFitness;
+                float msg[] = {currentFitness[indiv], 0.0f};
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
-            } else if (step >= TRIAL_DURATION / TIME_STEP && currentGame < GAME_POP_SIZE && indiv < 50) {
-                // Send flag to supervisor to reset robot's position
-                byte[] flag = {1};
-                gameEmitter.send(flag);
-                // Play the next game
-                currentFitness += runTrial();                // Send message with current fitness
-                sumOfFitnesses[currentGame][indiv] += currentFitness;
-                float msg[] = {currentFitness, 0.0f};
-                byte[] msgInBytes = Util.float2Byte(msg);
-                emitter.send(msgInBytes);
-                //System.out.println("Current game: " + currentGame);
-                currentGame++;
-                step = 0;
             } else {
                 // Send message to indicate end of trial - next actor will be called
-                float msg[] = {currentFitness, 1};
+                float msg[] = {currentFitness[indiv], 1};
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
                 // Reinitialize counter
                 step = 0;
-                currentGame = 0;
                 indiv = 0;
             }
 
@@ -218,7 +201,7 @@ public class EpuckController extends Robot {
      *
      * @return Returns current fitness score
      */
-    private float runTrial() {
+    private void runTrial() {
 
         double[] outputs = new double[NB_OUTPUTS];
 
@@ -242,34 +225,32 @@ public class EpuckController extends Robot {
             }
         }
 
-        double floorColour = fs_value[1]; // Middle floor colour sensor [black < 300]
-        System.out.println("Floor colour:"+floorColour);
-        //updateSenorReadings();
+        double floorColour = 0;
+        if(fs_value[1]<300) floorColour = 10; // Middle floor colour sensor [black < 300]
 
-        return computeFitness(speed, position, maxIRActivation, floorColour);
+        computeFitness(speed, position, maxIRActivation, floorColour);
     }
 
 
     /**
      * Method to calculate fitness score
+     *
      * @param speed
      * @param position
      * @param maxIRActivation
      * @param floorColour
      * @return
      */
-    public float computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
+    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
 
-        float fitness = 0.0f;
-
-        //TODO better way of representin game's polynomial. Maybe different values for constants? Not floats?
-        try {
-            fitness = (float) ((populationOfGames[currentGame].getConstants()[0] * util.Util.mean(speed)) * (populationOfGames[currentGame].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) *
-                    (populationOfGames[currentGame].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) * (populationOfGames[currentGame].getConstants()[3] * floorColour));
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+        for (int i = 0; i < GAME_POP_SIZE; i++) {
+            try {
+                currentFitness[indiv] += (float) ((populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) + (populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) +
+                        (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[i].getConstants()[3] * floorColour));
+            } catch (Exception e) {
+                System.out.println("Error: "+ e.getMessage());
+            }
         }
-        return fitness;
     }
 
 
@@ -396,7 +377,6 @@ public class EpuckController extends Robot {
      */
     private void updateSenorReadings() {
 
-        //TODO get floor colour readings from sensors and pass to games - need to modify polynomial too.yeah??
         maxIRActivation = 0;
         for (int j = 0; j < NB_INPUTS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
@@ -414,10 +394,6 @@ public class EpuckController extends Robot {
 
         //Get position of the e-puck
         position = gps.getValues();
-        // Distance travelled
-        //TODO Evaluates to NaN!!!
-        //distanceTravelled = (position[0] - initialPosition[0]) + (position[1] - initialPosition[1]);
-        //System.out.println(position[0]+"    "+position[1]+"     "+ position[2]);
 
     }
 
@@ -436,6 +412,28 @@ public class EpuckController extends Robot {
         }
     }
 
+    private void initialiseGames(Game[] games) {
+
+        /* Game 1: Avoid obstacles */
+        games[0].setConstants(0, 1); // Mean ON
+        games[0].setConstants(1, 1); // Try to steer straight
+        games[0].setConstants(2, 1); // Minimise IR proximity sensors activation
+        games[0].setConstants(3, 0); // Ignore floor colour
+
+        /* Game 2: Follow black line */
+        games[1].setConstants(0, 1);    // Mean ON
+        games[1].setConstants(1, 0);
+        games[1].setConstants(2, 0);
+        games[1].setConstants(3, 1);
+
+        /* Game 3: Follow the wall */
+        games[2].setConstants(0,1);
+        games[2].setConstants(1,1);
+        games[2].setConstants(2, -1); // Maximise prox sensors activation
+        games[2].setConstants(3, 0);
+
+    }
+
     /**
      * Method to initialise e-puck's sensors and data structures/variables.
      */
@@ -444,11 +442,13 @@ public class EpuckController extends Robot {
         int i, j;
         mode = 1;
         step = 0;
-        currentGame = 0;
+        indiv = 0;
 
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(true);
+        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false);
+        initialiseGames(populationOfGames);
+
         sumOfFitnesses = new float[GAME_POP_SIZE][50];
         for (i = 0; i < GAME_POP_SIZE; i++) {
             for (j = 0; j < sumOfFitnesses[i].length; j++) {
@@ -462,7 +462,7 @@ public class EpuckController extends Robot {
             }
         }
         gameFitness = new float[GAME_POP_SIZE];
-        for(i=0; i< GAME_POP_SIZE; i++) gameFitness[i] = 0.0f;
+        for (i = 0; i < GAME_POP_SIZE; i++) gameFitness[i] = 0.0f;
 
         /* Initialise IR proximity sensors */
         ps = new DistanceSensor[proximitySensorsNo];
@@ -497,8 +497,6 @@ public class EpuckController extends Robot {
         for (i = 0; i < position.length; i++) {
             position[i] = 0.0f;
         }
-        initialPosition = new double[3];
-        initialPosition = gps.getValues();
 
         /* Initialise LED lights */
         for (i = 0; i < ledsNo; i++) {
@@ -532,7 +530,6 @@ public class EpuckController extends Robot {
         gameReceiver.enable(TIME_STEP);
 
         weights = new float[NB_WEIGHTS];
-        indiv = -1;
 
         // Logging
         try {
