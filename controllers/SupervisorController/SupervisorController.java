@@ -129,6 +129,7 @@ public class SupervisorController extends Supervisor {
                         // Write data to files
                         FilesFunctions.logPopulation(out1, out2, NN_POP_SIZE, avgFitNN, generation, fitnessNN,
                                 bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
+                        FilesFunctions.logAllFitnesses(out2, generation, fitnessNN);
 
                         // Rank populationOfNN, select best individuals and create new generation
                         createNewPopulation();
@@ -157,7 +158,6 @@ public class SupervisorController extends Supervisor {
                         // Assign received fitness to individual
                         System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
                         evaluatedNN++;
-
                         // Send next genome to experiment
                         resetRobotPosition();
                         byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
@@ -404,6 +404,13 @@ public class SupervisorController extends Supervisor {
         }
 
         out2 = new BufferedWriter(file2);
+        try {
+            out2.write("Generation, ");
+            for(i=0; i<NN_POP_SIZE; i++) out2.write("Indiv "+i+", ");
+            out2.write("\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to genome.txt: "+e.getMessage());
+        }
 
 
         try {
