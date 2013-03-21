@@ -1,5 +1,6 @@
 import com.cyberbotics.webots.controller.*;
 import games.Game;
+import util.FilesFunctions;
 import util.Util;
 
 import java.io.BufferedWriter;
@@ -120,7 +121,7 @@ public class EpuckController extends Robot {
                 }
             }
 
-            /*int m = gameReceiver.getQueueLength();
+            int m = gameReceiver.getQueueLength();
             if (m > 0) {
                 byte[] flag = gameReceiver.getData();
 
@@ -157,7 +158,7 @@ public class EpuckController extends Robot {
                     minFitGame = 0;
                 }
                 gameReceiver.nextPacket();
-            }*/
+            }
 
             if (step == 0) {
                 int n = receiver.getQueueLength();
@@ -247,6 +248,7 @@ public class EpuckController extends Robot {
             try {
                 currentFitness[indiv] += (float) ((populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) + (populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) +
                         (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[i].getConstants()[3] * floorColour));
+                sumOfFitnesses[i][indiv] += currentFitness[indiv];
             } catch (Exception e) {
                 System.out.println("Error: "+ e.getMessage());
             }
