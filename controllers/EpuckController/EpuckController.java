@@ -28,7 +28,6 @@ public class EpuckController extends Robot {
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
-    //TODO longer time per game!
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
@@ -48,7 +47,6 @@ public class EpuckController extends Robot {
     private int GENE_MIN = -1;
     private int GENE_MAX = 1;                               // Range of genes: maximum value
     private double MUTATION_SIGMA = 0.2;                    // Mutations follow a Box-Muller distribution from the gene with this sigma
-    private int evaluatedGame = 0;                          // Evaluated individuals
     private int generation = 0;                             // Generation counter
     //If 1, evolution takes place. If 0, then the best individual obtained during the previous evolution is tested for an undetermined amount of time.
     private int EVOLVING = 1;
@@ -96,7 +94,7 @@ public class EpuckController extends Robot {
     private Receiver gameReceiver;
 
     // Logging
-    private BufferedWriter out1, out2, out3;
+    private BufferedWriter out1, out3;
     private FileWriter file1, file2, file3;
 
     private int step;
@@ -134,6 +132,7 @@ public class EpuckController extends Robot {
                     minFitGame = sortedfitnessGames[GAME_POP_SIZE - 1][0];
                     bestGame = (int) sortedfitnessGames[0][1];
                     avgFitGame = util.Util.mean(gameFitness);
+                    // Log best, average and worst fitness score - writes to the file
                     if (bestFitGame > absBestFitGame) {
                         absBestFitGame = bestFitGame;
                         absBestGame = bestGame;
@@ -143,15 +142,11 @@ public class EpuckController extends Robot {
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
 
-                    //FilesFunctions.logPopulation(out1, out2, GAME_POP_SIZE, avgFitGame, generation, sumOfFitnesses,
-                    //        bestFitGame, minFitGame, NB_CONSTANTS, populationOfGames, bestGame);
-
-                    // Rank populationOfNN, select best individuals and create new generation
+                    // Rank populationOfGames, select best individuals and create new generation
                     //createNewPopulation();
 
                     generation++;
                     System.out.println("\nGAME GENERATION \n" + generation);
-                    evaluatedGame = 0;
                     avgFitGame = 0.0;
                     bestFitGame = 0;
                     bestGame = 0;
@@ -179,7 +174,6 @@ public class EpuckController extends Robot {
             if (step < TRIAL_DURATION / TIME_STEP) {
                 // Drive robot
                 runTrial();
-                //sumOfFitnesses[currentGame][indiv] += currentFitness;
                 float msg[] = {currentFitness[indiv], 0.0f};
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
@@ -234,7 +228,7 @@ public class EpuckController extends Robot {
 
 
     /**
-     * Method to calculate fitness score
+     * Method to calculate fitness score - fitness function that have evolvable constants.
      *
      * @param speed
      * @param position
@@ -548,15 +542,6 @@ public class EpuckController extends Robot {
         } catch (IOException e) {
             System.out.println("" + e.getMessage());
         }
-
-        try {
-            file2 = new FileWriter("results:genomes_games.txt");
-        } catch (IOException e) {
-            System.out.println("Cannot open genomes_games.txt file.");
-        }
-
-        out2 = new BufferedWriter(file2);
-
 
         try {
             file3 = new FileWriter("results:bestgenome_games.txt");
