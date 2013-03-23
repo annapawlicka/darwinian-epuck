@@ -157,6 +157,9 @@ public class EpuckController extends Robot {
                     bestFitGame = 0;
                     bestGame = 0;
                     minFitGame = 0;
+                    // Reset fitness
+                    for(i=0; i< sumOfFitnesses.length; i++)
+                        for(int j=0; j< sumOfFitnesses[i].length; j++) sumOfFitnesses[i][j] = 0.0f;
                 }
                 gameReceiver.nextPacket();
             }
