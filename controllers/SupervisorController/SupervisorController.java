@@ -11,8 +11,10 @@ import java.util.Random;
  * User: annapawlicka
  * Date: 09/03/2013
  * Time: 14:27
- * Supervisor epuck. Controls the evolution.
- * A Supervisor can reset position of the epuck.
+ * Supervisor controller. Controls the evolution of e-puck. Supervisor can reset position of the epuck.
+ * Communication with e-puck is done via emitters/receivers. Separate devices for game and neural communication.
+ * Evolution is done by elitism, crossover and mutation.
+ * Fitness function of agents is how well they learn the games.
  */
 public class SupervisorController extends Supervisor {
 
@@ -55,7 +57,9 @@ public class SupervisorController extends Supervisor {
     private BufferedWriter out1, out2, out3;
     private BufferedReader in1, in2, in3;
     private FileWriter file1, file2, file3;
-    private FileReader reader1, reader2, reader3;
+    private FileReader reader1;
+    private FileReader reader2;
+    private BufferedReader reader3;
 
     private Random random = new Random();
 
@@ -192,6 +196,7 @@ public class SupervisorController extends Supervisor {
 
             //TODO  Read best genome from bestgenome.txt and initialize weights.
 
+
             System.out.println("TESTING INDIVIDUAL, GENERATION \n" + evaluatedNN + ", " + generation);
 
             // Send genomes to experiment
@@ -260,7 +265,7 @@ public class SupervisorController extends Supervisor {
 
         // Mutate new populationOfNN and copy back to pop
         for (i = 0; i < NN_POP_SIZE; i++) {
-            if (i < elitism_counter) { //no mutation for elitists
+            if (i < elitism_counter) { //no mutation for elitists TODO check the value of elitism score
                 for (j = 0; j < NB_GENES; j++) {
                     populationOfNN[i].copy(newpop[i]);
                 }
@@ -420,6 +425,15 @@ public class SupervisorController extends Supervisor {
         }
 
         out3 = new BufferedWriter(file3);
+
+        // Initialise reading from logs
+
+        try {
+            reader3 = new BufferedReader(new FileReader("results:bestgenome.txt"));
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot read from file: bestgenome.txt");
+        }
+
 
         System.out.println("Supervisor has been initialised.");
     }

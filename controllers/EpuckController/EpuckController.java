@@ -13,7 +13,9 @@ import java.util.Random;
  * User: annapawlicka
  * Date: 01/03/2013
  * Time: 19:50
- * E-puck controller that works with NN algorithm.
+ * E-puck controller that controls the evolution of games and runs trials. All sensorimotor inputs come from this
+ * controller.
+ * Fitness function of games is the variance of the actors (Fisher's Law).
  */
 public class EpuckController extends Robot {
 
@@ -94,7 +96,7 @@ public class EpuckController extends Robot {
     private Receiver gameReceiver;
 
     // Logging
-    private BufferedWriter out1, out3;
+    private BufferedWriter out1, out2, out3;
     private FileWriter file1, file2, file3;
 
     private int step;
@@ -141,6 +143,10 @@ public class EpuckController extends Robot {
                     System.out.println("Best game fitness score: \n" + bestFitGame);
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
+
+                    // Write data to files
+                    FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
+                    FilesFunctions.logAllFitnesses(out2, generation, gameFitness);
 
                     // Rank populationOfGames, select best individuals and create new generation
                     //createNewPopulation();
@@ -244,7 +250,7 @@ public class EpuckController extends Robot {
                         (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[i].getConstants()[3] * floorColour));
                 sumOfFitnesses[i][indiv] += currentFitness[indiv];
             } catch (Exception e) {
-                System.out.println("Error: "+ e.getMessage());
+                System.err.println("Error: "+ e.getMessage());
             }
         }
     }
@@ -304,7 +310,7 @@ public class EpuckController extends Robot {
     }
 
     /**
-     * Based on the fitness of the last generation, generate a new populationOfNN of genomes for the next generation.
+     * Based on the fitness of the last generation, generate a new games for the next generation.
      */
     private void createNewPopulation() {
 
@@ -445,7 +451,7 @@ public class EpuckController extends Robot {
         for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false);
         initialiseGames(populationOfGames);
 
-        sumOfFitnesses = new float[GAME_POP_SIZE][50];
+        sumOfFitnesses = new float[GAME_POP_SIZE][NN_POP_SIZE];
         for (i = 0; i < GAME_POP_SIZE; i++) {
             for (j = 0; j < sumOfFitnesses[i].length; j++) {
                 sumOfFitnesses[i][j] = 0.0f;
@@ -529,9 +535,9 @@ public class EpuckController extends Robot {
 
         // Logging
         try {
-            file1 = new FileWriter("results:fitness_games.txt");
+            file1 = new FileWriter("results.txt");
         } catch (IOException e) {
-            System.out.println("Cannot open fitness_games.txt file.");
+            System.out.println("Cannot open results.txt file.");
         }
 
         out1 = new BufferedWriter(file1);
@@ -540,13 +546,27 @@ public class EpuckController extends Robot {
             out1.write("\n");
 
         } catch (IOException e) {
-            System.out.println("" + e.getMessage());
+            System.err.println("" + e.getMessage());
+        }
+
+        try{
+            file2 = new FileWriter("results:fitness_games.txt");
+        } catch (IOException e){
+            System.err.println("Cannot write to file: fitness_games.txt");
+        }
+        out2 = new BufferedWriter(file2);
+        try {
+            out2.write("Generation, ");
+            for(i=0; i<GAME_POP_SIZE; i++) out2.write("Game "+i+", ");
+            out2.write("\n");
+        } catch (IOException e) {
+            System.out.println("Error writing to genome.txt: "+e.getMessage());
         }
 
         try {
             file3 = new FileWriter("results:bestgenome_games.txt");
         } catch (IOException e) {
-            System.out.println("Cannot open bestgenome_games.txt file.");
+            System.err.println("Cannot open bestgenome_games.txt file.");
         }
 
         out3 = new BufferedWriter(file3);

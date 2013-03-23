@@ -7,9 +7,17 @@ import java.io.IOException;
 
 public class FilesFunctions {
 
+    /**
+     *
+     * @param out3
+     * @param generation
+     * @param NB_GAMES
+     * @param absBestInd
+     * @param population
+     */
     public static void logBest(BufferedWriter out3, int generation, int NB_GAMES, int absBestInd, Game[] population) {
 
-        //best genome
+        //best game
         try {
             out3.write("generation, absolute best ind index, weights");
             out3.write("\n");
@@ -22,19 +30,20 @@ public class FilesFunctions {
             out3.write("\n");
             out3.flush();
         } catch (IOException e) {
-            System.out.println("Buffer Error: " + e.getMessage());
+            System.err.println("Buffer Error: " + e.getMessage());
         }
-
-
 
     }
 
-    /**
-     * Write all genomes and fitnesses to file
-     */
-    public static void logPopulation(BufferedWriter out1, BufferedWriter out2, int populationSize, double avgFit,
-                                     int generation, float[][] fitness,
-                                     double bestFit, double minFit, int NB_GENES, Game[] population, int bestInd) {
+     /**
+     * Write average, worst and best fitnesses of each generation.
+     * @param out1
+     * @param avgFit
+     * @param generation
+     * @param bestFit
+     * @param minFit
+     **/
+    public static void logFitnessCases(BufferedWriter out1, double avgFit, int generation, double bestFit, double minFit) {
 
         //fitness
         try {
@@ -44,25 +53,17 @@ public class FilesFunctions {
         } catch (IOException e) {
             System.err.println("Buffer Error: " + e.getMessage());
         }
-
-        //all genomes
-        /*try {
-            out2.write("generation: "+ generation + "\n");
-            out2.write("individual , fitness, weights");
-            out2.write("\n");
-            for (int i = 0; i < populationSize; i++) {
-                out2.write("" + i + ", " + fitness[i] + ", ");
-                for (int j = 0; j < NB_GENES; j++)
-                    out2.write("" + population[i].getConstants()[j]+", ");
-                out2.write("\n");
-            }
-            out2.write("best ind: "+ bestInd + "\n" + "best fitness: " + bestFit);
-            out2.flush();
-
-        } catch (IOException e) {
-            System.err.println("Buffer Error: " + e.getMessage());
-        }*/
     }
 
+    public static void logAllFitnesses(BufferedWriter out2, int generation, float[] gameFitness) {
+        try{
+            out2.write(""+generation+", ");
+            for(int i=0; i<gameFitness.length; i++) out2.write(""+gameFitness[i]+", ");
+            out2.write("\n");
+            out2.flush();
+        } catch (IOException ioe){
+            System.err.println("Buffer error: "+ioe.getMessage());
+        }
+    }
 }
 
