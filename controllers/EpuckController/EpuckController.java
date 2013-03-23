@@ -125,11 +125,17 @@ public class EpuckController extends Robot {
             if (m > 0) {
                 byte[] flag = gameReceiver.getData();
 
-                if (flag[0] == 1) {
-                    // Start evolution of games
+                if (flag[0] == 1) { // is flag 1 is received, evolution can be started (the frequency is set by supervisor)
+
+                    /* Start evolution of games */
+
+                    // 1. Calculate fitness of each game by computing variance of actor fitnesses on that game
                     for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(sumOfFitnesses[i]);
-                    // Sort populationOfGames by fitness
+
+                    // 2. Sort populationOfGames by fitness
                     sortPopulation(sortedfitnessGames, gameFitness);
+
+                    // 3. Find best, average and worst game
                     bestFitGame = sortedfitnessGames[0][0];
                     minFitGame = sortedfitnessGames[GAME_POP_SIZE - 1][0];
                     bestGame = (int) sortedfitnessGames[0][1];
@@ -144,13 +150,14 @@ public class EpuckController extends Robot {
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
 
-                    // Write data to files
+                    // 4. Write data to files
                     FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
                     FilesFunctions.logAllFitnesses(out2, generation, gameFitness);
 
-                    // Rank populationOfGames, select best individuals and create new generation
+                    // 5. Rank populationOfGames, select best individuals and create new generation
                     //createNewPopulation();
 
+                    // 6. Reset evolution variables
                     generation++;
                     System.out.println("\nGAME GENERATION \n" + generation);
                     avgFitGame = 0.0;
