@@ -202,6 +202,20 @@ public class Util {
 
     }
 
+    public static float normalizeFloat(float min, float max, float value,
+                                       float start, float end) throws Exception {
+        if (max <= min) throw new Exception("Min cannot be higher than max. Values entered are not valid.");
+        if (end <= start) throw new Exception("End cannot be higher than start. Values entered are not valid.");
+        if (value >= max) return end;
+        if (value <= min) return start;
+
+        float i1 = max - min;
+        float i2 = end - start;
+        float y = (value - min) * i2 / i1;
+        return y + start;
+
+    }
+
     /**
      * float2Byte method - writes floats to byte array
      * @param inData

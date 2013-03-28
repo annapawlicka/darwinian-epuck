@@ -50,15 +50,16 @@ public class SupervisorController extends Supervisor {
     private int generation = 0;                             // Generation counter
     //If 1, evolution takes place. If 0, then the best individual obtained during the previous evolution is tested for an undetermined amount of time.
     private int EVOLVING = 1;
+    private int TESTING = 0;
+    private int ROULETTE_WHEEL = 1;
 
     //Log variables
-    private double minFitNN = 0.0, avgFitNN = 0.0, bestFitNN = 0.0, absBestFitNN = 0.0;
+    private double minFitNN = 0.0, avgFitNN = 0.0, bestFitNN = 0.0, absBestFitNN = -10000;
     private int bestNN = -1, absBestNN = -1;
-    private BufferedWriter out1, out2, out3;
+    private BufferedWriter out1;
+    private BufferedWriter out3;
     private BufferedReader in1, in2, in3;
-    private FileWriter file1, file2, file3;
-    private FileReader reader1;
-    private FileReader reader2;
+    private FileWriter file1, file3;
     private BufferedReader reader3;
 
     private Random random = new Random();
@@ -75,16 +76,6 @@ public class SupervisorController extends Supervisor {
         while (step(TIME_STEP) != -1) {
             byte[] nnFit;
             float finished = 0;
-
-            /*// Wait for a flag from e-puck and reset robot's position after each game
-            int m = gameReceiver.getQueueLength();
-            if (m > 0) {
-                byte[] resetFlag = gameReceiver.getData();
-                if (resetFlag[0] == 1) {
-                    resetRobotPosition();
-                }
-                gameReceiver.nextPacket();
-            }*/
 
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();
@@ -131,10 +122,14 @@ public class SupervisorController extends Supervisor {
                         System.out.println("Worst fitness score: \n" + minFitNN);
 
                         // Write data to files
-                        FilesFunctions.logPopulation(out1, out2, NN_POP_SIZE, avgFitNN, generation, fitnessNN,
+                        FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
                                 bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
-                        FilesFunctions.logAllFitnesses(out2, generation, fitnessNN);
-
+                        // Log the generation data  - stores weights
+                        try {
+                            FilesFunctions.logLastGeneration(populationOfNN);
+                        } catch (IOException e) {
+                            e.getMessage();
+                        }
                         // Rank populationOfNN, select best individuals and create new generation
                         createNewPopulation();
 
@@ -171,6 +166,7 @@ public class SupervisorController extends Supervisor {
             }
 
         }
+
     }
 
     /**
@@ -192,23 +188,31 @@ public class SupervisorController extends Supervisor {
             byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
             emitter.send(msgInBytes);
 
-        } else { // Testing best individual
-
-            //TODO  Read best genome from bestgenome.txt and initialize weights.
-
-
-            System.out.println("TESTING INDIVIDUAL, GENERATION \n" + evaluatedNN + ", " + generation);
-
-            // Send genomes to experiment
-            resetRobotPosition();
-
-            byte[] msgInBytes = Util.float2Byte(populationOfNN[0].getWeights());
-            emitter.send(msgInBytes);
         }
+
+        if (TESTING == 1) {
+            int counter = 0;
+            String strLine;
+            try {
+                while ((strLine = reader3.readLine()) != null && counter < 50) {
+                    String[] weightsStr = strLine.split(",");
+                    for (i = 0; i < populationOfNN[counter].getWeightsNo(); i++) {
+                        populationOfNN[counter].setWeights(i, Float.parseFloat(weightsStr[i]));
+                    }
+                    counter++;
+                }
+            } catch (IOException e) {
+                e.getMessage();
+            }
+
+
+            System.out.println("TESTING LAST GENERATION \n");
+        }
+
     }
 
     /**
-     * Initiaite genes of all individuals randomly
+     * Initiate genes of all individuals randomly
      */
     private void initializePopulation() {
         int i, j;
@@ -221,18 +225,27 @@ public class SupervisorController extends Supervisor {
     }
 
     /**
-     * Based on the fitness of the last generation, generate a new populationOfNN of genomes for the next generation.
+     * Based on the fitness of the last generation, generate a new population of genomes for the next generation.
      */
     private void createNewPopulation() {
 
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
-            newpop[i] = new NeuralNetwork(4, 2);
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
         }
         double elitism_counter = NN_POP_SIZE * ELITISM_RATIO;
+        double total_fitness = 0;
+
+        // Find minimum fitness to subtract it from sum
+        double min_fitness = sortedfitnessNN[NN_POP_SIZE - 1][0];
+        if (min_fitness < 0) min_fitness = 0;
         int i, j;
 
-        // Create new populationOfNN
+        // Calculate total of fitness, used for roulette wheel selection
+        for (i = 0; i < NN_POP_SIZE; i++) total_fitness += fitnessNN[i];
+        total_fitness -= min_fitness * NN_POP_SIZE;
+
+        // Create new population
         for (i = 0; i < NN_POP_SIZE; i++) {
 
             // The elitism_counter best individuals are simply copied to the new populationOfNN
@@ -244,15 +257,33 @@ public class SupervisorController extends Supervisor {
             else {
 
                 // Select non-elitist individual
-                int ind1;
-                ind1 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+                int ind1 = 0;
+                if (ROULETTE_WHEEL == 1) {
+                    float r = random.nextFloat();
+                    double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
+                    while (r > fitness_counter) {
+                        ind1++;
+                        fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
+                    }
+                } else
+                    ind1 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
 
                 // If we will do crossover, select a second individual
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
-                    int ind2;
-                    do {
-                        ind2 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
-                    } while (ind1 == ind2);
+                    int ind2 = 0;
+                    if (ROULETTE_WHEEL == 1)
+                        do {
+                            float r = random.nextFloat();
+                            double fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
+                            while (r > fitness_counter) {
+                                ind2++;
+                                fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
+                            }
+                        } while (ind1 == ind2);
+                    else
+                        do {
+                            ind2 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+                        } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessNN[ind1][1];
                     ind2 = (int) sortedfitnessNN[ind2][1];
                     newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
@@ -265,7 +296,7 @@ public class SupervisorController extends Supervisor {
 
         // Mutate new populationOfNN and copy back to pop
         for (i = 0; i < NN_POP_SIZE; i++) {
-            if (i < elitism_counter) { //no mutation for elitists TODO check the value of elitism score
+            if (i < elitism_counter) { //no mutation for elitists
                 for (j = 0; j < NB_GENES; j++) {
                     populationOfNN[i].copy(newpop[i]);
                 }
@@ -403,22 +434,6 @@ public class SupervisorController extends Supervisor {
         }
 
         try {
-            file2 = new FileWriter("results:genomes.txt");
-        } catch (IOException e) {
-            System.out.println("Cannot open genomes.txt file.");
-        }
-
-        out2 = new BufferedWriter(file2);
-        try {
-            out2.write("Generation, ");
-            for(i=0; i<NN_POP_SIZE; i++) out2.write("Indiv "+i+", ");
-            out2.write("\n");
-        } catch (IOException e) {
-            System.out.println("Error writing to genome.txt: "+e.getMessage());
-        }
-
-
-        try {
             file3 = new FileWriter("results:bestgenome.txt");
         } catch (IOException e) {
             System.out.println("Cannot open bestgenome.txt file.");
@@ -426,17 +441,16 @@ public class SupervisorController extends Supervisor {
 
         out3 = new BufferedWriter(file3);
 
-        // Initialise reading from logs
 
         try {
-            reader3 = new BufferedReader(new FileReader("results:bestgenome.txt"));
+            reader3 = new BufferedReader(new FileReader("results:genomes.txt"));
         } catch (FileNotFoundException e) {
-            System.out.println("Cannot read from file: bestgenome.txt");
+            System.out.println("Cannot read from file: results:genomes.txt");
         }
-
 
         System.out.println("Supervisor has been initialised.");
     }
+
 
     public static void main(String[] args) {
         SupervisorController supervisorController = new SupervisorController();

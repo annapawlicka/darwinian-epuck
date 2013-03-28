@@ -3,6 +3,7 @@ package utils;
 import nn.NeuralNetwork;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FilesFunctions {
@@ -37,27 +38,34 @@ public class FilesFunctions {
 
     }
 
-    /**
-     * Writes fitness of each individual - for each generation.
-     * @param out2
-     * @param generation
-     * @param fitnesses
-     */
-    public static void logAllFitnesses(BufferedWriter out2, int generation, double[] fitnesses){
+    public static void logLastGeneration(NeuralNetwork[] population) throws IOException {
+
+        FileWriter file = new FileWriter("results:genomes.txt");
+
+        BufferedWriter out = new BufferedWriter(file);
+
         try{
-            out2.write(""+generation+", ");
-            for(int i=0; i<fitnesses.length; i++) out2.write(""+fitnesses[i]+", ");
-            out2.write("\n");
-            out2.flush();
-        } catch (IOException ioe){
-            System.err.println("Buffer error: "+ioe.getMessage());
+            for(int i=0; i< population.length; i++){
+                for (int j=0; j<population[i].getWeightsNo(); j++){
+                    /*System.out.println("population size: " + population.length);
+                    System.out.println("try to acess: " + i);
+                    System.out.println("weights size: " + population[i].getWeights().length);
+                    System.out.println("try to acess: " + j); */
+                    out.write(""+population[i].getWeights()[j]+",");
+                }
+                out.write("\n");
+            }
+            out.write("\n");
+            out.flush();
+        }   catch(IOException e){
+            System.err.println("Buffer error: "+e.getMessage());
         }
     }
 
     /**
      * Write all genomes and fitnesses to file
      */
-    public static void logPopulation(BufferedWriter out1, BufferedWriter out2, int populationSize, double avgFit,
+    public static void logPopulation(BufferedWriter out1, double avgFit,
                                      int generation, double[] fitness,
                                      double bestFit, double minFit, int NB_GENES, NeuralNetwork[] population, int bestInd) {
 
