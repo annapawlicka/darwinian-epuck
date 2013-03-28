@@ -35,6 +35,24 @@ public class FilesFunctions {
 
     }
 
+    public static void logAllCompFit(BufferedWriter out, float [][] compFit, int generation){
+
+        try{
+            out.write(""+generation);
+            out.newLine();
+            for(int i=0; i<compFit.length; i++){
+                for(int j=0; j< compFit[i].length; j++){
+                    out.write(""+compFit[i][j]+", ");
+                }
+                out.newLine();
+            }
+
+            out.flush();
+        }   catch (IOException e){
+            System.err.println("Buffer error: "+e.getMessage());
+        }
+    }
+
      /**
      * Write average, worst and best fitnesses of each generation.
      * @param out1

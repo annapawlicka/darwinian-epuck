@@ -258,32 +258,25 @@ public class SupervisorController extends Supervisor {
 
                 // Select non-elitist individual
                 int ind1 = 0;
-                if (ROULETTE_WHEEL == 1) {
-                    float r = random.nextFloat();
-                    double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                    while (r > fitness_counter) {
-                        ind1++;
-                        fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                    }
-                } else
-                    ind1 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+
+                float r = random.nextFloat();
+                double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
+                while (r > fitness_counter) {
+                    ind1++;
+                    fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
+                }
 
                 // If we will do crossover, select a second individual
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
                     int ind2 = 0;
-                    if (ROULETTE_WHEEL == 1)
-                        do {
-                            float r = random.nextFloat();
-                            double fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                            while (r > fitness_counter) {
-                                ind2++;
-                                fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                            }
-                        } while (ind1 == ind2);
-                    else
-                        do {
-                            ind2 = (int) (elitism_counter + random.nextFloat() * (NN_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
-                        } while (ind1 == ind2);
+                    do {
+                        r = random.nextFloat();
+                        fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
+                        while (r > fitness_counter) {
+                            ind2++;
+                            fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
+                        }
+                    } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessNN[ind1][1];
                     ind2 = (int) sortedfitnessNN[ind2][1];
                     newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
