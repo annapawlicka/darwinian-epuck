@@ -23,7 +23,7 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 3;
+    private int GAME_POP_SIZE = 1;
     private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -210,6 +210,7 @@ public class EpuckController extends Robot {
                 double temp;
                 try {
                     // Normalise numbers
+                    System.out.println("Unnormalized: "+sumOfFitnesses[indiv]);
                     temp = Util.normalize(-300000, 380000, sumOfFitnesses[indiv]);
                     sumOfFitnesses[indiv] = temp;
                 } catch (Exception e) {
@@ -257,7 +258,8 @@ public class EpuckController extends Robot {
         }
 
         double floorColour = 0;
-        if (fs_value[1] < 300) floorColour = 10; // Middle floor colour sensor [black < 300]
+        //System.out.println("LEFT: "+ fs_value[0]+". MIDDLE: "+fs_value[1]+". RIGHT: "+fs_value[2]);
+        if (fs_value[0] < 600 || fs_value[1] < 600 || fs_value[2] < 600) floorColour = 10; // Middle floor colour sensor [black < 300]
 
         computeFitness(speed, position, maxIRActivation, floorColour);
     }
@@ -277,8 +279,15 @@ public class EpuckController extends Robot {
 
         for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
-                agentsFitness[indiv][i] += ((populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) + (populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) +
-                        (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) + (populationOfGames[i].getConstants()[3] * floorColour));
+                agentsFitness[indiv][i] +=
+                        ((populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) +
+                        (populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) +
+                        (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) +
+                        (populationOfGames[i].getConstants()[3] * floorColour));
+                //System.out.println("Constant 0: "+(populationOfGames[i].getConstants()[0] * util.Util.mean(speed)));
+                //System.out.println("Constant 1: "+(populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT]))));
+                //System.out.println("Constant 2: "+(populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation)));
+                //System.out.println("Constant 3: "+ populationOfGames[i].getConstants()[3] * floorColour);
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
             }
@@ -312,9 +321,9 @@ public class EpuckController extends Robot {
             for(j=0; j<agentsFitness[i].length; j++){
                 arr[j][i] = agentsFitness[i][j];
                 try {
-                    double temp = Util.normalize(-60000, 190000, arr[j][i]);
+                    double temp = Util.normalize(-210000, 210000, arr[j][i]);
+                    //double temp = Util.normalize(-60000, 190000, arr[j][i]);
                     arr[j][i] = temp;
-                    //System.out.println("Normalized: "+ arr[j][i]);
                 } catch (Exception e) {
                     System.err.println("Error while normalizing: "+e.getMessage());
                 }
@@ -465,10 +474,6 @@ public class EpuckController extends Robot {
             fs_value[i] = fs[i].getValue();
         }
 
-        states[8] = fs_value[0];    // LEFT sensor
-        states[9] = fs_value[1];    // MIDDLE sensor
-        states[10] = fs_value[2];   // RIGHT sensor
-
         //Get position of the e-puck
         position = gps.getValues();
 
@@ -492,22 +497,22 @@ public class EpuckController extends Robot {
     private void initialiseGames(Game[] games) {
 
         /*Game 1: Avoid obstacles */
-        games[0].setConstants(0, 1); // Mean ON
-        games[0].setConstants(1, 1); // Try to steer straight
-        games[0].setConstants(2, 1); // Minimise IR proximity sensors activation
-        games[0].setConstants(3, 0); // Ignore floor colour
+        /*games[0].setConstants(0, 1);  // Mean ON
+        games[0].setConstants(1, 1);    // Try to steer straight
+        games[0].setConstants(2, 1);    // Minimise IR proximity sensors activation
+        games[0].setConstants(3, 0);    // Ignore floor colour*/
 
         /*Game 2: Follow black line */
-        games[1].setConstants(0, 0);    // Mean OFF
-        games[1].setConstants(1, 0);
-        games[1].setConstants(2, 0);
-        games[1].setConstants(3, 1);
+        games[0].setConstants(0, 1);    // Mean ON
+        games[0].setConstants(1, 0);
+        games[0].setConstants(2, 0);
+        games[0].setConstants(3, 1);    // Maximise black colour
 
-        /* Game 3: Follow the wall */
+        /* Game 3: Follow the wall *//*
         games[2].setConstants(0, 0);
         games[2].setConstants(1, 1);
-        games[2].setConstants(2, -1); // Maximise prox sensors activation
-        games[2].setConstants(3, 0);
+        games[2].setConstants(2, -1);   // Maximise prox sensors activation
+        games[2].setConstants(3, 0);*/
 
     }
 

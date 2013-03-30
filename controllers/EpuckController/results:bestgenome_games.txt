@@ -1,28 +1,21 @@
 generation, absolute best ind index, weights
 0 0
 1.0
-1.0
-1.0
 0.0
+0.0
+1.0
 
 generation, absolute best ind index, weights
 1 0
 1.0
-1.0
-1.0
 0.0
+0.0
+1.0
 
 generation, absolute best ind index, weights
 2 0
 1.0
-1.0
-1.0
 0.0
-
-generation, absolute best ind index, weights
-3 0
-1.0
-1.0
-1.0
 0.0
+1.0
 
