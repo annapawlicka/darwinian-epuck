@@ -142,11 +142,11 @@ public class Util {
      * @param values    An array of doubles
      * @return          Variance - double
      */
-    public static float variance(float [] values)
+    public static double variance(double [] values)
     {
-        float mean = mean(values);
-        float temp = 0;
-        for(float a :values)
+        double mean = mean(values);
+        double temp = 0;
+        for(double a :values)
             temp += (mean-a)*(mean-a);
         return temp/values.length;
     }
@@ -156,7 +156,7 @@ public class Util {
      * @param values    An array of doubles
      * @return          Standard deviation - double
      */
-    public static double stdDev(float  [] values)
+    public static double stdDev(double [] values)
     {
         return Math.sqrt(variance(values));
     }

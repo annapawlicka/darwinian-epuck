@@ -261,7 +261,7 @@ public class SupervisorController extends Supervisor {
 
                 float r = random.nextFloat();
                 double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                while (r > fitness_counter) {
+                while (r > fitness_counter && ind1 < NN_POP_SIZE-1) {
                     ind1++;
                     fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
                 }
@@ -272,7 +272,7 @@ public class SupervisorController extends Supervisor {
                     do {
                         r = random.nextFloat();
                         fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                        while (r > fitness_counter) {
+                        while (r > fitness_counter && ind2 < NN_POP_SIZE-1) {
                             ind2++;
                             fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
                         }
