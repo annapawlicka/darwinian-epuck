@@ -36,7 +36,7 @@ public class EpuckController extends Robot {
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
-    private int NB_CONSTANTS = 4;
+    private int NB_CONSTANTS = 5;
     private float weights[];
     //private double[] currentFitness;
 
@@ -259,9 +259,9 @@ public class EpuckController extends Robot {
 
         double floorColour = 0;
         //System.out.println("LEFT: "+ fs_value[0]+". MIDDLE: "+fs_value[1]+". RIGHT: "+fs_value[2]);
-        if (fs_value[0] < 600 || fs_value[1] < 600 || fs_value[2] < 600) floorColour = 10; // Middle floor colour sensor [black < 300]
+        //if (fs_value[0] < 600 || fs_value[1] < 600 || fs_value[2] < 600) floorColour = 10; // Middle floor colour sensor [black < 300]
 
-        computeFitness(speed, position, maxIRActivation, floorColour);
+        computeFitness(speed, position, maxIRActivation, fs_value[1]);
     }
 
 
@@ -279,11 +279,21 @@ public class EpuckController extends Robot {
 
         for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
+                // Avoid obstacles:
+                //agentsFitness[indiv][i] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
+
+                // Follow wall
+                //agentsFitness[indiv][i] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+
+                // Follow black line
+                //agentsFitness[indiv][i] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
+
                 agentsFitness[indiv][i] +=
-                        ((populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) +
-                        (populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) +
-                        (populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation))) +
-                        (populationOfGames[i].getConstants()[3] * floorColour));
+                        (populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) +
+                        (populationOfGames[i].getConstants()[1] * (1 - Math.sqrt( (Math.abs((speed[LEFT] - speed[RIGHT]))) +
+                        (populationOfGames[i].getConstants()[2] * (1 - util.Util.normalize(0, 4000, maxIRActivation))) )) +
+                        (populationOfGames[i].getConstants()[3] * (1 - Util.normalize(0, 900, floorColour)))) +
+                        (populationOfGames[i].getConstants()[4] * (Util.normalize(0, 4000, maxIRActivation)));
                 //System.out.println("Constant 0: "+(populationOfGames[i].getConstants()[0] * util.Util.mean(speed)));
                 //System.out.println("Constant 1: "+(populationOfGames[i].getConstants()[1] - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT]))));
                 //System.out.println("Constant 2: "+(populationOfGames[i].getConstants()[2] - util.Util.normalize(0, 4000, maxIRActivation)));
@@ -399,7 +409,7 @@ public class EpuckController extends Robot {
 
         Game[] newpop = new Game[GAME_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
-            newpop[i] = new Game(true, GAME_POP_SIZE);
+            newpop[i] = new Game(true, NB_CONSTANTS);
         }
         double elitism_counter = GAME_POP_SIZE * ELITISM_RATIO;
         int i, j;
@@ -496,23 +506,27 @@ public class EpuckController extends Robot {
 
     private void initialiseGames(Game[] games) {
 
-        /*Game 1: Avoid obstacles */
-        /*games[0].setConstants(0, 1);  // Mean ON
+     /*   *//*Game 1: Avoid obstacles *//*
+        games[0].setConstants(0, 1);    // Drive fast
         games[0].setConstants(1, 1);    // Try to steer straight
         games[0].setConstants(2, 1);    // Minimise IR proximity sensors activation
-        games[0].setConstants(3, 0);    // Ignore floor colour*/
+        games[0].setConstants(3, 0);    // Ignore floor colour
+        games[0].setConstants(4, 0);    // Do not care about being close to wall
 
-        /*Game 2: Follow black line */
-        games[0].setConstants(0, 1);    // Mean ON
-        games[0].setConstants(1, 0);
-        games[0].setConstants(2, 0);
-        games[0].setConstants(3, 1);    // Maximise black colour
 
-        /* Game 3: Follow the wall *//*
-        games[2].setConstants(0, 0);
-        games[2].setConstants(1, 1);
-        games[2].setConstants(2, -1);   // Maximise prox sensors activation
-        games[2].setConstants(3, 0);*/
+        *//*Game 2: Follow black line *//*
+        games[0].setConstants(0, 1);    // Drive fast
+        games[0].setConstants(1, 1);    // Drive straight
+        games[0].setConstants(2, 0);    // Avoid obstacles/walls
+        games[0].setConstants(3, 1);    // Max black line
+        games[0].setConstants(4, 0);    // Do not care about being close to wall*/
+
+        /* Game 3: Follow the wall */
+        games[0].setConstants(0, 1);    // Drive fast
+        games[0].setConstants(1, 1);    // Drive straight
+        games[0].setConstants(2, 0);    // Maximise prox sensors activation
+        games[0].setConstants(3, 0);    // Max black line
+        games[0].setConstants(4, 1);    // Minimise distance to wall
 
     }
 
@@ -528,7 +542,7 @@ public class EpuckController extends Robot {
 
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, GAME_POP_SIZE);
+        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, NB_CONSTANTS);
         initialiseGames(populationOfGames);
 
         sumOfFitnesses = new double[NN_POP_SIZE];
