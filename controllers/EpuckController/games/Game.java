@@ -14,21 +14,19 @@ import java.util.Random;
 public class Game {
 
     private float [] constants;    // Constants used in evolution
-    private double[] fitnessScores;
 
 
     Random rand = new Random();
 
-    public Game(boolean init, int gamesNo) {
-        constants = new float[4];
-        fitnessScores = new double[gamesNo];
+    public Game(boolean init, int constantsNo) {
+        constants = new float[constantsNo];
         if(init) initialise();
     }
 
     public void initialise(){
         int i;
         for(i=0; i< constants.length; i++) constants[i] = rand.nextFloat();
-        for(i=0; i<fitnessScores.length; i++) fitnessScores[i] = 0;
+
     }
 
 
@@ -100,14 +98,6 @@ public class Game {
     public void setConstants(int i, float constant){
         constants[i] = constant;
 
-    }
-
-    public void setFitnessScores(int index, double score){
-        fitnessScores[index] = score;
-    }
-
-    public double [] getFitnessScores(){
-        return fitnessScores;
     }
 
     public String toString(){
