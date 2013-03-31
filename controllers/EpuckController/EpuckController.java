@@ -36,7 +36,7 @@ public class EpuckController extends Robot {
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
-    private int NB_CONSTANTS = 5;
+    private int NB_CONSTANTS = 4;
     private float weights[];
     //private double[] currentFitness;
 
@@ -257,27 +257,26 @@ public class EpuckController extends Robot {
      */
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
 
-        //for (int i = 0; i < GAME_POP_SIZE; i++) {
+        for (int i = 0; i < GAME_POP_SIZE; i++) {
         try {
             // Avoid obstacles:
-            agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
+            //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
 
             // Follow wall
-            agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+            //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
 
             // Follow black line    TODO needs more work
-            agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
+            //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
 
-                /*agentsFitness[indiv][i] +=
-                        (populationOfGames[i].getConstants()[0] * util.Util.mean(speed)) +
-                        (populationOfGames[i].getConstants()[1] * (1 - Math.sqrt( (Math.abs((speed[LEFT] - speed[RIGHT]))) +
-                        (populationOfGames[i].getConstants()[2] * (1 - util.Util.normalize(0, 4000, maxIRActivation))) )) +
-                        (populationOfGames[i].getConstants()[3] * (1 - Util.normalize(0, 900, floorColour)))) +
-                        (populationOfGames[i].getConstants()[4] * (Util.normalize(0, 4000, maxIRActivation)));*/
+            agentsFitness[indiv][i] +=
+                            (1 - (populationOfGames[i].getConstants()[0] * Util.mean(speed))) *
+                            (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
+                            (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
+                            (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour)));
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-        //}
+        }
     }
 
     private void setSumOfFitnesses() {
@@ -518,7 +517,6 @@ public class EpuckController extends Robot {
         games[0].setConstants(1, 1);    // Try to steer straight
         games[0].setConstants(2, 1);    // Minimise IR proximity sensors activation
         games[0].setConstants(3, 0);    // Ignore floor colour
-        games[0].setConstants(4, 0);    // Do not care about being close to wall
 
 
         /*Game 2: Follow black line */
@@ -526,14 +524,12 @@ public class EpuckController extends Robot {
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
         games[1].setConstants(3, 1);    // Max black line
-        games[1].setConstants(4, 0);    // Do not care about being close to wall*//*
 
         /* Game 3: Follow the wall */
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
-        games[2].setConstants(2, 0);    // Maximise prox sensors activation
+        games[2].setConstants(2, -1);   // Maximise prox sensors activation
         games[2].setConstants(3, 0);    // Max black line
-        games[2].setConstants(4, 1);    // Minimise distance to wall*/
 
     }
 
