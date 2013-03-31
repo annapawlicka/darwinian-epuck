@@ -157,7 +157,7 @@ public class EpuckController extends Robot {
                     FilesFunctions.logAllFitnesses(out2, generation, gameFitness);
 
                     // 6. Rank populationOfGames, select best individuals and create new generation
-                    //createNewPopulation();
+                    createNewPopulation();
 
                     // 7. Reset evolution variables
                     generation++;
@@ -455,7 +455,7 @@ public class EpuckController extends Robot {
             }
         }
         // Mutate new populationOfNN and copy back to pop
-        for (i = 0; i < NN_POP_SIZE; i++) {
+        for (i = 0; i < GAME_POP_SIZE; i++) {
             if (i < elitism_counter) { //no mutation for elitists
                 for (j = 0; j < NB_CONSTANTS; j++) {
                     populationOfGames[i].copy(newpop[i]);
