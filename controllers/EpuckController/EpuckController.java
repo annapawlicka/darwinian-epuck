@@ -18,7 +18,7 @@ import java.util.Random;
  * Fitness function of games is the variance of the actors (Fisher's Law).
  */
 
-// TODO normalise fitness scores, save the best indiv and test it, check WHY fitness of games is the SAME for all of them?
+// TODO save the best indiv and test it
 
 public class EpuckController extends Robot {
 
@@ -201,7 +201,7 @@ public class EpuckController extends Robot {
                 emitter.send(msgInBytes);
                 // Reinitialize counter
                 step = 0;
-                if ((indiv +1)<NN_POP_SIZE){
+                if ((indiv + 1) < NN_POP_SIZE) {
                     indiv++;
                 } else {
                     indiv = 0;
@@ -255,7 +255,6 @@ public class EpuckController extends Robot {
      * @param floorColour
      * @return
      */
-    //TODO normalise fitness values
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
 
         //for (int i = 0; i < GAME_POP_SIZE; i++) {
@@ -282,10 +281,7 @@ public class EpuckController extends Robot {
     }
 
     private void setSumOfFitnesses() {
-        for (int i = 0; i < agentsFitness[indiv].length; i++) {
-            sumOfFitnesses[indiv] += agentsFitness[indiv][i];
-
-        }
+        for (int i = 0; i < agentsFitness[indiv].length; i++) sumOfFitnesses[indiv] += agentsFitness[indiv][i];
     }
 
     /**
@@ -318,25 +314,25 @@ public class EpuckController extends Robot {
         // Normalise
         normaliseFitnessScore(arr);
 
-        for (i = 0; i < gameFitness.length; i++) {
-            gameFitness[i] = Util.variance(arr[i]);
-        }
+        for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(arr[i]);
+
         FilesFunctions.logAllCompFit(out4, arr, generation);
 
     }
 
     /**
      * Normalise fitness scores to a value between 0 and 1
+     *
      * @param fitnessScores
      */
     private void normaliseFitnessScore(double[][] fitnessScores) {
         for (int i = 0; i < fitnessScores.length; i++) {
-            for(int j=0; j<fitnessScores[i].length; j++){
+            for (int j = 0; j < fitnessScores[i].length; j++) {
                 double temp = 0;
                 try {
                     temp = Util.normalize(-200000, 200000, fitnessScores[i][j]);
                 } catch (Exception e) {
-                    System.err.println("Error while normalizing: "+ e.getMessage());
+                    System.err.println("Error while normalizing: " + e.getMessage());
                 }
                 fitnessScores[i][j] = temp;
             }
@@ -407,9 +403,18 @@ public class EpuckController extends Robot {
             newpop[i] = new Game(true, NB_CONSTANTS);
         }
         double elitism_counter = GAME_POP_SIZE * ELITISM_RATIO;
+        double total_fitness = 0;
+
+        // Find minimum fitness to subtract it from sum
+        double min_fitness = sortedfitnessGames[GAME_POP_SIZE - 1][0];
+        //if (min_fitness < 0) min_fitness = 0; // Causes an issue if scores are below 0
         int i, j;
 
-        // Create new populationOfNN
+        // Calculate total of fitness, used for roulette wheel selection
+        for (i = 0; i < GAME_POP_SIZE; i++) total_fitness += gameFitness[i];
+        total_fitness -= min_fitness * GAME_POP_SIZE;
+
+        // Create new population
         for (i = 0; i < GAME_POP_SIZE; i++) {
 
             // The elitism_counter best individuals are simply copied to the new populationOfNN
@@ -420,16 +425,26 @@ public class EpuckController extends Robot {
             // The other individuals are generated through the crossover of two parents
             else {
 
-                // Select non-elitist individual   TODO
-                int ind1;
-                ind1 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+                // Select non-elitist individual
+                int ind1 = 0;
+
+                float r = random.nextFloat();
+                double fitness_counter = (sortedfitnessGames[ind1][0] - min_fitness) / total_fitness;
+                while (r > fitness_counter && ind1 < GAME_POP_SIZE - 1) {
+                    ind1++;
+                    fitness_counter += (sortedfitnessGames[ind1][0] - min_fitness) / total_fitness;
+                }
 
                 // If we will do crossover, select a second individual
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
-                    int ind2;
+                    int ind2 = 0;
                     do {
-                        // TODO ROULETTE
-                        ind2 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
+                        r = random.nextFloat();
+                        fitness_counter = (sortedfitnessGames[ind2][0] - min_fitness) / total_fitness;
+                        while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
+                            ind2++;
+                            fitness_counter += (sortedfitnessGames[ind2][0] - min_fitness) / total_fitness;
+                        }
                     } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessGames[ind1][1];
                     ind2 = (int) sortedfitnessGames[ind2][1];
@@ -440,9 +455,8 @@ public class EpuckController extends Robot {
                 }
             }
         }
-
-        // Mutate new populationOfGames and copy back to pop
-        for (i = 0; i < GAME_POP_SIZE; i++) {
+        // Mutate new populationOfNN and copy back to pop
+        for (i = 0; i < NN_POP_SIZE; i++) {
             if (i < elitism_counter) { //no mutation for elitists
                 for (j = 0; j < NB_CONSTANTS; j++) {
                     populationOfGames[i].copy(newpop[i]);
@@ -457,9 +471,7 @@ public class EpuckController extends Robot {
 
             // Reset fitness
             resetAllFitnessArrays();
-
         }
-        return;
     }
 
 
