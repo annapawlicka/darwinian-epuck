@@ -258,24 +258,24 @@ public class EpuckController extends Robot {
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
 
         for (int i = 0; i < GAME_POP_SIZE; i++) {
-        try {
-            // Avoid obstacles:
-            //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
+            try {
+                // Avoid obstacles:
+                //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
 
-            // Follow wall
-            //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+                // Follow wall
+                //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
 
-            // Follow black line    TODO needs more work
-            //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
+                // Follow black line    TODO needs more work
+                //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
 
-            agentsFitness[indiv][i] +=
-                            (1 - (populationOfGames[i].getConstants()[0] * Util.mean(speed))) *
-                            (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
-                            (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
-                            (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour)));
-        } catch (Exception e) {
-            System.err.println("Error: " + e.getMessage());
-        }
+                agentsFitness[indiv][i] +=
+                        (1 - (populationOfGames[i].getConstants()[0] * Util.mean(speed))) *
+                                (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
+                                (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
+                                (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour)));
+            } catch (Exception e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }
     }
 
@@ -402,18 +402,9 @@ public class EpuckController extends Robot {
             newpop[i] = new Game(true, NB_CONSTANTS);
         }
         double elitism_counter = GAME_POP_SIZE * ELITISM_RATIO;
-        double total_fitness = 0;
-
-        // Find minimum fitness to subtract it from sum
-        double min_fitness = sortedfitnessGames[GAME_POP_SIZE - 1][0];
-        //if (min_fitness < 0) min_fitness = 0; // Causes an issue if scores are below 0
         int i, j;
 
-        // Calculate total of fitness, used for roulette wheel selection
-        for (i = 0; i < GAME_POP_SIZE; i++) total_fitness += gameFitness[i];
-        total_fitness -= min_fitness * GAME_POP_SIZE;
-
-        // Create new population
+        // Create new populationOfNN
         for (i = 0; i < GAME_POP_SIZE; i++) {
 
             // The elitism_counter best individuals are simply copied to the new populationOfNN
@@ -424,28 +415,16 @@ public class EpuckController extends Robot {
             // The other individuals are generated through the crossover of two parents
             else {
 
-                // Select non-elitist individual
-                int ind1 = 0;
-
-                float r = random.nextFloat();
-                double fitness_counter = (sortedfitnessGames[ind1][0] - min_fitness) / total_fitness;
-                while (r > fitness_counter && ind1 < GAME_POP_SIZE - 1) {
-                    ind1++;
-                    fitness_counter += (sortedfitnessGames[ind1][0] - min_fitness) / total_fitness;
-                    if(ind1 == NN_POP_SIZE -1) break;
-                }
+                // Select non-elitist individual   TODO
+                int ind1;
+                ind1 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
 
                 // If we will do crossover, select a second individual
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
-                    int ind2 = 0;
+                    int ind2;
                     do {
-                        r = random.nextFloat();
-                        fitness_counter = (sortedfitnessGames[ind2][0] - min_fitness) / total_fitness;
-                        while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
-                            ind2++;
-                            fitness_counter += (sortedfitnessGames[ind2][0] - min_fitness) / total_fitness;
-                            if(ind2 == NN_POP_SIZE -1) break;
-                        }
+                        // TODO ROULETTE
+                        ind2 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
                     } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessGames[ind1][1];
                     ind2 = (int) sortedfitnessGames[ind2][1];
@@ -456,7 +435,8 @@ public class EpuckController extends Robot {
                 }
             }
         }
-        // Mutate new populationOfNN and copy back to pop
+
+        // Mutate new populationOfGames and copy back to pop
         for (i = 0; i < GAME_POP_SIZE; i++) {
             if (i < elitism_counter) { //no mutation for elitists
                 for (j = 0; j < NB_CONSTANTS; j++) {
@@ -469,7 +449,6 @@ public class EpuckController extends Robot {
                     else
                         populationOfGames[i].copy(newpop[i]);
             }
-
             // Reset fitness
             resetAllFitnessArrays();
         }

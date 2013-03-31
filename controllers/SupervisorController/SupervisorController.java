@@ -145,7 +145,7 @@ public class SupervisorController extends Supervisor {
 
                         resetRobotPosition();
                         // Evolve games every 4 NN generations (gives them time to learn)
-                        if (generation % 4 == 0) {
+                        if (generation % 1 == 0) {
                             // Send flag to start evolution of games
                             byte[] flag = {1};
                             gameEmitter.send(flag);
@@ -242,7 +242,6 @@ public class SupervisorController extends Supervisor {
      * Based on the fitness of the last generation, generate a new population of genomes for the next generation.
      */
     private void createNewPopulation() {
-        System.out.println("Entered method to create new pop");
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
             newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
@@ -254,11 +253,9 @@ public class SupervisorController extends Supervisor {
         double min_fitness = sortedfitnessNN[NN_POP_SIZE - 1][0];
         //if (min_fitness < 0) min_fitness = 0; // Causes an issue if scores are below 0
         int i, j;
-        System.out.println("Found min fitness: "+min_fitness);
         // Calculate total of fitness, used for roulette wheel selection
         for (i = 0; i < NN_POP_SIZE; i++) total_fitness += fitnessNN[i];
         total_fitness -= min_fitness * NN_POP_SIZE;
-        System.out.println("Found total fitness: "+total_fitness);
         // Create new population
         for (i = 0; i < NN_POP_SIZE; i++) {
 
