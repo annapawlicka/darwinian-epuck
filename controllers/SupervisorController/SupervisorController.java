@@ -105,6 +105,7 @@ public class SupervisorController extends Supervisor {
                 if (EVOLVING == 1) {
                     // If whole populationOfNN has been evaluated
                     if ((evaluatedNN + 1) == NN_POP_SIZE) {
+                        normaliseFitnessScore(); // Normalise fitness scores
                         // Sort populationOfNN by fitness
                         sortPopulation(sortedfitnessNN, fitnessNN);
                         // Find and log current and absolute best individual
@@ -167,6 +168,18 @@ public class SupervisorController extends Supervisor {
 
         }
 
+    }
+
+    private void normaliseFitnessScore() {
+        double mean = Util.mean(fitnessNN);
+        double sd = Util.stdDev(fitnessNN);
+        for (int i = 0; i < fitnessNN.length; i++) {
+            // 1. Subtract population mean from it
+            double temp = fitnessNN[i] - mean;
+            // 2. Divide by SD
+
+            fitnessNN[i] = temp / sd;
+        }
     }
 
     /**
@@ -238,7 +251,7 @@ public class SupervisorController extends Supervisor {
 
         // Find minimum fitness to subtract it from sum
         double min_fitness = sortedfitnessNN[NN_POP_SIZE - 1][0];
-        if (min_fitness < 0) min_fitness = 0;
+        //if (min_fitness < 0) min_fitness = 0; // Causes an issue if scores are below 0
         int i, j;
 
         // Calculate total of fitness, used for roulette wheel selection
@@ -261,7 +274,7 @@ public class SupervisorController extends Supervisor {
 
                 float r = random.nextFloat();
                 double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                while (r > fitness_counter && ind1 < NN_POP_SIZE-1) {
+                while (r > fitness_counter && ind1 < NN_POP_SIZE - 1) {
                     ind1++;
                     fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
                 }
@@ -272,7 +285,7 @@ public class SupervisorController extends Supervisor {
                     do {
                         r = random.nextFloat();
                         fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                        while (r > fitness_counter && ind2 < NN_POP_SIZE-1) {
+                        while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
                             ind2++;
                             fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
                         }
@@ -286,7 +299,6 @@ public class SupervisorController extends Supervisor {
                 }
             }
         }
-
         // Mutate new populationOfNN and copy back to pop
         for (i = 0; i < NN_POP_SIZE; i++) {
             if (i < elitism_counter) { //no mutation for elitists
@@ -304,7 +316,6 @@ public class SupervisorController extends Supervisor {
             // Reset fitness
             fitnessNN[i] = 0;
         }
-        return;
     }
 
 
