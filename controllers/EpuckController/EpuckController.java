@@ -432,6 +432,7 @@ public class EpuckController extends Robot {
                 while (r > fitness_counter && ind1 < GAME_POP_SIZE - 1) {
                     ind1++;
                     fitness_counter += (sortedfitnessGames[ind1][0] - min_fitness) / total_fitness;
+                    if(ind1 == NN_POP_SIZE -1) break;
                 }
 
                 // If we will do crossover, select a second individual
@@ -443,6 +444,7 @@ public class EpuckController extends Robot {
                         while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
                             ind2++;
                             fitness_counter += (sortedfitnessGames[ind2][0] - min_fitness) / total_fitness;
+                            if(ind2 == NN_POP_SIZE -1) break;
                         }
                     } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessGames[ind1][1];
