@@ -170,6 +170,30 @@ public class Util {
     }
 
     /**
+     * Method to calculate standard deviation
+     * @param values    An array of doubles
+     * @return          Standard deviation - double
+     */
+    public static double stdDev(double [] values)
+    {
+        return Math.sqrt(variance(values));
+    }
+
+    /**
+     * Method to calculate variance
+     * @param values    An array of doubles
+     * @return          Variance - double
+     */
+    public static double variance(double [] values)
+    {
+        double mean = mean(values);
+        double temp = 0;
+        for(double a :values)
+            temp += (mean-a)*(mean-a);
+        return temp/values.length;
+    }
+
+    /**
      * bytearray2float method - converts bytes into a float
      * @param b     byte array
      * @return      float value
