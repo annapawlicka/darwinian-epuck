@@ -105,6 +105,7 @@ public class SupervisorController extends Supervisor {
                 if (EVOLVING == 1) {
                     // If whole populationOfNN has been evaluated
                     if ((evaluatedNN + 1) == NN_POP_SIZE) {
+                        System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
                         normaliseFitnessScore(); // Normalise fitness scores
                         // Sort populationOfNN by fitness
                         sortPopulation(sortedfitnessNN, fitnessNN);
@@ -171,14 +172,14 @@ public class SupervisorController extends Supervisor {
     }
 
     private void normaliseFitnessScore() {
-        double mean = Util.mean(fitnessNN);
-        double sd = Util.stdDev(fitnessNN);
         for (int i = 0; i < fitnessNN.length; i++) {
-            // 1. Subtract population mean from it
-            double temp = fitnessNN[i] - mean;
-            // 2. Divide by SD
-
-            fitnessNN[i] = temp / sd;
+            double temp = 0;
+            try {
+                temp = Util.normalize(-200000, 600000, fitnessNN[i]);
+            } catch (Exception e) {
+                System.err.println("Error while normalizing: "+ e.getMessage());
+            }
+            fitnessNN[i] = temp;
         }
     }
 
