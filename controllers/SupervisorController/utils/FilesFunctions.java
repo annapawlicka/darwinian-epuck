@@ -78,5 +78,16 @@ public class FilesFunctions {
             System.err.println("Buffer Error: " + e.getMessage());
         }
     }
+
+    public static void logAllActorFitnesses(BufferedWriter out, int generation, double[] fitnessScores) {
+        try{
+            out.write(""+generation);
+            for(int i=0; i<fitnessScores.length; i++) out.write(","+fitnessScores[i]);
+            out.write("\n");
+            out.flush();
+        } catch (IOException ioe){
+            System.err.println("Buffer error: "+ioe.getMessage());
+        }
+    }
 }
 
