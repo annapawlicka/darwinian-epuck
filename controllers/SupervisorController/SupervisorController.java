@@ -453,6 +453,17 @@ public class SupervisorController extends Supervisor {
         out2 = new BufferedWriter(file2);
 
         try {
+            out2.write("generation");
+            for(i=0; i<NN_POP_SIZE; i++){
+                out2.write(",Actor"+i+",");
+            }
+            out2.write("\n");
+
+        } catch (IOException e) {
+            System.out.println("" + e.getMessage());
+        }
+
+        try {
             file3 = new FileWriter("results:bestgenome.txt");
         } catch (IOException e) {
             System.out.println("Cannot open bestgenome.txt file.");
