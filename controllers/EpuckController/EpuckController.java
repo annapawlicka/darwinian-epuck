@@ -151,6 +151,7 @@ public class EpuckController extends Robot {
                     System.out.println("Best game fitness score: \n" + bestFitGame);
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
+                    System.out.println("Best game index: \n"+ bestGame);
 
                     // 5. Write data to files
                     FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
@@ -269,7 +270,7 @@ public class EpuckController extends Robot {
                 //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
 
                 agentsFitness[indiv][i] +=
-                        (1 - (populationOfGames[i].getConstants()[0] * Util.mean(speed))) *
+                        (populationOfGames[i].getConstants()[0] * Util.mean(speed)) *
                                 (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
                                 (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
                                 (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour)));
@@ -325,16 +326,24 @@ public class EpuckController extends Robot {
      * @param fitnessScores
      */
     private void normaliseFitnessScore(double[][] fitnessScores) {
-        for (int i = 0; i < fitnessScores.length; i++) {
-            for (int j = 0; j < fitnessScores[i].length; j++) {
+        int i, j;
+        double min, max;
+
+        // Find min and max - takes two additional runs that don't change time complexity
+        min = Util.min(fitnessScores);
+        max = Util.max(fitnessScores);
+
+        for (i = 0; i < fitnessScores.length; i++) {
+            for(j=0; j< fitnessScores[i].length; j++){
                 double temp = 0;
                 try {
-                    temp = Util.normalize(-200000, 200000, fitnessScores[i][j]);
+                    temp = Util.normalize(min+(0.5*min), max+(0.5*max), fitnessScores[i][j]);
                 } catch (Exception e) {
-                    System.err.println("Error while normalizing: " + e.getMessage());
+                    System.err.println("Error while normalizing: "+ e.getMessage());
                 }
                 fitnessScores[i][j] = temp;
             }
+
         }
     }
 
@@ -347,7 +356,7 @@ public class EpuckController extends Robot {
         //sort populationOfNN by fitness
         for (i = 0; i < sortedfitness.length; i++) {
             sortedfitness[i][0] = fitness[i];   //fitness score
-            sortedfitness[i][1] = (float) i;    //keep index
+            sortedfitness[i][1] = i;            //keep index
         }
         quickSort(sortedfitness, 0, sortedfitness.length - 1);
     }
@@ -415,7 +424,7 @@ public class EpuckController extends Robot {
             // The other individuals are generated through the crossover of two parents
             else {
 
-                // Select non-elitist individual   TODO
+                // Select non-elitist individual
                 int ind1;
                 ind1 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
 
@@ -509,7 +518,7 @@ public class EpuckController extends Robot {
         /* Game 3: Follow the wall */
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
-        games[2].setConstants(2, -1);   // Maximise prox sensors activation
+        games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
         games[2].setConstants(3, 0);    // Max black line
 
     }
