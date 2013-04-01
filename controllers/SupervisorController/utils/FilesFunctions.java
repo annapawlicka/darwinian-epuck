@@ -47,10 +47,6 @@ public class FilesFunctions {
         try{
             for(int i=0; i< population.length; i++){
                 for (int j=0; j<population[i].getWeightsNo(); j++){
-                    /*System.out.println("population size: " + population.length);
-                    System.out.println("try to acess: " + i);
-                    System.out.println("weights size: " + population[i].getWeights().length);
-                    System.out.println("try to acess: " + j); */
                     out.write(""+population[i].getWeights()[j]+",");
                 }
                 out.write("\n");

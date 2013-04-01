@@ -19,6 +19,7 @@ import java.util.Random;
  */
 
 // TODO save the best indiv and test it
+    //TODO add more inputs
 
 public class EpuckController extends Robot {
 
@@ -77,6 +78,13 @@ public class EpuckController extends Robot {
     private DistanceSensor[] fs;
     private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
+
+    // Light sensor
+    private LightSensor lightSensorRight;
+    private LightSensor lightSensorLeft;
+    private double ls_value_left;
+    private double ls_value_right;
+
 
     // LEDs
     private int ledsNo = 8;
@@ -244,35 +252,26 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-        //System.out.println("LEFT: "+ fs_value[0]+". MIDDLE: "+fs_value[1]+". RIGHT: "+fs_value[2]);
-        //if (fs_value[0] < 600 || fs_value[1] < 600 || fs_value[2] < 600) floorColour = 10; // Middle floor colour sensor [black < 300]
 
-        computeFitness(speed, position, maxIRActivation, fs_value[1]);
+        double light = (ls_value_right + ls_value_left)/2;
+
+        computeFitness(speed, position, maxIRActivation, fs_value[1], light);
     }
 
 
     /**
-     * Method to calculate fitness score - fitness function that have evolvable constants.
-     *
+     * Method to calculate fitness score - fitness function that have evolvable constants
      * @param speed
      * @param position
      * @param maxIRActivation
      * @param floorColour
-     * @return
+     * @param light
      */
-    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) {
+    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour,
+                               double light) {
 
         for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
-                // Avoid obstacles:
-                //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
-
-                // Follow wall
-                //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
-
-                // Follow black line    TODO needs more work
-                //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Util.normalize(0, 900, floorColour)) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT])))));
-
                 agentsFitness[indiv][i] +=
                         (populationOfGames[i].getConstants()[0] * Util.mean(speed)) *
                                 (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
@@ -486,6 +485,10 @@ public class EpuckController extends Robot {
         //Get position of the e-puck
         position = gps.getValues();
 
+        // Get reading from light sensors
+        ls_value_right = lightSensorRight.getValue();
+        ls_value_left = lightSensorLeft.getValue();
+
     }
 
     private void run_neural_network(double[] inputs, double[] outputs) {
@@ -597,6 +600,12 @@ public class EpuckController extends Robot {
         for (i = 0; i < ledsNo; i++) {
             led[i] = getLED("led" + i);
         }
+
+        /* Initialise light sensor */
+        lightSensorRight = getLightSensor("ls0");
+        lightSensorRight.enable(TIME_STEP);
+        lightSensorLeft = getLightSensor("ls7");
+        lightSensorLeft.enable(TIME_STEP);
 
         /* Initialise IR floor sensors */
         fs = new DistanceSensor[floorSensorsNo];
