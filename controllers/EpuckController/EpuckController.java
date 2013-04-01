@@ -155,7 +155,8 @@ public class EpuckController extends Robot {
 
                     // 5. Write data to files
                     FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
-                    FilesFunctions.logAllFitnesses(out2, generation, gameFitness);
+                    FilesFunctions.logCompFitnesses(out2, generation, gameFitness);
+
 
                     // 6. Rank populationOfGames, select best individuals and create new generation
                     createNewPopulation();

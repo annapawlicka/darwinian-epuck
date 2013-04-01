@@ -73,7 +73,7 @@ public class FilesFunctions {
         }
     }
 
-    public static void logAllFitnesses(BufferedWriter out2, int generation, double[] gameFitness) {
+    public static void logCompFitnesses(BufferedWriter out2, int generation, double[] gameFitness) {
         try{
             out2.write(""+generation+", ");
             for(int i=0; i<gameFitness.length; i++) out2.write(""+gameFitness[i]+", ");
