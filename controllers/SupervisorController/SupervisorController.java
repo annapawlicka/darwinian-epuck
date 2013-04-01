@@ -56,10 +56,9 @@ public class SupervisorController extends Supervisor {
     //Log variables
     private double minFitNN = 0.0, avgFitNN = 0.0, bestFitNN = 0.0, absBestFitNN = -10000;
     private int bestNN = -1, absBestNN = -1;
-    private BufferedWriter out1;
-    private BufferedWriter out3;
+    private BufferedWriter out1, out2, out3;
     private BufferedReader in1, in2, in3;
-    private FileWriter file1, file3;
+    private FileWriter file1, file2, file3;
     private BufferedReader reader3;
 
     private Random random = new Random();
@@ -126,6 +125,7 @@ public class SupervisorController extends Supervisor {
                         // Write data to files
                         FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
                                 bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
+                        FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
                         // Log the generation data  - stores weights
                         try {
                             FilesFunctions.logLastGeneration(populationOfNN);
@@ -443,6 +443,14 @@ public class SupervisorController extends Supervisor {
         } catch (IOException e) {
             System.out.println("" + e.getMessage());
         }
+
+        try {
+            file2 = new FileWriter("all_actor_fit.txt");
+        } catch (IOException e){
+            System.err.println("Error while opening file: all_actor_fit.txt "+e.getMessage());
+        }
+
+        out2 = new BufferedWriter(file2);
 
         try {
             file3 = new FileWriter("results:bestgenome.txt");
