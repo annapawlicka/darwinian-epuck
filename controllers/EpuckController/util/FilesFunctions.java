@@ -3,6 +3,7 @@ package util;
 import games.Game;
 
 import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FilesFunctions {
@@ -81,6 +82,26 @@ public class FilesFunctions {
             out2.flush();
         } catch (IOException ioe){
             System.err.println("Buffer error: "+ioe.getMessage());
+        }
+    }
+
+    public static void logLastGeneration(Game[] population) throws IOException {
+
+        FileWriter file = new FileWriter("results:games_genomes.txt");
+
+        BufferedWriter out = new BufferedWriter(file);
+
+        try{
+            for(int i=0; i< population.length; i++){
+                for (int j=0; j<population[i].getConstants().length; j++){
+                    out.write(""+population[i].getConstants()[j]+",");
+                }
+                out.write("\n");
+            }
+            out.write("\n");
+            out.flush();
+        }   catch(IOException e){
+            System.err.println("Buffer error: "+e.getMessage());
         }
     }
 }
