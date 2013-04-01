@@ -38,7 +38,6 @@ public class EpuckController extends Robot {
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
     private int NB_CONSTANTS = 4;
     private float weights[];
-    //private double[] currentFitness;
 
     // Evolution of games
     private Game[] populationOfGames;
@@ -151,7 +150,6 @@ public class EpuckController extends Robot {
                     System.out.println("Best game fitness score: \n" + bestFitGame);
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
-                    System.out.println("Best game index: \n"+ bestGame);
 
                     // 5. Write data to files
                     FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
@@ -433,7 +431,6 @@ public class EpuckController extends Robot {
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
                     int ind2;
                     do {
-                        // TODO ROULETTE
                         ind2 = (int) (elitism_counter + random.nextFloat() * (GAME_POP_SIZE * REPRODUCTION_RATIO - elitism_counter));
                     } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessGames[ind1][1];
