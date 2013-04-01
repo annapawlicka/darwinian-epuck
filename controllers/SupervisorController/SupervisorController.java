@@ -106,7 +106,7 @@ public class SupervisorController extends Supervisor {
                     // If whole populationOfNN has been evaluated
                     if ((evaluatedNN + 1) == NN_POP_SIZE) {
                         System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
-                        normaliseFitnessScore(); // Normalise fitness scores
+                        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
                         // Sort populationOfNN by fitness
                         sortPopulation(sortedfitnessNN, fitnessNN);
                         // Find and log current and absolute best individual
@@ -145,7 +145,7 @@ public class SupervisorController extends Supervisor {
 
                         resetRobotPosition();
                         // Evolve games every 4 NN generations (gives them time to learn)
-                        if (generation % 1 == 0) {
+                        if (generation % 4 == 0) {
                             // Send flag to start evolution of games
                             byte[] flag = {1};
                             gameEmitter.send(flag);
@@ -171,15 +171,22 @@ public class SupervisorController extends Supervisor {
 
     }
 
-    private void normaliseFitnessScore() {
-        for (int i = 0; i < fitnessNN.length; i++) {
+    private void normaliseFitnessScore(double[] fitnessScores) {
+
+        double min, max;
+
+        // Find min and max - takes two additional runs that don't change time complexity
+        min = Util.min(fitnessScores);
+        max = Util.max(fitnessScores);
+
+        for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
             try {
-                temp = Util.normalize(-200000, 600000, fitnessNN[i]);
+                temp = Util.normalize(min+(0.5*min), max+(0.5*max), fitnessScores[i]);  // add buffer of 0.5
             } catch (Exception e) {
                 System.err.println("Error while normalizing: "+ e.getMessage());
             }
-            fitnessNN[i] = temp;
+            fitnessScores[i] = temp;
         }
     }
 
