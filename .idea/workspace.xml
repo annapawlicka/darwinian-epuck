@@ -1,0 +1,1163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYSIS_IN_BACKGROUND" value="true" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" name="Default" comment="Added logging of fitness of each individual for each generation.">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/Anna_Pawlicka.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" afterPath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/e-puck_line.wbt" afterPath="$PROJECT_DIR$/worlds/e-puck_line.wbt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:bestgenome.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:bestgenome.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/EpuckController/results:bestgenome_games.txt" afterPath="$PROJECT_DIR$/controllers/EpuckController/results:bestgenome_games.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:fitness.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:fitness.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/EpuckController/results:fitness_games.txt" afterPath="$PROJECT_DIR$/controllers/EpuckController/results:fitness_games.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" />
+    </list>
+    <ignored path="darwinian-epuck.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <file path="/Dummy.txt" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364936607542" ignored="false" />
+    <file path="/README.md" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363519176693" ignored="false" />
+    <file path="/README" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363520436833" ignored="false" />
+    <file path="/Game.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364683363862" ignored="false" />
+    <file path="/NeuralNetwork.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363523531046" ignored="false" />
+    <file path="/SupervisorController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364834377059" ignored="false" />
+    <file path="/EpuckController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364936568911" ignored="false" />
+    <file path="/Util.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364830300329" ignored="false" />
+    <file path="/fragment.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051315399" ignored="false" />
+    <file path="/StringUtil.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610428927" ignored="false" />
+    <file path="/a.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610789488" ignored="false" />
+    <file path="/sample.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610802460" ignored="false" />
+    <file path="/a.groovy" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610812798" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/MPI/src/BroadcastReduce.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363626862541" ignored="false" />
+    <file path="/FilesFunctions.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364927837954" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/build.xml" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363814716150" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/CommunityMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363721073174" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/WordCount.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363718698858" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/CommunityReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363718698858" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/CommunityDetector.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363718722510" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/mapper.py" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363718758846" ignored="false" />
+    <file path="/CommunityMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363719661887" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/Clique.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363793731630" ignored="false" />
+    <file path="/Clique.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363793713698" ignored="false" />
+    <file path="/MaximumClique.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363796519327" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaximumClique.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363794367600" ignored="false" />
+    <file path="$USER_HOME$/maximumclique-read-only/maximumclique/src/graph/algorithm/MaximumClique.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363796518934" ignored="false" />
+    <file path="$USER_HOME$/maximumclique-read-only/maximumclique/src/graph/junit/MaximumCliqueTest.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363796512638" ignored="false" />
+    <file path="/MaximumCliqueTest.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363796503380" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaxClique1.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363806433146" ignored="false" />
+    <file path="/MaxClique1.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363806381450" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaximalCliqueVertex.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807918422" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/Vertex.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807790089" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/Edge.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807810854" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/BspUtils.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807808524" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/VertexInputFormat.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807734439" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/VertexReader.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363808094152" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/VertexOutputFormat.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807878690" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/VertexWriter.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363807870944" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/BronKerbo.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363809103945" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaximalCliqueReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363809619130" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaximalCliqueMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363809653955" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/MaximalCliqueDriver.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363814829716" ignored="false" />
+    <file path="/build.xml" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364049430840" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/in/sampledata.txt" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363810887190" ignored="false" />
+    <file path="/MaximalCliqueDriver.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363814430306" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/log4j.properties" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363812868102" ignored="false" />
+    <file path="/log4j.properties" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363813716169" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/log4j.properties" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363813246023" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/properties/log4j.properties" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363814297192" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/src/MaximalCliqueReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363979364192" ignored="false" />
+    <file path="/MaximalCliqueReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363979364192" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/src/LimitedFollowersMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364048221639" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/src/LimitedFollowersReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364054137835" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/src/LimitedFollowersDriver.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364049347704" ignored="false" />
+    <file path="/LimitedFollowersMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364047240868" ignored="false" />
+    <file path="/LimitedFollowersReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364048892300" ignored="false" />
+    <file path="/LimitedFollowersDriver.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364049287822" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/build.xml" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364049430840" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/RandomGraphGenerator.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062499533" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/DetectionReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <file path="/DetectionReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051153069" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/community/src/RandomGraphGenerator.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051495780" ignored="false" />
+    <file path="/RandomGraphGenerator.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051470119" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/FormattingReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <file path="/FormattingReducer.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364054469729" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/CommunityDetector.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/DetectionMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/FilteringMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/CommunityDetectorProject/src/FormattingMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364062498932" ignored="false" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="DebuggerManager">
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+      <breakpoint>
+        <option name="NOTIFY_CAUGHT" value="true" />
+        <option name="NOTIFY_UNCAUGHT" value="true" />
+        <option name="ENABLED" value="false" />
+        <option name="LOG_ENABLED" value="false" />
+        <option name="LOG_EXPRESSION_ENABLED" value="false" />
+        <option name="SUSPEND_POLICY" value="SuspendAll" />
+        <option name="SUSPEND" value="true" />
+        <option name="COUNT_FILTER_ENABLED" value="false" />
+        <option name="COUNT_FILTER" value="0" />
+        <option name="CONDITION_ENABLED" value="true" />
+        <option name="CLASS_FILTERS_ENABLED" value="false" />
+        <option name="INSTANCE_FILTERS_ENABLED" value="false" />
+        <option name="CONDITION" value="" />
+        <option name="LOG_MESSAGE" value="" />
+      </breakpoint>
+    </breakpoint_any>
+    <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
+    <breakpoint_rules />
+    <ui_properties />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="darwinian-epuck" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="SupervisorController.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="183" column="57" selection-start="8127" selection-end="8127" vertical-scroll-proportion="0.63746226">
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="25" column="70" selection-start="697" selection-end="697" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="108" column="51" selection-start="3381" selection-end="3381" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EpuckController.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="325" column="115" selection-start="13137" selection-end="13137" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitLogSettings">
+    <option name="myDateState">
+      <MyDateState />
+    </option>
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="expandStates">
+      <map>
+        <entry key="darwinian-epuck" value="true" />
+      </map>
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/controllers/README.md" />
+        <option value="$PROJECT_DIR$/README" />
+        <option value="$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.java" />
+        <option value="$PROJECT_DIR$/controllers/SupervisorController/games/Game.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/util/StringUtil.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/games/Game.java" />
+        <option value="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/util/Util.java" />
+        <option value="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" />
+        <option value="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenProjectNavigator">
+    <treeState />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="y" value="22" />
+    <option name="width" value="1440" />
+    <option name="height" value="823" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="2" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SupervisorController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SupervisorController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="utils" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="SupervisorController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="nn" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="EpuckController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="EpuckController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="util" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="darwinian-epuck" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="EpuckController" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="games" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_directory_selection" value="$PROJECT_DIR$/controllers/EpuckController" />
+    <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="options.splitter.main.proportions" value="0.3" />
+    <property name="recentsLimit" value="5" />
+    <property name="options.lastSelected" value="preferences.fileTypes" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="MemberChooser.copyJavadoc" value="false" />
+    <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="restartRequiresConfirmation" value="true" />
+    <property name="MemberChooser.showClasses" value="true" />
+    <property name="FullScreen" value="false" />
+    <property name="GoToClass.includeLibraries" value="false" />
+    <property name="dynamic.classpath" value="false" />
+    <property name="options.searchVisible" value="true" />
+    <property name="options.splitter.details.proportions" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.Util">
+    <configuration default="false" name="Util" type="Application" factoryName="Application" temporary="true">
+      <option name="MAIN_CLASS_NAME" value="util.Util" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="controllers" />
+      <envs />
+      <RunnerSettings RunnerId="Run" />
+      <ConfigurationWrapper RunnerId="Run" />
+      <method />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="false" name="Webots" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="8000" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="8000" />
+        <option name="TRANSPORT" value="0" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <ConfigurationWrapper RunnerId="Debug" />
+      <method />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Remote.Webots" />
+      <item index="1" class="java.lang.String" itemvalue="Application.Util" />
+    </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Application.Util" />
+      </list>
+    </recent_temporary>
+    <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
+      <Host>localhost</Host>
+      <Port>5050</Port>
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="StatisticProjectComponent">
+    <option name="excludeCompilerOutput" value="true" />
+    <option name="excludeIdea9ArtifactDirectory" value="true" />
+    <option name="excludeTargetDirectories" value="true" />
+    <option name="activateWhenOpenProject" value="true" />
+    <option name="excludedDirectories">
+      <value>
+        <list size="0" />
+      </value>
+    </option>
+    <option name="fileTypes" value="class;svn-base;svn-work;Extra;gif;png;jpg;jpeg;bmp;tga;tiff;ear;war;zip;jar;iml;iws;ipr;bz2;gz;" />
+  </component>
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="false">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="DETECT_NESTED_COPIES" value="true" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" name="Default" comment="" />
+      <created>1363518581831</created>
+      <updated>1363518581831</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Cleaning up">
+      <created>1363518939543</created>
+      <updated>1363518939543</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Cleaning up">
+      <created>1363519128438</created>
+      <updated>1363519128438</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Updating README">
+      <created>1363519205214</created>
+      <updated>1363519205214</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Removing duplicated README">
+      <created>1363520391664</created>
+      <updated>1363520391664</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Adding README">
+      <created>1363520452583</created>
+      <updated>1363520452583</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Initial version of a game">
+      <created>1363524671439</created>
+      <updated>1363524671439</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Removing redundant code">
+      <created>1363524965604</created>
+      <updated>1363524965604</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Removing redundant code">
+      <created>1363525064850</created>
+      <updated>1363525064850</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Adding additional receivers and emitters to allow sending/evolution of games.">
+      <created>1363541347923</created>
+      <updated>1363541347923</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Actors now take part in trials that consist of 10 games each. No evolution of games added yet.">
+      <created>1363553753276</created>
+      <updated>1363553753276</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added evolution of games - initial version.">
+      <created>1363556866824</created>
+      <updated>1363556866824</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Forgot to clear the receiver :D">
+      <created>1363557838626</created>
+      <updated>1363557838626</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Epucks position is now reset after each game.">
+      <created>1363562539669</created>
+      <updated>1363562539669</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Updating world file to add new emitter/receiver nodes.">
+      <created>1363562576329</created>
+      <updated>1363562576329</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Added variance of actor fitness as a fitness of games. Fixed small bugs.">
+      <created>1363572280346</created>
+      <updated>1363572280346</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Cleaning up utilities">
+      <created>1363610023128</created>
+      <updated>1363610023128</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Adding comments to StringUtil class">
+      <created>1363611085114</created>
+      <updated>1363611085114</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Added logging to files.">
+      <created>1363651596948</created>
+      <updated>1363651596948</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Commit before modifying the way actors are assessed on the games [Better safe than sorry]">
+      <created>1363821044467</created>
+      <updated>1363821044467</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Actors are now assessed on all games after completing a trial. No game evolution.">
+      <created>1363860595238</created>
+      <updated>1363860595238</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Added logging of fitness of each individual for each generation.">
+      <created>1363863659272</created>
+      <updated>1363863659272</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Logging fix: Added commas after each individual's fitness">
+      <created>1363868308921</created>
+      <updated>1363868308921</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Added variance calculation">
+      <created>1363876731715</created>
+      <updated>1363876731715</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Cleaning up">
+      <created>1363950298608</created>
+      <updated>1363950298608</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Improved logging">
+      <created>1364065078958</created>
+      <updated>1364065078958</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Fix: Resetting overall fitness of the games after new generation of actors has been created.">
+      <created>1364069088757</created>
+      <updated>1364069088757</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Added more comments">
+      <created>1364076951921</created>
+      <updated>1364076951921</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Fixing minor bugs and adding additional logging. Using roulette selection instead of rank selection.">
+      <created>1364496231383</created>
+      <updated>1364496231383</updated>
+    </task>
+    <task id="LOCAL-00029" summary="Removing rank selection.">
+      <created>1364496924510</created>
+      <updated>1364496924510</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Changing data structure for fitness scores. Fixing minor bugs.">
+      <created>1364675582497</created>
+      <updated>1364675582497</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Changing value of black line colour that's used by fitness function.">
+      <created>1364679344430</created>
+      <updated>1364679344430</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Changing game constructor to allow varied number of constants">
+      <created>1364683508133</created>
+      <updated>1364683508134</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Changing fitness function polynomial">
+      <created>1364683547079</created>
+      <updated>1364683547079</updated>
+    </task>
+    <task id="LOCAL-00034" summary="Added normalisation of fitness score. Fixed a problem with min_fitness used for roulette selection - caused infinite loop when all scores were negative.">
+      <created>1364746679768</created>
+      <updated>1364746679768</updated>
+    </task>
+    <task id="LOCAL-00035" summary="Added method to calculate standard deviation.">
+      <created>1364746727957</created>
+      <updated>1364746727957</updated>
+    </task>
+    <task id="LOCAL-00036" summary="Bug fix: last individual in population was not evaluated. Changing normalisation to (0,1).">
+      <created>1364751993475</created>
+      <updated>1364751993475</updated>
+    </task>
+    <task id="LOCAL-00037" summary="Updated normalisation of fitness scores.">
+      <created>1364753656713</created>
+      <updated>1364753656713</updated>
+    </task>
+    <task id="LOCAL-00038" summary="Implementing roulette selection for evolution's crossover">
+      <created>1364754866845</created>
+      <updated>1364754866845</updated>
+    </task>
+    <task id="LOCAL-00039" summary="Improved version of fitness function polynomial">
+      <created>1364757767307</created>
+      <updated>1364757767307</updated>
+    </task>
+    <task id="LOCAL-00040" summary="Bug fix: population size now refers to games and not to nn.">
+      <created>1364758513809</created>
+      <updated>1364758513810</updated>
+    </task>
+    <task id="LOCAL-00041" summary="Bug fix: Additional break from loop added as certain conditions cause infinite loop.">
+      <created>1364760366095</created>
+      <updated>1364760366095</updated>
+    </task>
+    <task id="LOCAL-00042" summary="Roulette selection won't work with 3 individuals and elitism! Replacing it with rank selection.">
+      <created>1364762111479</created>
+      <updated>1364762111479</updated>
+    </task>
+    <task id="LOCAL-00043" summary="Added methods to calcualate max_in and min_int for fitness score normalization (avoiding external libs).">
+      <created>1364829714443</created>
+      <updated>1364829714443</updated>
+    </task>
+    <task id="LOCAL-00044" summary="Added methods to find max and min for normalization of fitness scores">
+      <created>1364830668220</created>
+      <updated>1364830668220</updated>
+    </task>
+    <task id="LOCAL-00045" summary="Using current max and min for normalization.">
+      <created>1364832866255</created>
+      <updated>1364832866255</updated>
+    </task>
+    <task id="LOCAL-00046" summary="Using current max and min for normalization.">
+      <created>1364832892223</created>
+      <updated>1364832892223</updated>
+    </task>
+    <task id="LOCAL-00047" summary="Added logging of all actor fitnesses - to plot fitness of each actor in each generation">
+      <created>1364833450924</created>
+      <updated>1364833450924</updated>
+    </task>
+    <task id="LOCAL-00048" summary="Added logging of fitness of each individual for each generation.">
+      <created>1364833559966</created>
+      <updated>1364833559967</updated>
+    </task>
+    <task id="LOCAL-00049" summary="Renamed method to log component fitness">
+      <created>1364833601810</created>
+      <updated>1364833601810</updated>
+    </task>
+    <task id="LOCAL-00050" summary="Adding some comments to logging file">
+      <created>1364834571875</created>
+      <updated>1364834571875</updated>
+    </task>
+    <task id="LOCAL-00051" summary="Cleaning up">
+      <created>1364834717747</created>
+      <updated>1364834717747</updated>
+    </task>
+    <task id="LOCAL-00052" summary="Added storing of last games generation">
+      <created>1364835098687</created>
+      <updated>1364835098688</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Added light sensor">
+      <created>1364839084406</created>
+      <updated>1364839084406</updated>
+    </task>
+    <task id="LOCAL-00054" summary="Added logging of games genomes and increased population of games to 20. Initialised randomly.">
+      <created>1364928137925</created>
+      <updated>1364928137925</updated>
+    </task>
+    <task id="LOCAL-00055" summary="Improving normalisation">
+      <created>1364936614856</created>
+      <updated>1364936614856</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
+    <servers />
+  </component>
+  <component name="TodoView" selected-index="0">
+    <todo-panel id="selected-file">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="default-changelist">
+      <are-packages-shown value="false" />
+      <are-modules-shown value="false" />
+      <flatten-packages value="false" />
+      <is-autoscroll-to-source value="false" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="22" width="1440" height="823" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32859176" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Statistic" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5305832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998565" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24964131" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3997155" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32716927" sideWeight="0.4978479" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32859176" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32859176" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32716927" sideWeight="0.49713057" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Metrics" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7219858" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998565" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20229556" sideWeight="0.4694168" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32859176" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.38122332" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="OFFER_MOVE_TO_ANOTHER_CHANGELIST_ON_PARTIAL_COMMIT" value="true" />
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="CHECK_NEW_TODO" value="true" />
+    <option name="myTodoPanelSettings">
+      <value>
+        <are-packages-shown value="false" />
+        <are-modules-shown value="false" />
+        <flatten-packages value="false" />
+        <is-autoscroll-to-source value="false" />
+      </value>
+    </option>
+    <option name="PERFORM_UPDATE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_COMMIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_EDIT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
+    <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
+    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
+    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
+    <option name="SHOW_ONLY_CHANGED_IN_SELECTION_DIFF" value="true" />
+    <option name="CHECK_COMMIT_MESSAGE_SPELLING" value="true" />
+    <option name="DEFAULT_PATCH_EXTENSION" value="patch" />
+    <option name="SHORT_DIFF_HORISONTALLY" value="true" />
+    <option name="SHORT_DIFF_EXTRA_LINES" value="2" />
+    <option name="SOFT_WRAPS_IN_SHORT_DIFF" value="true" />
+    <option name="INCLUDE_TEXT_INTO_PATCH" value="false" />
+    <option name="INCLUDE_TEXT_INTO_SHELF" value="false" />
+    <option name="SHOW_FILE_HISTORY_DETAILS" value="true" />
+    <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
+    <option name="SHOW_DIRTY_RECURSIVELY" value="false" />
+    <option name="LIMIT_HISTORY" value="true" />
+    <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
+    <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
+    <option name="LAST_COMMIT_MESSAGE" value="Improving normalisation" />
+    <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="REFORMAT_BEFORE_FILE_COMMIT" value="false" />
+    <option name="FILE_HISTORY_DIALOG_COMMENTS_SPLITTER_PROPORTION" value="0.8" />
+    <option name="FILE_HISTORY_DIALOG_SPLITTER_PROPORTION" value="0.5" />
+    <option name="ACTIVE_VCS_NAME" />
+    <option name="UPDATE_GROUP_BY_PACKAGES" value="false" />
+    <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
+    <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
+    <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
+    <MESSAGE value="Changing data structure for fitness scores. Fixing minor bugs." />
+    <MESSAGE value="Changing value of black line colour that's used by fitness function." />
+    <MESSAGE value="Changing game constructor to allow varied number of constants" />
+    <MESSAGE value="Changing fitness function polynomial" />
+    <MESSAGE value="Added normalisation of fitness score. Fixed a problem with min_fitness used for roulette selection - caused infinite loop when all scores were negative." />
+    <MESSAGE value="Added method to calculate standard deviation." />
+    <MESSAGE value="Bug fix: last individual in population was not evaluated. Changing normalisation to (0,1)." />
+    <MESSAGE value="Updated normalisation of fitness scores." />
+    <MESSAGE value="Implementing roulette selection for evolution's crossover" />
+    <MESSAGE value="Improved version of fitness function polynomial" />
+    <MESSAGE value="Bug fix: population size now refers to games and not to nn." />
+    <MESSAGE value="Bug fix: Additional break from loop added as certain conditions cause infinite loop." />
+    <MESSAGE value="Roulette selection won't work with 3 individuals and elitism! Replacing it with rank selection." />
+    <MESSAGE value="Added methods to calcualate max_in and min_int for fitness score normalization (avoiding external libs)." />
+    <MESSAGE value="Added methods to find max and min for normalization of fitness scores" />
+    <MESSAGE value="Using current max and min for normalization." />
+    <MESSAGE value="Added logging of all actor fitnesses - to plot fitness of each actor in each generation" />
+    <MESSAGE value="Added logging of fitness of each individual for each generation." />
+    <MESSAGE value="Renamed method to log component fitness" />
+    <MESSAGE value="Adding some comments to logging file" />
+    <MESSAGE value="Cleaning up" />
+    <MESSAGE value="Added storing of last games generation" />
+    <MESSAGE value="Added light sensor" />
+    <MESSAGE value="Added logging of games genomes and increased population of games to 20. Initialised randomly." />
+    <MESSAGE value="Improving normalisation" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+  <component name="antWorkspaceConfiguration">
+    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
+    <option name="FILTER_TARGETS" value="false" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="95" column="44" selection-start="4101" selection-end="4101" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="141" column="29" selection-start="6183" selection-end="6183" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/StringUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="7" selection-start="217" selection-end="217" vertical-scroll-proportion="0.022222223">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="25" selection-start="15" selection-end="15" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="jar:///System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Classes/classes.jar!/java/io/BufferedReader.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="33" selection-start="718" selection-end="718" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/results.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/results:bestgenome_games.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/results:fitness_games.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/games/Game.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="87" column="53" selection-start="2278" selection-end="2278" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="26" column="38" selection-start="668" selection-end="668" vertical-scroll-proportion="0.5317578">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/Util.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="212" column="23" selection-start="6066" selection-end="6066" vertical-scroll-proportion="0.42222223">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/Util.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="87" column="33" selection-start="2179" selection-end="2179" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="70" selection-start="697" selection-end="697" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="108" column="51" selection-start="3381" selection-end="3381" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="325" column="115" selection-start="13137" selection-end="13137" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="183" column="57" selection-start="8127" selection-end="8127" vertical-scroll-proportion="0.63746226">
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="Copyright.UI">
+        <settings>
+          <last-edited>Anna Pawlicka</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <last-edited>No facets are configured</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <last-edited>controllers</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+                <option value="0.5" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.6</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Controller</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
+
