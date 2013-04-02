@@ -323,7 +323,7 @@ public class EpuckController extends Robot {
 
         // Normalise
         normaliseFitnessScore(arr);
-
+        // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
         for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(arr[i]);
 
         FilesFunctions.logAllCompFit(out4, arr, generation);
@@ -343,11 +343,12 @@ public class EpuckController extends Robot {
         min = Util.min(fitnessScores);
         max = Util.max(fitnessScores);
 
+
         for (i = 0; i < fitnessScores.length; i++) {
             for(j=0; j< fitnessScores[i].length; j++){
                 double temp = 0;
                 try {
-                    temp = Util.normalize(min+(0.5*min), max+(0.5*max), fitnessScores[i][j]);
+                    temp = Util.normalize(min, max, fitnessScores[i][j]);
                 } catch (Exception e) {
                     System.err.println("Error while normalizing: "+ e.getMessage());
                 }

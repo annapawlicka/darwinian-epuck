@@ -182,7 +182,7 @@ public class SupervisorController extends Supervisor {
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
             try {
-                temp = Util.normalize(min+(0.5*min), max+(0.5*max), fitnessScores[i]);  // add buffer of 0.5
+                temp = Util.normalize(min, max, fitnessScores[i]);  // add buffer of 0.5
             } catch (Exception e) {
                 System.err.println("Error while normalizing: "+ e.getMessage());
             }
