@@ -104,5 +104,21 @@ public class FilesFunctions {
             System.err.println("Buffer error: "+e.getMessage());
         }
     }
+
+    public static void logAllGameGenomes(BufferedWriter out, int generation, Game[] population) throws IOException {
+        out.write("Generation: "+generation+"\n");
+        try{
+            for(int i=0; i< population.length; i++){
+                for (int j=0; j<population[i].getConstants().length; j++){
+                    out.write(","+population[i].getConstants()[j]);
+                }
+                out.write("\n");
+            }
+            out.write("\n");
+            out.flush();
+        }   catch(IOException e){
+            System.err.println("Buffer error: "+e.getMessage());
+        }
+    }
 }
 

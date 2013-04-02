@@ -24,7 +24,7 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 3;
+    private int GAME_POP_SIZE = 20;
     private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -37,7 +37,7 @@ public class EpuckController extends Robot {
     private final int NB_INPUTS = 7;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
-    private int NB_CONSTANTS = 4;
+    private int NB_CONSTANTS = 5;
     private float weights[];
 
     // Evolution of games
@@ -107,8 +107,8 @@ public class EpuckController extends Robot {
     private Receiver gameReceiver;
 
     // Logging
-    private BufferedWriter out1, out2, out3, out4;
-    private FileWriter file1, file2, file3, file4;
+    private BufferedWriter out1, out2, out3, out4, out5;
+    private FileWriter file1, file2, file3, file4, file5;
 
     private int step;
     private Random random = new Random();
@@ -167,6 +167,12 @@ public class EpuckController extends Robot {
                         FilesFunctions.logLastGeneration(populationOfGames);
                     } catch (IOException e) {
                         e.getMessage();
+                    }
+
+                    try {
+                        FilesFunctions.logAllGameGenomes(out5, generation, populationOfGames);
+                    } catch (IOException e) {
+                        System.err.println(e.getMessage());
                     }
 
                     // 6. Rank populationOfGames, select best individuals and create new generation
@@ -253,7 +259,7 @@ public class EpuckController extends Robot {
             }
         }
 
-        double light = (ls_value_right + ls_value_left)/2;
+        double light = 1024 - (ls_value_right + ls_value_left)/2;
 
         computeFitness(speed, position, maxIRActivation, fs_value[1], light);
     }
@@ -276,7 +282,8 @@ public class EpuckController extends Robot {
                         (populationOfGames[i].getConstants()[0] * Util.mean(speed)) *
                                 (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
                                 (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
-                                (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour)));
+                                (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour))) *
+                                (populationOfGames[i].getConstants()[4] * light);
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
             }
@@ -541,8 +548,8 @@ public class EpuckController extends Robot {
 
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, NB_CONSTANTS);
-        initialiseGames(populationOfGames);
+        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(true, NB_CONSTANTS);
+        //initialiseGames(populationOfGames);
 
         sumOfFitnesses = new double[NN_POP_SIZE];
         for (i = 0; i < GAME_POP_SIZE; i++) sumOfFitnesses[i] = 0.0;
@@ -681,6 +688,18 @@ public class EpuckController extends Robot {
 
         out4 = new BufferedWriter(file4);
 
+        try {
+            file5 = new FileWriter("all_games_genomes.txt");
+        } catch (IOException e) {
+            System.err.println("Cannot open all_games_genomes.txt file.");
+        }
+
+        out5 = new BufferedWriter(file5);
+        try {
+            FilesFunctions.logAllGameGenomes(out5, generation, populationOfGames);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
         System.out.println("e-puck has been initialised.");
     }
 
