@@ -9,26 +9,13 @@ WorldInfo {
   displayRefresh 1
 }
 Viewpoint {
-  orientation 0.636839 -0.710559 -0.299234 5.11469
-  position 1.15027 1.6723 1.0391
+  orientation 0.505102 -0.829785 -0.237336 5.25272
+  position 1.38509 1.1927 1.28107
 }
 Background {
   skyColor [
     0.4 0.7 1
   ]
-}
-PointLight {
-  ambientIntensity 0.2
-  attenuation 0 0 1
-  intensity 2
-  location 0.8 1 0.8
-  castShadows TRUE
-}
-PointLight {
-  ambientIntensity 0.2
-  attenuation 0 0 1
-  intensity 2.5
-  location -1.1 1.2 1.3
 }
 DEF GROUND Solid {
   children [
@@ -86,6 +73,26 @@ DEF GROUNDBORDER Solid {
     }
   ]
   name "ground"
+}
+DEF LAMP Solid {
+  translation 0.364675 0.095 -0.219999
+  children [
+    Shape {
+      appearance Appearance {
+        material Material {
+          emissiveColor 1 1 1
+        }
+      }
+      geometry Sphere {
+        radius 0.01
+      }
+    }
+    PointLight {
+      ambientIntensity 1
+      attenuation 1 0 10
+      intensity 5
+    }
+  ]
 }
 DEF WALL Solid {
   children [
@@ -173,25 +180,8 @@ DEF WALL Solid {
   }
   locked TRUE
 }
-DEF OBSTACLE1 Solid {
-  translation 0.11092 0.025 -0.235973
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          diffuseColor 1 0.1 0.3
-        }
-      }
-      geometry DEF BOX1 Box {
-        size 0.05 0.06 0.05
-      }
-    }
-  ]
-  name "red box 1"
-  boundingObject USE BOX1
-}
 DEF OBSTACLE2 Solid {
-  translation -0.201544 0.025 -0.212571
+  translation -0.249585 0.025 -0.213118
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -209,7 +199,7 @@ DEF OBSTACLE2 Solid {
   boundingObject USE BOX2
 }
 DEF OBSTACLE3 Solid {
-  translation 0.0668403 0.025 0.0767451
+  translation 0.112633 0.025 -0.0325507
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -263,11 +253,12 @@ DEF OBSTACLE5 Solid {
   boundingObject USE BOX2
 }
 DEF EPUCK DifferentialWheels {
-  translation 0.279543 -0.000409507 -0.101994
-  rotation -0.0141843 0.999867 -0.00803421 -0.92268
+  translation -0.0021653 -0.000424868 0.0476013
+  rotation -0.0189681 0.999624 0.0197971 0.191091
   children [
     Receiver {
       name "gamesreceiverepuck"
+      channel 1
     }
     Receiver {
     }
@@ -1805,9 +1796,11 @@ Supervisor {
     }
     Receiver {
       name "gamesreceiversuper"
+      channel 1
     }
     Emitter {
       name "gamesemittersuper"
+      channel 1
     }
   ]
   controller "SupervisorController"
