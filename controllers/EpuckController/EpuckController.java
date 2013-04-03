@@ -229,6 +229,7 @@ public class EpuckController extends Robot {
                     float end[] = {1};
                     byte[] endMsg = Util.float2Byte(end);
                     emitter.send(endMsg);
+                    resetAllFitnessArrays();
                 }
             }
 
