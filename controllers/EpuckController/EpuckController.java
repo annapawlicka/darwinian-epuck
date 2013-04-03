@@ -24,7 +24,7 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 20;
+    private int GAME_POP_SIZE = 1;
     private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -116,7 +116,7 @@ public class EpuckController extends Robot {
     private int indiv;
 
 
-    public void run() {
+    public void run() throws Exception {
 
         while (step(TIME_STEP) != -1) {
 
@@ -176,11 +176,11 @@ public class EpuckController extends Robot {
                     }
 
                     // 6. Rank populationOfGames, select best individuals and create new generation
-                    createNewPopulation();
+                    //createNewPopulation();
 
                     // 7. Reset evolution variables
                     generation++;
-                    System.out.println("\nGAME GENERATION \n" + generation);
+                    //System.out.println("\nGAME GENERATION \n" + generation);
                     avgFitGame = 0.0;
                     bestFitGame = 0;
                     bestGame = 0;
@@ -208,22 +208,30 @@ public class EpuckController extends Robot {
             if (step < TRIAL_DURATION / TIME_STEP) {
                 // Drive robot
                 runTrial();
-                float msg[] = {(float) sumOfFitnesses[indiv], 0.0f};
-                byte[] msgInBytes = Util.float2Byte(msg);
-                emitter.send(msgInBytes);
             } else {
                 // Add all fitnesses for each game
-                setSumOfFitnesses();
+                setGameFitness();
                 // Send message to indicate end of trial - next actor will be called
-                float msg[] = {(float) sumOfFitnesses[indiv], 1};
+                float msg[] = {0};
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
                 // Reinitialize counter
                 step = 0;
+
+                // If all individuals finished their trials
                 if ((indiv + 1) < NN_POP_SIZE) {
                     indiv++;
                 } else {
                     indiv = 0;
+                    // Send normalised fitness scores to supervisor
+                    for(i=0; i<sumOfFitnesses.length; i++){
+                        float message[] = {(float) sumOfFitnesses[i], i, 2};
+                        byte[] messageInBytes = Util.float2Byte(message);
+                        emitter.send(messageInBytes);
+                    }
+                    float end[] = {1};
+                    byte[] endMsg = Util.float2Byte(end);
+                    emitter.send(endMsg);
                 }
             }
 
@@ -235,7 +243,7 @@ public class EpuckController extends Robot {
      *
      * @return Returns current fitness score
      */
-    private void runTrial() {
+    private void runTrial() throws Exception {
 
         double[] outputs = new double[NB_OUTPUTS];
 
@@ -258,8 +266,8 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-
-        double light = 1024 - (ls_value_right + ls_value_left)/2;
+        // light: 0 - white, approx 1400 - black
+        double light = (ls_value_right + ls_value_left)/2;
 
         computeFitness(speed, position, maxIRActivation, fs_value[1], light);
     }
@@ -274,9 +282,22 @@ public class EpuckController extends Robot {
      * @param light
      */
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour,
-                               double light) {
+                               double light) throws Exception {
 
-        for (int i = 0; i < GAME_POP_SIZE; i++) {
+        // Avoid obstacles:
+        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
+
+        // Follow wall
+        //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+
+        // Follow black line
+        //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
+
+        // Go to the light source
+        agentsFitness[indiv][0] += (1-Util.normalize(0, 1400, light));
+
+
+        /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
                 agentsFitness[indiv][i] +=
                         (populationOfGames[i].getConstants()[0] * Util.mean(speed)) *
@@ -287,7 +308,7 @@ public class EpuckController extends Robot {
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
             }
-        }
+        }*/
     }
 
     private void setSumOfFitnesses() {
@@ -314,19 +335,26 @@ public class EpuckController extends Robot {
      */
     private void setGameFitness() {
         int i, j;
-        double[][] arr = new double[GAME_POP_SIZE][NN_POP_SIZE];
+        double[][] actorFitPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
         for (i = 0; i < agentsFitness.length; i++) {
             for (j = 0; j < agentsFitness[i].length; j++) {
-                arr[j][i] = agentsFitness[i][j];
+                actorFitPerGame[j][i] = agentsFitness[i][j];
             }
         }
 
         // Normalise
-        normaliseFitnessScore(arr);
+        normaliseFitnessScore(actorFitPerGame);
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
-        for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(arr[i]);
+        for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(actorFitPerGame[i]);
 
-        FilesFunctions.logAllCompFit(out4, arr, generation);
+        // Update (sum up) array of actors fitness scores so that it can be sent to supervisor
+        for(i=0; i<actorFitPerGame.length; i++){
+            for(j=0; j<actorFitPerGame[i].length; j++){
+                sumOfFitnesses[j] += actorFitPerGame[i][j];
+            }
+        }
+
+        FilesFunctions.logAllCompFit(out4, actorFitPerGame, generation);
 
     }
 
@@ -339,12 +367,9 @@ public class EpuckController extends Robot {
         int i, j;
         double min, max;
 
-        // Find min and max - takes two additional runs that don't change time complexity
-        min = Util.min(fitnessScores);
-        max = Util.max(fitnessScores);
-
-
         for (i = 0; i < fitnessScores.length; i++) {
+            min = Util.min(fitnessScores[i]);   // find min and max separately for each game
+            max = Util.max(fitnessScores[i]);
             for(j=0; j< fitnessScores[i].length; j++){
                 double temp = 0;
                 try {
@@ -517,23 +542,30 @@ public class EpuckController extends Robot {
     private void initialiseGames(Game[] games) {
 
         /*Game 1: Avoid obstacles */
-        games[0].setConstants(0, 1);    // Drive fast
+      /*  games[0].setConstants(0, 1);    // Drive fast
         games[0].setConstants(1, 1);    // Try to steer straight
         games[0].setConstants(2, 1);    // Minimise IR proximity sensors activation
-        games[0].setConstants(3, 0);    // Ignore floor colour
+        games[0].setConstants(3, 0);    // Ignore floor colour/light
 
 
-        /*Game 2: Follow black line */
+        *//*Game 2: Follow black line *//*
         games[1].setConstants(0, 1);    // Drive fast
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
-        games[1].setConstants(3, 1);    // Max black line
+        games[1].setConstants(3, 1);    // Max black line /light
 
-        /* Game 3: Follow the wall */
+        *//* Game 3: Follow the wall *//*
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
-        games[2].setConstants(3, 0);    // Max black line
+        games[2].setConstants(3, 0);    // Max black line/light*/
+
+        /* Follow the light */
+        games[0].setConstants(0, 1);    // Drive fast
+        games[0].setConstants(1, 1);    // Drive straight
+        games[0].setConstants(2, 0);    // Min prox sensor activation
+        games[0].setConstants(3, 1);    // Black line/light
+
 
     }
 
@@ -549,8 +581,8 @@ public class EpuckController extends Robot {
 
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(true, NB_CONSTANTS);
-        //initialiseGames(populationOfGames);
+        for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, NB_CONSTANTS);
+        initialiseGames(populationOfGames);
 
         sumOfFitnesses = new double[NN_POP_SIZE];
         for (i = 0; i < GAME_POP_SIZE; i++) sumOfFitnesses[i] = 0.0;
@@ -705,7 +737,7 @@ public class EpuckController extends Robot {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         EpuckController controller = new EpuckController();
         controller.reset();
         controller.run();

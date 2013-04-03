@@ -61,6 +61,8 @@ public class SupervisorController extends Supervisor {
     private FileWriter file1, file2, file3;
     private BufferedReader reader3;
 
+    private int counter;
+
     private Random random = new Random();
 
     public SupervisorController() {
@@ -74,97 +76,111 @@ public class SupervisorController extends Supervisor {
 
         while (step(TIME_STEP) != -1) {
             byte[] nnFit;
-            float finished = 0;
+            float finished = -1;
 
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();
             if (n > 0) {
                 nnFit = receiver.getData();
                 // Convert bytes into floats
-                if (nnFit.length == 8) {
+                if (nnFit.length == 12) {
                     byte[] currFitness = new byte[4];
                     for (int i = 0; i < 4; i++) {
                         currFitness[i] = nnFit[i];
                     }
+                    byte[] indivNo = new byte[4];
+                    int m = 0;
+                    for (int k = 4; k < 8; k++) {
+                        indivNo[m] = nnFit[k];
+                        m++;
+                    }
                     byte[] flag = new byte[4];
                     int l = 0;
-                    for (int j = 4; j < 8; j++) {
+                    for (int j = 8; j < 12; j++) {
                         flag[l] = nnFit[j];
                         l++;
                     }
-                    fitnessNN[evaluatedNN] = Util.bytearray2float(currFitness);
+                    int indIndex = (int) Util.bytearray2float(indivNo);
+                    fitnessNN[indIndex] = Util.bytearray2float(currFitness);
+                    finished = Util.bytearray2float(flag);
+                    receiver.nextPacket();
+                } else if (nnFit.length == 4) {
+                    byte[] flag = new byte[4];
+                    for (int j = 0; j < 4; j++) {
+                        flag[j] = nnFit[j];
+                    }
                     finished = Util.bytearray2float(flag);
                     receiver.nextPacket();
                 }
             }
 
             // When evaluation is done, an extra flag is returned in the message
-            if (finished == 1) {
+            if (finished == 1.0f) {
 
                 if (EVOLVING == 1) {
-                    // If whole populationOfNN has been evaluated
-                    if ((evaluatedNN + 1) == NN_POP_SIZE) {
-                        System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
-                        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
-                        // Sort populationOfNN by fitness
-                        sortPopulation(sortedfitnessNN, fitnessNN);
-                        // Find and log current and absolute best individual
-                        bestFitNN = sortedfitnessNN[0][0];
-                        minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
-                        bestNN = (int) sortedfitnessNN[0][1];
-                        avgFitNN = Util.mean(fitnessNN);
-                        if (bestFitNN > absBestFitNN) {
-                            absBestFitNN = bestFitNN;
-                            absBestNN = bestNN;
-                            FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
-                        }
-                        System.out.println("Best fitness score: \n" + bestFitNN);
-                        System.out.println("Average fitness score: \n" + avgFitNN);
-                        System.out.println("Worst fitness score: \n" + minFitNN);
-
-                        // Write data to files
-                        FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
-                                bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
-                        FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
-                        // Log the generation data  - stores weights
-                        try {
-                            FilesFunctions.logLastGeneration(populationOfNN);
-                        } catch (IOException e) {
-                            e.getMessage();
-                        }
-                        // Rank populationOfNN, select best individuals and create new generation
-                        createNewPopulation();
-
-                        generation++;
-                        System.out.println("\nGENERATION \n" + generation);
-                        evaluatedNN = 0;
-                        avgFitNN = 0.0;
-                        bestFitNN = 0;
-                        bestNN = 0;
-                        minFitNN = 0;
-
-                        resetRobotPosition();
-                        // Evolve games every 4 NN generations (gives them time to learn)
-                        if (generation % 10 == 0) {
-                            // Send flag to start evolution of games
-                            byte[] flag = {1};
-                            gameEmitter.send(flag);
-                        }
-
-                        // Send new weights
-                        byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
-                        emitter.send(msgInBytes);
-
-                    } else {
-                        // Assign received fitness to individual
-                        System.out.println("Evaluated individual " + evaluatedNN + ". Fitness: " + fitnessNN[evaluatedNN]);
-                        evaluatedNN++;
-                        // Send next genome to experiment
-                        resetRobotPosition();
-                        byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
-                        emitter.send(msgInBytes);
+                    System.out.println("Evaluated individual " + evaluatedNN);
+                    System.out.println("EVOLVING");
+                    //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
+                    // Sort populationOfNN by fitness
+                    sortPopulation(sortedfitnessNN, fitnessNN);
+                    // Find and log current and absolute best individual
+                    bestFitNN = sortedfitnessNN[0][0];
+                    minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
+                    bestNN = (int) sortedfitnessNN[0][1];
+                    avgFitNN = Util.mean(fitnessNN);
+                    if (bestFitNN > absBestFitNN) {
+                        absBestFitNN = bestFitNN;
+                        absBestNN = bestNN;
+                        FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
                     }
+                    System.out.println("Best fitness score: \n" + bestFitNN);
+                    System.out.println("Average fitness score: \n" + avgFitNN);
+                    System.out.println("Worst fitness score: \n" + minFitNN);
+
+                    // Write data to files
+                    FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
+                            bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
+                    FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
+                    // Log the generation data  - stores weights
+                    try {
+                        FilesFunctions.logLastGeneration(populationOfNN);
+                    } catch (IOException e) {
+                        e.getMessage();
+                    }
+                    // Rank populationOfNN, select best individuals and create new generation
+                    createNewPopulation();
+
+                    generation++;
+                    System.out.println("\nGENERATION \n" + generation);
+                    evaluatedNN = 0;
+                    avgFitNN = 0.0;
+                    bestFitNN = 0;
+                    bestNN = 0;
+                    minFitNN = 0;
+
+                    resetRobotPosition();
+                    // Evolve games every 4 NN generations (gives them time to learn)
+                    if (generation % 5 == 0) {
+                        // Send flag to start evolution of games
+                        byte[] flag = {1};
+                        gameEmitter.send(flag);
+                    }
+
+                    // Send new weights
+                    byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                    emitter.send(msgInBytes);
                 }
+            } else if (finished == 0.0) {
+                if ((evaluatedNN + 1) < NN_POP_SIZE) {
+                    evaluatedNN++;
+                    System.out.println("Evaluated individual " + evaluatedNN);
+                    // Send next genome to experiment
+                    resetRobotPosition();
+                    byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                    emitter.send(msgInBytes);
+                }
+
+
             }
 
         }
@@ -184,7 +200,7 @@ public class SupervisorController extends Supervisor {
             try {
                 temp = Util.normalize(min, max, fitnessScores[i]);  // add buffer of 0.5
             } catch (Exception e) {
-                System.err.println("Error while normalizing: "+ e.getMessage());
+                System.err.println("Error while normalizing: " + e.getMessage());
             }
             fitnessScores[i] = temp;
         }
@@ -282,7 +298,7 @@ public class SupervisorController extends Supervisor {
                 while (r > fitness_counter && ind1 < NN_POP_SIZE - 1) {
                     ind1++;
                     fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                    if(ind1 == NN_POP_SIZE -1) break;
+                    if (ind1 == NN_POP_SIZE - 1) break;
                 }
 
                 // If we will do crossover, select a second individual
@@ -294,7 +310,7 @@ public class SupervisorController extends Supervisor {
                         while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
                             ind2++;
                             fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                            if(ind2 == NN_POP_SIZE -1) break;
+                            if (ind2 == NN_POP_SIZE - 1) break;
                         }
                     } while (ind1 == ind2);
                     ind1 = (int) sortedfitnessNN[ind1][1];
@@ -446,16 +462,16 @@ public class SupervisorController extends Supervisor {
 
         try {
             file2 = new FileWriter("all_actor_fit.txt");
-        } catch (IOException e){
-            System.err.println("Error while opening file: all_actor_fit.txt "+e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error while opening file: all_actor_fit.txt " + e.getMessage());
         }
 
         out2 = new BufferedWriter(file2);
 
         try {
             out2.write("generation");
-            for(i=0; i<NN_POP_SIZE; i++){
-                out2.write(",Actor"+i+",");
+            for (i = 0; i < NN_POP_SIZE; i++) {
+                out2.write(",Actor" + i + ",");
             }
             out2.write("\n");
 

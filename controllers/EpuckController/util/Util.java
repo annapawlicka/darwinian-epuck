@@ -76,7 +76,7 @@ public class Util {
      * @param array
      * @return
      */
-    public static double max(double[][] array) {
+    public static double max(double[] array) {
         // Validates input
         if (array == null) {
             throw new IllegalArgumentException("The Array must not be null");
@@ -85,13 +85,12 @@ public class Util {
         }
 
         // Finds and returns max
-        double max = array[0][0];
+        double max = array[0];
         for (int i = 1; i < array.length; i++) {
-            for (int j = 0; j < array[i].length; j++) {
-                if (array[i][j] > max) {
-                    max = array[i][j];
-                }
+            if (array[i] > max) {
+                max = array[i];
             }
+
         }
         return max;
     }
@@ -102,7 +101,7 @@ public class Util {
      * @param array
      * @return
      */
-    public static double min(double[][] array) {
+    public static double min(double[] array) {
         // Validates input
         if (array == null) {
             throw new IllegalArgumentException("The Array must not be null");
@@ -111,13 +110,12 @@ public class Util {
         }
 
         // Finds and returns min
-        double min = array[0][0];
+        double min = array[0];
         for (int i = 1; i < array.length; i++) {
-            for (int j = 0; j < array[i].length; j++) {
-                if (array[i][j] < min) {
-                    min = array[i][j];
-                }
+            if (array[i] < min) {
+                min = array[i];
             }
+
         }
         return min;
     }

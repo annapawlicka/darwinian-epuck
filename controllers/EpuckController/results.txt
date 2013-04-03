@@ -1,2 +1,0 @@
-generation , average fitness, worst fitness, best fitness
-0, 0.007947828618102368, 3.6551816446455417E-6, 0.03749770516898613
