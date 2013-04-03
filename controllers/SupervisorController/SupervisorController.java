@@ -35,7 +35,6 @@ public class SupervisorController extends Supervisor {
     private int NB_INPUTS;
     private int NB_OUTPUTS;
     private int NB_GENES;
-    private double[][] locations;                           // Last 5 GPS coordinates
     private NeuralNetwork[] populationOfNN;
     private double[] fitnessNN;
     private double[][] sortedfitnessNN;                     // Population sorted by fitness
@@ -60,8 +59,6 @@ public class SupervisorController extends Supervisor {
     private BufferedReader in1, in2, in3;
     private FileWriter file1, file2, file3;
     private BufferedReader reader3;
-
-    private int counter;
 
     private Random random = new Random();
 
@@ -179,12 +176,8 @@ public class SupervisorController extends Supervisor {
                     byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
                     emitter.send(msgInBytes);
                 }
-
-
             }
-
         }
-
     }
 
     private void normaliseFitnessScore(double[] fitnessScores) {
@@ -224,7 +217,6 @@ public class SupervisorController extends Supervisor {
             // Then, send weights of NNs to experiment
             byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
             emitter.send(msgInBytes);
-
         }
 
         if (TESTING == 1) {
@@ -245,7 +237,6 @@ public class SupervisorController extends Supervisor {
 
             System.out.println("TESTING LAST GENERATION \n");
         }
-
     }
 
     /**
@@ -440,7 +431,6 @@ public class SupervisorController extends Supervisor {
         gameReceiver.enable(TIME_STEP);
 
         // Initialise gps coordinates arrays
-        locations = new double[5][2];
         initTranslation = new double[3];
         initTranslation = fldTranslation.getSFVec3f();
 

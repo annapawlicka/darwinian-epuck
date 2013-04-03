@@ -19,7 +19,6 @@ import java.util.Random;
  */
 
 // TODO save the best indiv and test it
-    //TODO add more inputs
 
 public class EpuckController extends Robot {
 
@@ -85,11 +84,9 @@ public class EpuckController extends Robot {
     private double ls_value_left;
     private double ls_value_right;
 
-
     // LEDs
     private int ledsNo = 8;
     private LED[] led = new LED[ledsNo];
-
 
     // Differential Wheels
     private DifferentialWheels robot = new DifferentialWheels();
@@ -224,7 +221,7 @@ public class EpuckController extends Robot {
                 } else {
                     indiv = 0;
                     // Send normalised fitness scores to supervisor
-                    for(i=0; i<sumOfFitnesses.length; i++){
+                    for (i = 0; i < sumOfFitnesses.length; i++) {
                         float message[] = {(float) sumOfFitnesses[i], i, 2};
                         byte[] messageInBytes = Util.float2Byte(message);
                         emitter.send(messageInBytes);
@@ -267,7 +264,7 @@ public class EpuckController extends Robot {
             }
         }
         // light: 0 - white, approx 1400 - black
-        double light = (ls_value_right + ls_value_left)/2;
+        double light = (ls_value_right + ls_value_left) / 2;
 
         computeFitness(speed, position, maxIRActivation, fs_value[1], light);
     }
@@ -275,6 +272,7 @@ public class EpuckController extends Robot {
 
     /**
      * Method to calculate fitness score - fitness function that have evolvable constants
+     *
      * @param speed
      * @param position
      * @param maxIRActivation
@@ -294,7 +292,7 @@ public class EpuckController extends Robot {
         //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
 
         // Go to the light source
-        agentsFitness[indiv][0] += (1-Util.normalize(0, 1400, light));
+        agentsFitness[indiv][0] += (1 - Util.normalize(0, 1400, light));
 
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
@@ -309,10 +307,6 @@ public class EpuckController extends Robot {
                 System.err.println("Error: " + e.getMessage());
             }
         }*/
-    }
-
-    private void setSumOfFitnesses() {
-        for (int i = 0; i < agentsFitness[indiv].length; i++) sumOfFitnesses[indiv] += agentsFitness[indiv][i];
     }
 
     /**
@@ -348,8 +342,8 @@ public class EpuckController extends Robot {
         for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(actorFitPerGame[i]);
 
         // Update (sum up) array of actors fitness scores so that it can be sent to supervisor
-        for(i=0; i<actorFitPerGame.length; i++){
-            for(j=0; j<actorFitPerGame[i].length; j++){
+        for (i = 0; i < actorFitPerGame.length; i++) {
+            for (j = 0; j < actorFitPerGame[i].length; j++) {
                 sumOfFitnesses[j] += actorFitPerGame[i][j];
             }
         }
@@ -370,16 +364,15 @@ public class EpuckController extends Robot {
         for (i = 0; i < fitnessScores.length; i++) {
             min = Util.min(fitnessScores[i]);   // find min and max separately for each game
             max = Util.max(fitnessScores[i]);
-            for(j=0; j< fitnessScores[i].length; j++){
+            for (j = 0; j < fitnessScores[i].length; j++) {
                 double temp = 0;
                 try {
                     temp = Util.normalize(min, max, fitnessScores[i][j]);
                 } catch (Exception e) {
-                    System.err.println("Error while normalizing: "+ e.getMessage());
+                    System.err.println("Error while normalizing: " + e.getMessage());
                 }
                 fitnessScores[i][j] = temp;
             }
-
         }
     }
 
