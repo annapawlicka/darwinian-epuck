@@ -115,8 +115,7 @@ public class SupervisorController extends Supervisor {
             if (finished == 1.0f) {
 
                 if (EVOLVING == 1) {
-                    System.out.println("Evaluated individual " + evaluatedNN);
-                    System.out.println("EVOLVING");
+                    //System.out.println("Evaluated individual " + evaluatedNN);
                     //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
                     // Sort populationOfNN by fitness
                     sortPopulation(sortedfitnessNN, fitnessNN);
@@ -170,7 +169,7 @@ public class SupervisorController extends Supervisor {
             } else if (finished == 0.0) {
                 if ((evaluatedNN + 1) < NN_POP_SIZE) {
                     evaluatedNN++;
-                    System.out.println("Evaluated individual " + evaluatedNN);
+                    //System.out.println("Evaluated individual " + evaluatedNN);
                     // Send next genome to experiment
                     resetRobotPosition();
                     byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
