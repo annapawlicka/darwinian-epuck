@@ -16,6 +16,9 @@ import java.util.Random;
  * Evolution is done by elitism, crossover and mutation.
  * Fitness function of agents is how well they learn the games.
  */
+
+//TODO Add reading of best indiv and testing it
+
 public class SupervisorController extends Supervisor {
 
     // Devices
@@ -143,6 +146,13 @@ public class SupervisorController extends Supervisor {
                     } catch (IOException e) {
                         e.getMessage();
                     }
+                    // Log best individual
+                    try {
+                        FilesFunctions.logBestIndiv(populationOfNN, bestNN);
+                    } catch (IOException e) {
+                        System.err.println(e.getMessage());
+                    }
+
                     // Rank populationOfNN, select best individuals and create new generation
                     createNewPopulation();
 

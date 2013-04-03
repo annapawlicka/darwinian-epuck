@@ -18,8 +18,6 @@ import java.util.Random;
  * Fitness function of games is the variance of the actors (Fisher's Law).
  */
 
-// TODO save the best indiv and test it
-
 public class EpuckController extends Robot {
 
     // Global variables
