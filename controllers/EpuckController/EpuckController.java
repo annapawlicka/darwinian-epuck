@@ -29,12 +29,13 @@ public class EpuckController extends Robot {
     private final int PS_RANGE = 3800;
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
+    private final int NB_LIGHT_SENS = 2;            // Number of light sensors used
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
-    private final int NB_INPUTS = 7;
+    private final int NB_INPUTS = 13;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
-    private int NB_CONSTANTS = 5;
+    private int NB_CONSTANTS = 4;
     private float weights[];
 
     // Evolution of games
@@ -95,7 +96,7 @@ public class EpuckController extends Robot {
     // GPS
     private GPS gps;
     private double[] position;
-    private double[] states = new double[11];               // The sensor values  8+3
+    private double[] states = new double[13];               // The sensor values  8+3+2
 
     // Emitter and Receiver
     private Emitter emitter;
@@ -526,7 +527,7 @@ public class EpuckController extends Robot {
     private void updateSenorReadings() {
 
         maxIRActivation = 0;
-        for (int j = 0; j < NB_INPUTS; j++) {
+        for (int j = 0; j < NB_DIST_SENS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
             //get max IR activation
             if (states[j] > maxIRActivation) maxIRActivation = states[j];
@@ -536,12 +537,20 @@ public class EpuckController extends Robot {
             fs_value[i] = fs[i].getValue();
         }
 
+        states[8] = fs_value[0];
+        states[9] = fs_value[1];
+        states[10] = fs_value[2];
+
+
         //Get position of the e-puck
         position = gps.getValues();
 
         // Get reading from light sensors
         ls_value_right = lightSensorRight.getValue();
         ls_value_left = lightSensorLeft.getValue();
+
+        states[11] = ls_value_left;
+        states[12] = ls_value_right;
 
     }
 
