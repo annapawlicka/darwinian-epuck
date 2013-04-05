@@ -21,7 +21,7 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 3;
+    private int GAME_POP_SIZE = 1;
     private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -32,7 +32,7 @@ public class EpuckController extends Robot {
     private final int NB_LIGHT_SENS = 2;            // Number of light sensors used
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
-    private final int NB_INPUTS = 13;
+    private final int NB_INPUTS = 11;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
     private int NB_CONSTANTS = 4;
@@ -96,7 +96,7 @@ public class EpuckController extends Robot {
     // GPS
     private GPS gps;
     private double[] position;
-    private double[] states = new double[13];               // The sensor values  8+3+2
+    private double[] states = new double[11];               // The sensor values  8+1+2
 
     // Emitter and Receiver
     private Emitter emitter;
@@ -262,11 +262,11 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-        // light: 0 - white, approx 1400 - black
-        double light = (ls_value_right + ls_value_left) / 2;
+        // Used for moving towards the light game. Light values: 0 - white, approx 1400 - black
+        //double light = (ls_value_right + ls_value_left) / 2;
         //System.out.println("Light: "+light);
 
-        computeFitness(speed, position, maxIRActivation, fs_value[1], light);
+        computeFitness(speed, position, maxIRActivation, fs_value[1]);
     }
 
 
@@ -277,22 +277,20 @@ public class EpuckController extends Robot {
      * @param position
      * @param maxIRActivation
      * @param floorColour
-     * @param light
      */
-    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour,
-                               double light) throws Exception {
+    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) throws Exception {
 
         // Avoid obstacles:
-        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
+        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
 
         // Follow wall
-        agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+        //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        //agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
+        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
 
         // Go to the light source and avoid obstacles
-        agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
+        //agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
 
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
@@ -537,9 +535,9 @@ public class EpuckController extends Robot {
             fs_value[i] = fs[i].getValue();
         }
 
-        states[8] = fs_value[0];
-        states[9] = fs_value[1];
-        states[10] = fs_value[2];
+        //states[8] = fs_value[0];
+        states[8] = fs_value[1];
+        //states[10] = fs_value[2];
 
 
         //Get position of the e-puck
@@ -549,8 +547,8 @@ public class EpuckController extends Robot {
         ls_value_right = lightSensorRight.getValue();
         ls_value_left = lightSensorLeft.getValue();
 
-        states[11] = ls_value_left;
-        states[12] = ls_value_right;
+        states[9] = ls_value_left;
+        states[10] = ls_value_right;
 
     }
 
@@ -578,18 +576,18 @@ public class EpuckController extends Robot {
         games[0].setConstants(3, 0);    // Ignore floor colour/light
 
 
-        /*Game 2: Follow black line */
+    /*    *//*Game 2: Follow black line *//*
         games[1].setConstants(0, 1);    // Drive fast
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
         games[1].setConstants(3, 1);    // Max black line /light
 
-        /* Game 3: Follow the wall */
+        *//* Game 3: Follow the wall *//*
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
-        games[2].setConstants(3, 0);    // Max black line/light*/
-
+        games[2].setConstants(3, 0);    // Max black line/light*//*
+*/
         /* Follow the light */
         //games[0].setConstants(0, 1);    // Drive fast
         //games[0].setConstants(1, 1);    // Drive straight
