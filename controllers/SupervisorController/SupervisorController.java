@@ -17,7 +17,7 @@ import java.util.Random;
  * Fitness function of agents is how well they learn the games.
  */
 
-//TODO Add reading of best indiv and testing it
+//TODO Test reading best indiv
 
 public class SupervisorController extends Supervisor {
 
@@ -29,6 +29,16 @@ public class SupervisorController extends Supervisor {
     private Node epuck;
     private Field fldTranslation;
     private double[] initTranslation;
+    private Display groundDisplay;
+    private int width, height;
+    private double GROUND_X = 1.0;
+    private double GROUND_Z = 1.0;
+    private int LIGHT_GREY = 0x505050;
+    private int RED = 0xBB2222;
+    private int GREEN = 0x22BB11;
+    private int BLUE = 0x2222BB;
+    private double[] translation;
+    private ImageRef toStore;
 
     private final int TIME_STEP = 128;                      // [ms]
 
@@ -61,7 +71,7 @@ public class SupervisorController extends Supervisor {
     private BufferedWriter out1, out2, out3;
     private BufferedReader in1, in2, in3;
     private FileWriter file1, file2, file3;
-    private BufferedReader reader3;
+    private BufferedReader reader1, reader3;
 
     private Random random = new Random();
 
@@ -77,6 +87,8 @@ public class SupervisorController extends Supervisor {
         while (step(TIME_STEP) != -1) {
             byte[] nnFit;
             float finished = -1;
+
+            drawRobotsPosition();
 
             // As long as individual is being evaluated, print current fitness and return
             int n = receiver.getQueueLength();
@@ -178,6 +190,8 @@ public class SupervisorController extends Supervisor {
                 }
             } else if (finished == 0.0) {
                 if ((evaluatedNN + 1) < NN_POP_SIZE) {
+                    storeImage(evaluatedNN);
+                    resetDisplay();
                     evaluatedNN++;
                     //System.out.println("Evaluated individual " + evaluatedNN);
                     // Send next genome to experiment
@@ -187,6 +201,40 @@ public class SupervisorController extends Supervisor {
                 }
             }
         }
+    }
+
+    /**
+     * Store screenshot of display node into an image file, append current individual's index to file's name
+     * @param indivIndex
+     */
+    private void storeImage(int indivIndex){
+        toStore = groundDisplay.imageCopy(0,0,width,height);
+        groundDisplay.imageSave(toStore,"screenshot"+indivIndex+".png");
+        groundDisplay.imageDelete(toStore);
+    }
+
+    /**
+     * Draw current robot's position on the display
+     */
+    private void drawRobotsPosition(){
+        translation = fldTranslation.getSFVec3f();
+        groundDisplay.setOpacity(0.03);
+        groundDisplay.setColor(GREEN);
+        groundDisplay.fillOval(
+                (int) (width * (translation[0] + GROUND_X / 2) / GROUND_X),
+                (int) (height * (translation[2] + GROUND_Z / 2) / GROUND_Z),
+                4,
+                4);
+    }
+
+    /**
+     * Reset display node by repainting the background
+     */
+    private void resetDisplay(){
+        groundDisplay.setOpacity(1.0);
+        groundDisplay.setColor(LIGHT_GREY);
+        groundDisplay.fillRectangle(0, 0, width, height);
+        translation = fldTranslation.getSFVec3f();
     }
 
     private void normaliseFitnessScore(double[] fitnessScores) {
@@ -227,10 +275,9 @@ public class SupervisorController extends Supervisor {
             byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
             emitter.send(msgInBytes);
         }
-
-        if (TESTING == 1) {
-            int counter = 0;
-            String strLine;
+        int counter = 0;
+        String strLine;
+        if (TESTING == 1) { // Test last recorded generation
             try {
                 while ((strLine = reader3.readLine()) != null && counter < 50) {
                     String[] weightsStr = strLine.split(",");
@@ -245,6 +292,21 @@ public class SupervisorController extends Supervisor {
 
 
             System.out.println("TESTING LAST GENERATION \n");
+        }
+
+        if (TESTING == 2) { // Test best individual - whole population will be filled with the same individual's weights
+            try {
+                while ((strLine = reader1.readLine()) != null) {    // Only one line in a file. TODO check if doesn't throw exception
+                    String[] weightsStr = strLine.split(",");
+                    for (i = 0; i < NN_POP_SIZE; i++) {
+                        for (int j = 0; j < populationOfNN[i].getWeightsNo(); j++) {
+                            populationOfNN[i].setWeights(j, Float.parseFloat(weightsStr[j]));
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+            }
         }
     }
 
@@ -443,6 +505,13 @@ public class SupervisorController extends Supervisor {
         initTranslation = new double[3];
         initTranslation = fldTranslation.getSFVec3f();
 
+        // Display
+        groundDisplay = getDisplay("ground_display");
+        width = groundDisplay.getWidth();
+        height = groundDisplay.getHeight();
+        // paint the display's background
+        resetDisplay();
+
         // Logging
         try {
             file1 = new FileWriter("results:fitness.txt");
@@ -486,11 +555,20 @@ public class SupervisorController extends Supervisor {
 
         out3 = new BufferedWriter(file3);
 
+        /* Reading from file - for testing purposes */
 
         try {
             reader3 = new BufferedReader(new FileReader("results:genomes.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Cannot read from file: results:genomes.txt");
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            reader1 = new BufferedReader(new FileReader("best_actor.txt"));
+        } catch (FileNotFoundException e) {
+            System.out.println("Cannot read from file: best_actor.txt");
+            System.out.println(e.getMessage());
         }
 
         System.out.println("Supervisor has been initialised.");
