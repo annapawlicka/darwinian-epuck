@@ -158,7 +158,7 @@ public class SupervisorController extends Supervisor {
                     }
                     // Log best individual
                     try {
-                        FilesFunctions.logBestIndiv(populationOfNN, bestNN);
+                        FilesFunctions.logBestIndiv(populationOfNN, absBestNN);
                     } catch (IOException e) {
                         System.err.println(e.getMessage());
                     }
