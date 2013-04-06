@@ -5,28 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" name="Default" comment="Added logging of fitness of each individual for each generation.">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/copyright/Anna_Pawlicka.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/nn/NeuralNetwork.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" afterPath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/e-puck_line.wbt" afterPath="$PROJECT_DIR$/worlds/e-puck_line.wbt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:bestgenome.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:bestgenome.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/EpuckController/results:bestgenome_games.txt" afterPath="$PROJECT_DIR$/controllers/EpuckController/results:bestgenome_games.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:fitness.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:fitness.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/EpuckController/results:fitness_games.txt" afterPath="$PROJECT_DIR$/controllers/EpuckController/results:fitness_games.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="darwinian-epuck.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364936607542" ignored="false" />
+    <file path="/Dummy.txt" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365252398863" ignored="false" />
     <file path="/README.md" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363519176693" ignored="false" />
     <file path="/README" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363520436833" ignored="false" />
     <file path="/Game.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364683363862" ignored="false" />
     <file path="/NeuralNetwork.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363523531046" ignored="false" />
-    <file path="/SupervisorController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364834377059" ignored="false" />
-    <file path="/EpuckController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364936568911" ignored="false" />
+    <file path="/SupervisorController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365251904625" ignored="false" />
+    <file path="/EpuckController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365169732742" ignored="false" />
     <file path="/Util.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364830300329" ignored="false" />
     <file path="/fragment.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051315399" ignored="false" />
     <file path="/StringUtil.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610428927" ignored="false" />
@@ -34,7 +27,7 @@
     <file path="/sample.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610802460" ignored="false" />
     <file path="/a.groovy" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610812798" ignored="false" />
     <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/MPI/src/BroadcastReduce.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363626862541" ignored="false" />
-    <file path="/FilesFunctions.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364927837954" ignored="false" />
+    <file path="/FilesFunctions.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365020386440" ignored="false" />
     <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/build.xml" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363814716150" ignored="false" />
     <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/CommunityMapper.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363721073174" ignored="false" />
     <file path="/Volumes/D/QMUL/aThird/B - HPC/Labs/lab3/src/WordCount.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363718698858" ignored="false" />
@@ -109,7 +102,6 @@
     <disable_hints />
   </component>
   <component name="DebuggerManager">
-    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_any default_suspend_policy="SuspendAll" default_condition_enabled="true">
       <breakpoint>
         <option name="NOTIFY_CAUGHT" value="true" />
@@ -144,6 +136,7 @@
         <option name="LOG_MESSAGE" value="" />
       </breakpoint>
     </breakpoint_any>
+    <line_breakpoints default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <ui_properties default_suspend_policy="SuspendAll" default_condition_enabled="true" />
     <breakpoint_rules />
     <ui_properties />
@@ -157,7 +150,7 @@
       <file leaf-file-name="SupervisorController.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="183" column="57" selection-start="8127" selection-end="8127" vertical-scroll-proportion="0.63746226">
+            <state line="238" column="69" selection-start="9800" selection-end="9800" vertical-scroll-proportion="0.7477341">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -168,16 +161,7 @@
       <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="70" selection-start="697" selection-end="697" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="108" column="51" selection-start="3381" selection-end="3381" vertical-scroll-proportion="0.0">
+            <state line="42" column="41" selection-start="1182" selection-end="1198" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -186,7 +170,16 @@
       <file leaf-file-name="EpuckController.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="325" column="115" selection-start="13137" selection-end="13137" vertical-scroll-proportion="0.0">
+            <state line="491" column="27" selection-start="19755" selection-end="19755" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="41" column="35" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -224,9 +217,9 @@
         <option value="$PROJECT_DIR$/controllers/EpuckController/util/StringUtil.java" />
         <option value="$PROJECT_DIR$/controllers/EpuckController/games/Game.java" />
         <option value="$PROJECT_DIR$/controllers/SupervisorController/utils/Util.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java" />
         <option value="$PROJECT_DIR$/controllers/EpuckController/util/Util.java" />
         <option value="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java" />
-        <option value="$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java" />
         <option value="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" />
         <option value="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java" />
       </list>
@@ -266,7 +259,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -397,6 +389,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -414,12 +407,12 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="MemberChooser.showClasses" value="true" />
     <property name="FullScreen" value="false" />
+    <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
+    <property name="dynamic.classpath" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -457,19 +450,6 @@
       <option name="PORT" value="5005" />
       <method />
     </configuration>
-    <configuration default="true" type="Applet" factoryName="Applet">
-      <module name="" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="HTML_FILE_NAME" />
-      <option name="HTML_USED" value="false" />
-      <option name="WIDTH" value="400" />
-      <option name="HEIGHT" value="300" />
-      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
-      <option name="VM_PARAMETERS" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <method />
-    </configuration>
     <configuration default="true" type="TestNG" factoryName="TestNG">
       <module name="" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
@@ -495,6 +475,19 @@
       <envs />
       <properties />
       <listeners />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <module name="" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="HTML_FILE_NAME" />
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <option name="VM_PARAMETERS" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
       <method />
     </configuration>
     <configuration default="true" type="Application" factoryName="Application">
@@ -816,7 +809,43 @@
       <created>1364936614856</created>
       <updated>1364936614856</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="Bug fix: Fitness of actors is normalised separately for each game - since each game produces different max and min. Ensures fair normalization.">
+      <created>1364986802857</created>
+      <updated>1364986802857</updated>
+    </task>
+    <task id="LOCAL-00057" summary="Cleaning up">
+      <created>1364987148000</created>
+      <updated>1364987148001</updated>
+    </task>
+    <task id="LOCAL-00058" summary="Bug fix: Fitness arrays are now reset after each actor evaluation">
+      <created>1364987920503</created>
+      <updated>1364987920503</updated>
+    </task>
+    <task id="LOCAL-00059" summary="Fitness of actors is normalized by epuck controller now. Changing how messaging is performed.">
+      <created>1365018927102</created>
+      <updated>1365018927102</updated>
+    </task>
+    <task id="LOCAL-00060" summary="Changing how fitness is normalised, changign messaging, adding fitness function to move towards the light.">
+      <created>1365018972630</created>
+      <updated>1365018972630</updated>
+    </task>
+    <task id="LOCAL-00061" summary="Added saving of best actor to a file">
+      <created>1365020644868</created>
+      <updated>1365020644868</updated>
+    </task>
+    <task id="LOCAL-00062" summary="Bug fix: states array was not being updated so no additional sensorimotor inputs were passed to neural network">
+      <created>1365076731735</created>
+      <updated>1365076731736</updated>
+    </task>
+    <task id="LOCAL-00063" summary="Testing fine tuned line following.">
+      <created>1365170333340</created>
+      <updated>1365170333340</updated>
+    </task>
+    <task id="LOCAL-00064" summary="Added Display on which current e-puck position is drawn. The image is stored to the file.">
+      <created>1365252407603</created>
+      <updated>1365252407603</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -858,7 +887,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32998565" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20229556" sideWeight="0.4694168" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20229556" sideWeight="0.6728307" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32859176" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -905,7 +934,7 @@
     <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="Improving normalisation" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Display on which current e-puck position is drawn. The image is stored to the file." />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -918,14 +947,6 @@
     <option name="UPDATE_GROUP_BY_CHANGELIST" value="false" />
     <option name="SHOW_FILE_HISTORY_AS_TREE" value="false" />
     <option name="FILE_HISTORY_SPLITTER_PROPORTION" value="0.6" />
-    <MESSAGE value="Changing data structure for fitness scores. Fixing minor bugs." />
-    <MESSAGE value="Changing value of black line colour that's used by fitness function." />
-    <MESSAGE value="Changing game constructor to allow varied number of constants" />
-    <MESSAGE value="Changing fitness function polynomial" />
-    <MESSAGE value="Added normalisation of fitness score. Fixed a problem with min_fitness used for roulette selection - caused infinite loop when all scores were negative." />
-    <MESSAGE value="Added method to calculate standard deviation." />
-    <MESSAGE value="Bug fix: last individual in population was not evaluated. Changing normalisation to (0,1)." />
-    <MESSAGE value="Updated normalisation of fitness scores." />
     <MESSAGE value="Implementing roulette selection for evolution's crossover" />
     <MESSAGE value="Improved version of fitness function polynomial" />
     <MESSAGE value="Bug fix: population size now refers to games and not to nn." />
@@ -938,11 +959,19 @@
     <MESSAGE value="Added logging of fitness of each individual for each generation." />
     <MESSAGE value="Renamed method to log component fitness" />
     <MESSAGE value="Adding some comments to logging file" />
-    <MESSAGE value="Cleaning up" />
     <MESSAGE value="Added storing of last games generation" />
     <MESSAGE value="Added light sensor" />
     <MESSAGE value="Added logging of games genomes and increased population of games to 20. Initialised randomly." />
     <MESSAGE value="Improving normalisation" />
+    <MESSAGE value="Bug fix: Fitness of actors is normalised separately for each game - since each game produces different max and min. Ensures fair normalization." />
+    <MESSAGE value="Cleaning up" />
+    <MESSAGE value="Bug fix: Fitness arrays are now reset after each actor evaluation" />
+    <MESSAGE value="Fitness of actors is normalized by epuck controller now. Changing how messaging is performed." />
+    <MESSAGE value="Changing how fitness is normalised, changign messaging, adding fitness function to move towards the light." />
+    <MESSAGE value="Added saving of best actor to a file" />
+    <MESSAGE value="Bug fix: states array was not being updated so no additional sensorimotor inputs were passed to neural network" />
+    <MESSAGE value="Testing fine tuned line following." />
+    <MESSAGE value="Added Display on which current e-puck position is drawn. The image is stored to the file." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1023,35 +1052,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/Util.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="87" column="33" selection-start="2179" selection-end="2179" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="70" selection-start="697" selection-end="697" vertical-scroll-proportion="0.0">
+        <state line="92" column="36" selection-start="2304" selection-end="2304" vertical-scroll-proportion="0.51111114">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="108" column="51" selection-start="3381" selection-end="3381" vertical-scroll-proportion="0.0">
+        <state line="41" column="35" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="325" column="115" selection-start="13137" selection-end="13137" vertical-scroll-proportion="0.0">
+        <state line="491" column="27" selection-start="19755" selection-end="19755" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="42" column="41" selection-start="1182" selection-end="1198" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="183" column="57" selection-start="8127" selection-end="8127" vertical-scroll-proportion="0.63746226">
+        <state line="238" column="69" selection-start="9800" selection-end="9800" vertical-scroll-proportion="0.7477341">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
