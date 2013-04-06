@@ -33,10 +33,8 @@ public class SupervisorController extends Supervisor {
     private int width, height;
     private double GROUND_X = 0.9;
     private double GROUND_Z = 0.9;
-    private int LIGHT_GREY = 0x505050;
-    private int RED = 0xBB2222;
-    private int GREEN = 0x22BB11;
-    private int BLUE = 0x2222BB;
+    private int WHITE = 0xFFFFFF;
+    private int BLACK = 0x000000;
     private double[] translation;
     private ImageRef toStore;
 
@@ -219,7 +217,7 @@ public class SupervisorController extends Supervisor {
     private void drawRobotsPosition(){
         translation = fldTranslation.getSFVec3f();
         groundDisplay.setOpacity(0.03);
-        groundDisplay.setColor(GREEN);
+        groundDisplay.setColor(BLACK);
         groundDisplay.fillOval(
                 (int) (height * (translation[2] + GROUND_Z / 2) / GROUND_Z),
                 (int) (width * (translation[0] + GROUND_X / 2) / GROUND_X),
@@ -232,7 +230,7 @@ public class SupervisorController extends Supervisor {
      */
     private void resetDisplay(){
         groundDisplay.setOpacity(1.0);
-        groundDisplay.setColor(LIGHT_GREY);
+        groundDisplay.setColor(WHITE);
         groundDisplay.fillRectangle(0, 0, width, height);
         translation = fldTranslation.getSFVec3f();
     }
