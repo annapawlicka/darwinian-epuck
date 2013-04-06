@@ -9,8 +9,8 @@ WorldInfo {
   displayRefresh 1
 }
 Viewpoint {
-  orientation -0.421337 0.751773 0.50726 2.0252
-  position 1.2243 3.33803 -0.418028
+  orientation -0.584324 0.560376 0.586978 2.12389
+  position -0.193334 3.61423 0.0684961
 }
 Background {
   skyColor [
@@ -25,7 +25,7 @@ DEF GROUND Solid {
         }
         texture ImageTexture {
           url [
-            "textures/floor1.png"
+            "textures/oval_line.png"
           ]
         }
       }
@@ -74,26 +74,13 @@ DEF GROUNDBORDER Solid {
   ]
   name "ground"
 }
-DEF LAMP Solid {
-  translation 0.344865 0.095 -0.113185
-  children [
-    Shape {
-      appearance Appearance {
-        material Material {
-          emissiveColor 1 1 1
-        }
-      }
-      geometry Sphere {
-        radius 0.01
-      }
-    }
-    PointLight {
-      ambientIntensity 4
-      attenuation 0 0 7
-      intensity 0.45
-      radius 1
-    }
-  ]
+PointLight {
+  ambientIntensity 0.2
+  location 0 0.899999 0
+}
+PointLight {
+  ambientIntensity 0.2
+  location 0 -0.17 0
 }
 DEF WALL Solid {
   children [
@@ -182,7 +169,7 @@ DEF WALL Solid {
   locked TRUE
 }
 DEF OBSTACLE2 Solid {
-  translation -0.23137 0.025 -0.294426
+  translation 0.00527718 0.025 0.247594
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -200,7 +187,7 @@ DEF OBSTACLE2 Solid {
   boundingObject USE BOX2
 }
 DEF OBSTACLE3 Solid {
-  translation 0.157409 0.025 -0.0420456
+  translation 0.145202 0.025 -0.0978999
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -218,7 +205,7 @@ DEF OBSTACLE3 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE4 Solid {
-  translation -0.273275 0.015 0.0528786
+  translation -0.154405 0.015 -0.149738
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -236,7 +223,7 @@ DEF OBSTACLE4 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE5 Solid {
-  translation 0.251598 0.025 0.187689
+  translation 0.366476 0.025 0.363352
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -254,8 +241,8 @@ DEF OBSTACLE5 Solid {
   boundingObject USE BOX2
 }
 DEF EPUCK DifferentialWheels {
-  translation -0.313989 -0.000452939 0.356051
-  rotation 0.0018 0.999998 -0.000236 2.35617
+  translation -0.203365 -0.000400058 0.336624
+  rotation 0.0150751 0.999675 -0.0205452 1.9969
   children [
     Receiver {
       name "gamesreceiverepuck"
@@ -1806,7 +1793,6 @@ Supervisor {
   children [
     DEF GROUND Display {
       name "ground_display"
-      boundingObject USE SHAPE
       pixelSize 4
     }
     Receiver {

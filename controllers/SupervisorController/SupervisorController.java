@@ -31,8 +31,8 @@ public class SupervisorController extends Supervisor {
     private double[] initTranslation;
     private Display groundDisplay;
     private int width, height;
-    private double GROUND_X = 1.0;
-    private double GROUND_Z = 1.0;
+    private double GROUND_X = 0.9;
+    private double GROUND_Z = 0.9;
     private int LIGHT_GREY = 0x505050;
     private int RED = 0xBB2222;
     private int GREEN = 0x22BB11;
@@ -193,7 +193,7 @@ public class SupervisorController extends Supervisor {
                     storeImage(evaluatedNN);
                     resetDisplay();
                     evaluatedNN++;
-                    //System.out.println("Evaluated individual " + evaluatedNN);
+                    System.out.println("Evaluated individual " + evaluatedNN);
                     // Send next genome to experiment
                     resetRobotPosition();
                     byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
@@ -221,10 +221,10 @@ public class SupervisorController extends Supervisor {
         groundDisplay.setOpacity(0.03);
         groundDisplay.setColor(GREEN);
         groundDisplay.fillOval(
-                (int) (width * (translation[0] + GROUND_X / 2) / GROUND_X),
                 (int) (height * (translation[2] + GROUND_Z / 2) / GROUND_Z),
-                4,
-                4);
+                (int) (width * (translation[0] + GROUND_X / 2) / GROUND_X),
+                2,
+                2);
     }
 
     /**

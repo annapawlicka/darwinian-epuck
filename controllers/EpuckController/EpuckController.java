@@ -29,10 +29,10 @@ public class EpuckController extends Robot {
     private final int PS_RANGE = 3800;
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
-    private final int NB_LIGHT_SENS = 2;            // Number of light sensors used
+    //private final int NB_LIGHT_SENS = 2;            // Number of light sensors used
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
-    private final int NB_INPUTS = 11;
+    private final int NB_INPUTS = 9;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
     private int NB_CONSTANTS = 4;
@@ -80,10 +80,10 @@ public class EpuckController extends Robot {
     private double maxIRActivation;
 
     // Light sensor
-    private LightSensor lightSensorRight;
-    private LightSensor lightSensorLeft;
-    private double ls_value_left;
-    private double ls_value_right;
+    //private LightSensor lightSensorRight;
+    //private LightSensor lightSensorLeft;
+    //private double ls_value_left;
+    //private double ls_value_right;
 
     // LEDs
     private int ledsNo = 8;
@@ -96,7 +96,7 @@ public class EpuckController extends Robot {
     // GPS
     private GPS gps;
     private double[] position;
-    private double[] states = new double[11];               // The sensor values  8+1+2
+    private double[] states = new double[NB_INPUTS];               // The sensor values  8+1
 
     // Emitter and Receiver
     private Emitter emitter;
@@ -388,7 +388,7 @@ public class EpuckController extends Robot {
         for (i = 0; i < fitnessScores.length; i++) {
             //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
             //max = Util.max(fitnessScores[i]);
-            if(i==0) { min = -100000; max = 150000; }
+            if(i==0) { min = -100000; max = 250000; }
             if(i==1) { min = -60000; max = 40000; }
             if(i==2) { min = 0; max = 500; }
             for (j = 0; j < fitnessScores[i].length; j++) {
@@ -544,11 +544,11 @@ public class EpuckController extends Robot {
         position = gps.getValues();
 
         // Get reading from light sensors
-        ls_value_right = lightSensorRight.getValue();
-        ls_value_left = lightSensorLeft.getValue();
+        //ls_value_right = lightSensorRight.getValue();
+        //ls_value_left = lightSensorLeft.getValue();
 
-        states[9] = ls_value_left;
-        states[10] = ls_value_right;
+        //states[9] = ls_value_left;
+        //states[10] = ls_value_right;
 
     }
 
@@ -677,10 +677,10 @@ public class EpuckController extends Robot {
         for(i=0; i<led.length; i++) led[i].set(1);
 
         /* Initialise light sensor */
-        lightSensorRight = getLightSensor("ls0");
-        lightSensorRight.enable(TIME_STEP);
-        lightSensorLeft = getLightSensor("ls7");
-        lightSensorLeft.enable(TIME_STEP);
+        //lightSensorRight = getLightSensor("ls0");
+        //lightSensorRight.enable(TIME_STEP);
+        //lightSensorLeft = getLightSensor("ls7");
+        //lightSensorLeft.enable(TIME_STEP);
 
         /* Initialise IR floor sensors */
         fs = new DistanceSensor[floorSensorsNo];

@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" name="Default" comment="Added logging of fitness of each individual for each generation.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.class" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/worlds/textures/floor.png" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" afterPath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" afterPath="$PROJECT_DIR$/worlds/.e-puck_line.wbproj" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/textures/floor1.png" afterPath="$PROJECT_DIR$/worlds/textures/floor1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/textures/oval_line.png" afterPath="$PROJECT_DIR$/worlds/textures/oval_line.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/screenshot0.png" afterPath="$PROJECT_DIR$/controllers/SupervisorController/screenshot0.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" afterPath="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java" afterPath="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/best_actor.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/best_actor.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/worlds/e-puck_line.wbt" afterPath="$PROJECT_DIR$/worlds/e-puck_line.wbt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" afterPath="$PROJECT_DIR$/controllers/SupervisorController/results:genomes.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="darwinian-epuck.iws" />
@@ -18,8 +24,8 @@
     <file path="/README" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363520436833" ignored="false" />
     <file path="/Game.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364683363862" ignored="false" />
     <file path="/NeuralNetwork.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363523531046" ignored="false" />
-    <file path="/SupervisorController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365251904625" ignored="false" />
-    <file path="/EpuckController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365169732742" ignored="false" />
+    <file path="/SupervisorController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365266326239" ignored="false" />
+    <file path="/EpuckController.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1365268917940" ignored="false" />
     <file path="/Util.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364830300329" ignored="false" />
     <file path="/fragment.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1364051315399" ignored="false" />
     <file path="/StringUtil.java" changelist="2f9a9cdb-ce98-4f86-a54d-87eb06af8cb1" time="1363610428927" ignored="false" />
@@ -150,7 +156,7 @@
       <file leaf-file-name="SupervisorController.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="238" column="69" selection-start="9800" selection-end="9800" vertical-scroll-proportion="0.7477341">
+            <state line="223" column="11" selection-start="9308" selection-end="9308" vertical-scroll-proportion="0.27190334">
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -158,28 +164,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="41" selection-start="1182" selection-end="1198" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="EpuckController.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="491" column="27" selection-start="19755" selection-end="19755" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FilesFunctions.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="41" column="35" selection-start="1129" selection-end="1129" vertical-scroll-proportion="0.0">
+            <state line="263" column="9" selection-start="10935" selection-end="10935" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -220,8 +208,8 @@
         <option value="$PROJECT_DIR$/controllers/EpuckController/util/FilesFunctions.java" />
         <option value="$PROJECT_DIR$/controllers/EpuckController/util/Util.java" />
         <option value="$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java" />
-        <option value="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" />
         <option value="$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java" />
+        <option value="$PROJECT_DIR$/controllers/EpuckController/EpuckController.java" />
       </list>
     </option>
   </component>
@@ -981,13 +969,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="95" column="44" selection-start="4101" selection-end="4101" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="141" column="29" selection-start="6183" selection-end="6183" vertical-scroll-proportion="0.0">
@@ -1064,13 +1045,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="491" column="27" selection-start="19755" selection-end="19755" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/utils/FilesFunctions.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="42" column="41" selection-start="1182" selection-end="1198" vertical-scroll-proportion="0.0">
@@ -1078,9 +1052,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar:///Applications/Webots/lib/Controller.jar!/com/cyberbotics/webots/controller/Field.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="54" column="20" selection-start="1990" selection-end="1990" vertical-scroll-proportion="0.34615386">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controllers/EpuckController/EpuckController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="263" column="9" selection-start="10935" selection-end="10935" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/controllers/SupervisorController/SupervisorController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="238" column="69" selection-start="9800" selection-end="9800" vertical-scroll-proportion="0.7477341">
+        <state line="223" column="11" selection-start="9308" selection-end="9308" vertical-scroll-proportion="0.27190334">
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
