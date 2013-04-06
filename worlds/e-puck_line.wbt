@@ -9,8 +9,8 @@ WorldInfo {
   displayRefresh 1
 }
 Viewpoint {
-  orientation 0.505102 -0.829785 -0.237336 5.25272
-  position 1.38509 1.1927 1.28107
+  orientation -0.421337 0.751773 0.50726 2.0252
+  position 1.2243 3.33803 -0.418028
 }
 Background {
   skyColor [
@@ -75,7 +75,7 @@ DEF GROUNDBORDER Solid {
   name "ground"
 }
 DEF LAMP Solid {
-  translation 0.364675 0.095 -0.219999
+  translation 0.344865 0.095 -0.113185
   children [
     Shape {
       appearance Appearance {
@@ -88,9 +88,10 @@ DEF LAMP Solid {
       }
     }
     PointLight {
-      ambientIntensity 1
-      attenuation 1 0 10
-      intensity 5
+      ambientIntensity 4
+      attenuation 0 0 7
+      intensity 0.45
+      radius 1
     }
   ]
 }
@@ -181,7 +182,7 @@ DEF WALL Solid {
   locked TRUE
 }
 DEF OBSTACLE2 Solid {
-  translation -0.249585 0.025 -0.213118
+  translation -0.23137 0.025 -0.294426
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -199,7 +200,7 @@ DEF OBSTACLE2 Solid {
   boundingObject USE BOX2
 }
 DEF OBSTACLE3 Solid {
-  translation 0.112633 0.025 -0.0325507
+  translation 0.157409 0.025 -0.0420456
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -217,7 +218,7 @@ DEF OBSTACLE3 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE4 Solid {
-  translation -0.234371 0.015 0.178583
+  translation -0.273275 0.015 0.0528786
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -235,7 +236,7 @@ DEF OBSTACLE4 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE5 Solid {
-  translation 0.25408 0.025 0.250042
+  translation 0.251598 0.025 0.187689
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -253,8 +254,8 @@ DEF OBSTACLE5 Solid {
   boundingObject USE BOX2
 }
 DEF EPUCK DifferentialWheels {
-  translation -0.0021653 -0.000424868 0.0476013
-  rotation -0.0189681 0.999624 0.0197971 0.191091
+  translation -0.313989 -0.000452939 0.356051
+  rotation 0.0018 0.999998 -0.000236 2.35617
   children [
     Receiver {
       name "gamesreceiverepuck"
@@ -1262,6 +1263,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1281,6 +1283,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1300,6 +1303,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1319,6 +1323,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1329,6 +1334,7 @@ DEF EPUCK DifferentialWheels {
         }
       ]
       name "led3"
+      locked TRUE
     }
     DEF EPUCK_LED4 LED {
       translation 0 0.041 0.033
@@ -1337,6 +1343,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
             }
           }
@@ -1372,6 +1379,7 @@ DEF EPUCK DifferentialWheels {
         }
       ]
       name "led4"
+      locked TRUE
     }
     DEF EPUCK_LED5 LED {
       translation -0.02 0.041 0.027
@@ -1381,6 +1389,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1391,6 +1400,7 @@ DEF EPUCK DifferentialWheels {
         }
       ]
       name "led5"
+      locked TRUE
     }
     DEF EPUCK_LED6 LED {
       translation -0.0335 0.041 0
@@ -1400,6 +1410,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1410,6 +1421,7 @@ DEF EPUCK DifferentialWheels {
         }
       ]
       name "led6"
+      locked TRUE
     }
     DEF EPUCK_LED7 LED {
       translation -0.025 0.041 -0.022
@@ -1419,6 +1431,7 @@ DEF EPUCK DifferentialWheels {
           appearance Appearance {
             material Material {
               diffuseColor 1 1 1
+              emissiveColor 1 0 0
               shininess 0.078125
               transparency 0.3
             }
@@ -1429,6 +1442,7 @@ DEF EPUCK DifferentialWheels {
         }
       ]
       name "led7"
+      locked TRUE
     }
     DEF EPUCK_BODY Transform {
       rotation 0 1 0 3.14159
@@ -1790,6 +1804,11 @@ DEF EPUCK DifferentialWheels {
 }
 Supervisor {
   children [
+    DEF GROUND Display {
+      name "ground_display"
+      boundingObject USE SHAPE
+      pixelSize 4
+    }
     Receiver {
     }
     Emitter {
