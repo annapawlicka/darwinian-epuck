@@ -9,8 +9,8 @@ WorldInfo {
   displayRefresh 1
 }
 Viewpoint {
-  orientation -0.584324 0.560376 0.586978 2.12389
-  position -0.193334 3.61423 0.0684961
+  orientation -0.593279 0.541143 0.595973 2.15333
+  position -0.373427 3.58496 0.0690497
 }
 Background {
   skyColor [
@@ -76,10 +76,12 @@ DEF GROUNDBORDER Solid {
 }
 PointLight {
   ambientIntensity 0.2
+  intensity 1.5
   location 0 0.899999 0
 }
 PointLight {
   ambientIntensity 0.2
+  intensity 1.5
   location 0 -0.17 0
 }
 DEF WALL Solid {
@@ -169,7 +171,7 @@ DEF WALL Solid {
   locked TRUE
 }
 DEF OBSTACLE2 Solid {
-  translation 0.00527718 0.025 0.247594
+  translation -0.238833 0.025 0.227705
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -187,7 +189,7 @@ DEF OBSTACLE2 Solid {
   boundingObject USE BOX2
 }
 DEF OBSTACLE3 Solid {
-  translation 0.145202 0.025 -0.0978999
+  translation 0.201977 0.025 -0.165058
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -205,7 +207,7 @@ DEF OBSTACLE3 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE4 Solid {
-  translation -0.154405 0.015 -0.149738
+  translation -0.22757 0.015 -0.180292
   rotation 0 1 0 13.7261
   children [
     Shape {
@@ -223,7 +225,7 @@ DEF OBSTACLE4 Solid {
   boundingObject USE BOX3
 }
 DEF OBSTACLE5 Solid {
-  translation 0.366476 0.025 0.363352
+  translation 0.054906 0.025 0.222805
   rotation 0 1 0 3.82203
   children [
     Shape {
@@ -241,8 +243,8 @@ DEF OBSTACLE5 Solid {
   boundingObject USE BOX2
 }
 DEF EPUCK DifferentialWheels {
-  translation -0.203365 -0.000400058 0.336624
-  rotation 0.0150751 0.999675 -0.0205452 1.9969
+  translation 0.274047 -0.000396299 0.401932
+  rotation 0.00142707 0.999999 -0.000906985 2.84934
   children [
     Receiver {
       name "gamesreceiverepuck"

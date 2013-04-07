@@ -67,14 +67,14 @@ public class EpuckController extends Robot {
     private final int REALITY = 2;                  // for robot.get_mode() function
 
     // 8 IR proximity sensors
-    private int proximitySensorsNo = 8;
+    private int NB_PROXIMITY_SENSORS = 8;
     private DistanceSensor[] ps;
     private float[] ps_offset;
     private int[] PS_OFFSET_SIMULATION = new int[]{300, 300, 300, 300, 300, 300, 300, 300};
     private int[] PS_OFFSET_REALITY = new int[]{480, 170, 320, 500, 600, 680, 210, 640};
 
     // 3 IR floor color sensors
-    private int floorSensorsNo = 3;
+    private int NB_FLOOR_SENSORS = 3;
     private DistanceSensor[] fs;
     private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
@@ -86,8 +86,8 @@ public class EpuckController extends Robot {
     //private double ls_value_right;
 
     // LEDs
-    private int ledsNo = 8;
-    private LED[] led = new LED[ledsNo];
+    private int NB_LEDS = 8;
+    private LED[] led = new LED[NB_LEDS];
 
     // Differential Wheels
     private DifferentialWheels robot = new DifferentialWheels();
@@ -254,9 +254,9 @@ public class EpuckController extends Robot {
 
         // Stop the robot if it is against an obstacle
         for (int i = 0; i < NB_DIST_SENS; i++) {
-            double tmpps = (((ps[i].getValue()) - ps_offset[i]) < 0) ? 0 : ((ps[i].getValue()) - ps_offset[i]);
+            double temp_ps = (((ps[i].getValue()) - ps_offset[i]) < 0) ? 0 : ((ps[i].getValue()) - ps_offset[i]);
 
-            if (OBSTACLE_THRESHOLD < tmpps) {// proximity sensors
+            if (OBSTACLE_THRESHOLD < temp_ps) {// proximity sensors
                 speed[LEFT] = 0;
                 speed[RIGHT] = 0;
                 break;
@@ -265,7 +265,7 @@ public class EpuckController extends Robot {
         // Used for moving towards the light game. Light values: 0 - white, approx 1400 - black
         //double light = (ls_value_right + ls_value_left) / 2;
         //System.out.println("Light: "+light);
-
+        //if(fs_value[1] > 1000) System.out.println(fs_value[1]);
         computeFitness(speed, position, maxIRActivation, fs_value[1]);
     }
 
@@ -281,13 +281,15 @@ public class EpuckController extends Robot {
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) throws Exception {
 
         // Avoid obstacles:
-        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
+        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
 
         // Follow wall
-        //agentsFitness[indiv][1] += Util.mean(speed) * Util.normalize(0, 4000, maxIRActivation);
+        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) ))
+        //        * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 900, floorColour))) );
+        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation)))
+        //       *  (1-Util.normalize(0, 1100, floorColour)) );
 
         // Go to the light source and avoid obstacles
         //agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
@@ -338,9 +340,7 @@ public class EpuckController extends Robot {
     private void setActorsFitness(){
         int i, j;
         for (i = 0; i < agentsFitness.length; i++) {
-            for (j = 0; j < agentsFitness[i].length; j++) {
-                actorFitPerGame[j][i] = agentsFitness[i][j];
-            }
+            for (j = 0; j < agentsFitness[i].length; j++) actorFitPerGame[j][i] = agentsFitness[i][j];
         }
 
         // Normalise
@@ -348,9 +348,7 @@ public class EpuckController extends Robot {
 
         // Update (sum up) array of actors fitness scores so that it can be sent to supervisor
         for (i = 0; i < actorFitPerGame.length; i++) {
-            for (j = 0; j < actorFitPerGame[i].length; j++) {
-                sumOfFitnesses[j] += actorFitPerGame[i][j];
-            }
+            for (j = 0; j < actorFitPerGame[i].length; j++) sumOfFitnesses[j] += actorFitPerGame[i][j];
         }
 
         FilesFunctions.logAllCompFit(out4, actorFitPerGame, generation);
@@ -388,7 +386,7 @@ public class EpuckController extends Robot {
         for (i = 0; i < fitnessScores.length; i++) {
             //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
             //max = Util.max(fitnessScores[i]);
-            if(i==0) { min = -100000; max = 250000; }
+            if(i==0) { min = -200000; max = 250000; }
             if(i==1) { min = -60000; max = 40000; }
             if(i==2) { min = 0; max = 500; }
             for (j = 0; j < fitnessScores[i].length; j++) {
@@ -531,7 +529,7 @@ public class EpuckController extends Robot {
             if (states[j] > maxIRActivation) maxIRActivation = states[j];
         }
 
-        for (int i = 0; i < floorSensorsNo; i++) {
+        for (int i = 0; i < NB_FLOOR_SENSORS; i++) {
             fs_value[i] = fs[i].getValue();
         }
 
@@ -636,7 +634,7 @@ public class EpuckController extends Robot {
         }
 
         /* Initialise IR proximity sensors */
-        ps = new DistanceSensor[proximitySensorsNo];
+        ps = new DistanceSensor[NB_PROXIMITY_SENSORS];
         ps[0] = getDistanceSensor("ps0");
         ps[0].enable(TIME_STEP);
         ps[1] = getDistanceSensor("ps1");
@@ -670,7 +668,7 @@ public class EpuckController extends Robot {
         }
 
         /* Initialise LED lights */
-        for (i = 0; i < ledsNo; i++) {
+        for (i = 0; i < NB_LEDS; i++) {
             led[i] = getLED("led" + i);
         }
 
@@ -683,7 +681,7 @@ public class EpuckController extends Robot {
         //lightSensorLeft.enable(TIME_STEP);
 
         /* Initialise IR floor sensors */
-        fs = new DistanceSensor[floorSensorsNo];
+        fs = new DistanceSensor[NB_FLOOR_SENSORS];
         for (i = 0; i < fs.length; i++) {
             fs[i] = getDistanceSensor("fs" + i);
             fs[i].enable(TIME_STEP);

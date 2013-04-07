@@ -128,6 +128,8 @@ public class SupervisorController extends Supervisor {
             if (finished == 1.0f) {
 
                 if (EVOLVING == 1) {
+                    storeImage(evaluatedNN);
+                    resetDisplay();
                     //System.out.println("Evaluated individual " + evaluatedNN);
                     //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
                     // Sort populationOfNN by fitness
@@ -207,7 +209,7 @@ public class SupervisorController extends Supervisor {
      */
     private void storeImage(int indivIndex){
         toStore = groundDisplay.imageCopy(0,0,width,height);
-        groundDisplay.imageSave(toStore,"screenshot"+indivIndex+".png");
+        groundDisplay.imageSave(toStore,"screenshots/screenshot"+indivIndex+".png");
         groundDisplay.imageDelete(toStore);
     }
 
