@@ -522,7 +522,7 @@ public class SupervisorController extends Supervisor {
 
         out1 = new BufferedWriter(file1);
         try {
-            out1.write("generation , average fitness, worst fitness, best fitness");
+            out1.write("generation , Average fitness, Worst fitness, Best fitness");
             out1.write("\n");
 
         } catch (IOException e) {
