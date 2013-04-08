@@ -73,12 +73,16 @@ public class FilesFunctions {
     /**
      * Write all genomes and fitnesses to file
      */
-    public static void logPopulation(BufferedWriter out1, int game, double avgFit,
-                                     int generation, double bestFit, double minFit) {
+    public static void logPopulation(BufferedWriter out1, int generation, double[][] stats) {
 
         //fitness
         try {
-            out1.write("" + generation + ","+game+"," + avgFit + "," +minFit +","+ bestFit);
+            out1.write("" + generation);
+            for(int i=0; i<stats.length; i++){
+                for(int j=0; j<stats[i].length; j++){
+                out1.write(","+stats[i][j]);
+                }
+            }
             out1.write("\n");
             out1.flush();
         } catch (IOException e) {

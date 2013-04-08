@@ -141,46 +141,10 @@ public class SupervisorController extends Supervisor {
                 if (EVOLVING == 1) {
                     storeImage(evaluatedNN);
                     resetDisplay();
+
                     // Perform Multi-objective optimisation and create new generation
                     optimiseAndCreateNewPop();
-                    // Sort population
 
-                    //System.out.println("Evaluated individual " + evaluatedNN);
-                    //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
-                    // Sort populationOfNN by fitness
-                    /*sortPopulation(sortedfitnessNN, fitnessNN);
-                    // Find and log current and absolute best individual
-                    bestFitNN = sortedfitnessNN[0][0];
-                    minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
-                    bestNN = (int) sortedfitnessNN[0][1];
-                    avgFitNN = Util.mean(fitnessNN);
-                    if (bestFitNN > absBestFitNN) {
-                        absBestFitNN = bestFitNN;
-                        absBestNN = bestNN;
-                        FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
-                    }
-                    System.out.println("Best fitness score: \n" + bestFitNN);
-                    System.out.println("Average fitness score: \n" + avgFitNN);
-                    System.out.println("Worst fitness score: \n" + minFitNN);
-                    System.out.println("Absolute best index: " + absBestNN);
-
-                    // Write data to files
-                    FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
-                            bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
-                    FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
-                    */
-                    // Log the generation data  - stores weights
-                    try {
-                        FilesFunctions.logLastGeneration(populationOfNN);
-                    } catch (IOException e) {
-                        e.getMessage();
-                    }
-                    // Log best individual
-                    /*try {
-                        FilesFunctions.logBestIndiv(populationOfNN, absBestNN);
-                    } catch (IOException e) {
-                        System.err.println(e.getMessage());
-                    }*/
 
                     // Rank populationOfNN, select best individuals and create new generation
                     //createNewPopulation();
@@ -259,9 +223,8 @@ public class SupervisorController extends Supervisor {
 
         double min, max;
 
-        // Find min and max - takes two additional runs that don't change time complexity
-        min = Util.min(fitnessScores);
-        max = Util.max(fitnessScores);
+        min = -250000;
+        max = 250000;
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -392,14 +355,14 @@ public class SupervisorController extends Supervisor {
             minFitNN = sortedFitness[NN_POP_SIZE - 1][0];
             bestNN = (int) sortedFitness[0][1];
             avgFitNN = Util.mean(fitnessPerGame[i]);
-            System.out.println("Game: "+i+" stats");
+            System.out.println("Game: " + i + " stats");
             System.out.println("Best fitness score: " + bestFitNN);
             System.out.println("Average fitness score: " + avgFitNN);
             System.out.println("Worst fitness score: " + minFitNN);
             // Update stats
-            stats[i][0]=avgFitNN;
-            stats[i][1]=bestFitNN;
-            stats[i][2]=minFitNN;
+            stats[i][0] = avgFitNN;
+            stats[i][1] = bestFitNN;
+            stats[i][2] = minFitNN;
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
 
             for (int k = 0; k < subpop.length; k++) {
@@ -449,8 +412,8 @@ public class SupervisorController extends Supervisor {
         }
 
         // Reset fitness
-        for(i=0; i<fitnessPerGame.length; i++){
-            for(j=0; j<fitnessPerGame[i].length; j++) fitnessPerGame[i][i] = 0;
+        for (i = 0; i < fitnessPerGame.length; i++) {
+            for (j = 0; j < fitnessPerGame[i].length; j++) fitnessPerGame[i][i] = 0;
         }
     }
 
@@ -459,6 +422,44 @@ public class SupervisorController extends Supervisor {
      * Based on the fitness of the last generation, generate a new population of genomes for the next generation.
      */
     private void createNewPopulation() {
+
+        // Sort population
+        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
+        // Sort populationOfNN by fitness
+        sortPopulation(sortedfitnessNN, fitnessNN);
+        // Find and log current and absolute best individual
+        bestFitNN = sortedfitnessNN[0][0];
+        minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
+        bestNN = (int) sortedfitnessNN[0][1];
+        avgFitNN = Util.mean(fitnessNN);
+        if (bestFitNN > absBestFitNN) {
+            absBestFitNN = bestFitNN;
+            absBestNN = bestNN;
+            FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
+        }
+        System.out.println("Best fitness score: \n" + bestFitNN);
+        System.out.println("Average fitness score: \n" + avgFitNN);
+        System.out.println("Worst fitness score: \n" + minFitNN);
+        System.out.println("Absolute best index: " + absBestNN);
+
+        // Write data to files
+        //FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
+        //        bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
+        FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
+
+        // Log the generation data  - stores weights
+        try {
+            FilesFunctions.logLastGeneration(populationOfNN);
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        // Log best individual
+        try {
+            FilesFunctions.logBestIndiv(populationOfNN, absBestNN);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
             newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
@@ -656,8 +657,8 @@ public class SupervisorController extends Supervisor {
         out1 = new BufferedWriter(file1);
         try {
             out1.write("Generation");
-            for(i=0; i<GAME_POP_SIZE; i++){
-                out1.write(",Average"+i+",Worst"+i+",Best"+i);
+            for (i = 0; i < GAME_POP_SIZE; i++) {
+                out1.write(",Average" + i + ",Worst" + i + ",Best" + i);
             }
             out1.write("\n");
             out1.flush();
