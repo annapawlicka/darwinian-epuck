@@ -22,7 +22,7 @@ public class EpuckController extends Robot {
 
     // Global variables
     private int GAME_POP_SIZE = 3;
-    private int NN_POP_SIZE = 50;
+    private int NN_POP_SIZE = 30;
     private final int LEFT = 0;
     private final int RIGHT = 1;
     private final int TIME_STEP = 128;              // [ms]
@@ -41,9 +41,9 @@ public class EpuckController extends Robot {
     // Evolution of games
     private Game[] populationOfGames;
     private double[] gameFitness;                           // Fitness of games (variance of actors)
-    private double[] sumOfFitnesses;                        // Sum of fitnesses of each actor (total of all games)
+    private double[] fitnessOfSolutions;                    // Fitness scores of each actor (calculation dependant on method chosen)
     private double[][] sortedfitnessGames;                  // Population of games sorted byte fitness
-    private double[][] agentsFitness;                       // Fitness of agents for each game
+    private double[][] agentsFitness;                       // Fitness of agents for each game - used for Multi-objective Optimisation
     private double[][] actorFitPerGame;
 
     private double ELITISM_RATIO = 0.1;
@@ -205,8 +205,10 @@ public class EpuckController extends Robot {
                 // Drive robot
                 runTrial();
             } else {
-                // Send message to indicate end of trial - next actor will be called
-                float msg[] = {0};
+                // Send message to indicate end of trial and send fitness values for each game - next actor will be called
+                float msg[] = new float[GAME_POP_SIZE+1]; // sending flag too
+                for(i=0; i<agentsFitness[indiv].length; i++) msg[i] = (float) agentsFitness[indiv][i];
+                msg[GAME_POP_SIZE] = 0.0f;
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
                 // Reinitialize counter
@@ -218,13 +220,13 @@ public class EpuckController extends Robot {
                 } else {
                     indiv = 0;
                     // Add all fitnesses for each game
-                    setActorsFitness();
+                    //setActorsFitness();
                     // Send normalised fitness scores to supervisor
-                    for (i = 0; i < sumOfFitnesses.length; i++) {
-                        float message[] = {(float) sumOfFitnesses[i], i, 2};
+                    /*for (i = 0; i < fitnessOfSolutions.length; i++) {
+                        float message[] = {(float) fitnessOfSolutions[i], i, 2};
                         byte[] messageInBytes = Util.float2Byte(message);
                         emitter.send(messageInBytes);
-                    }
+                    }*/
                     float end[] = {1};
                     byte[] endMsg = Util.float2Byte(end);
                     emitter.send(endMsg);
@@ -313,7 +315,7 @@ public class EpuckController extends Robot {
      */
     private void resetAllFitnessArrays() {
         int i, j;
-        for (i = 0; i < sumOfFitnesses.length; i++) sumOfFitnesses[i] = 0;
+        for (i = 0; i < fitnessOfSolutions.length; i++) fitnessOfSolutions[i] = 0;
         for (i = 0; i < agentsFitness.length; i++) {
             for (j = 0; j < agentsFitness[i].length; j++) agentsFitness[i][j] = 0;
         }
@@ -332,10 +334,13 @@ public class EpuckController extends Robot {
             for (j = 0; j < agentsFitness[i].length; j++) agentsFitness[i][j] = 0;
         }
 
-        for (i = 0; i < sumOfFitnesses.length; i++) sumOfFitnesses[i] = 0;
+        for (i = 0; i < fitnessOfSolutions.length; i++) fitnessOfSolutions[i] = 0;
 
     }
 
+    /**
+     * Assigns fitness scores by adding component fitness values on each game
+     */
     private void setActorsFitness(){
         int i, j;
         for (i = 0; i < agentsFitness.length; i++) {
@@ -347,7 +352,7 @@ public class EpuckController extends Robot {
 
         // Update (sum up) array of actors fitness scores so that it can be sent to supervisor
         for (i = 0; i < actorFitPerGame.length; i++) {
-            for (j = 0; j < actorFitPerGame[i].length; j++) sumOfFitnesses[j] += actorFitPerGame[i][j];
+            for (j = 0; j < actorFitPerGame[i].length; j++) fitnessOfSolutions[j] += actorFitPerGame[i][j];
         }
 
         FilesFunctions.logAllCompFit(out4, actorFitPerGame, generation);
@@ -370,6 +375,11 @@ public class EpuckController extends Robot {
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
         for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(actorFitPerGame[i]);
+
+    }
+
+
+    private void setGameFitnessMMO(){
 
     }
 
@@ -607,8 +617,8 @@ public class EpuckController extends Robot {
         for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, NB_CONSTANTS);
         initialiseGames(populationOfGames);
 
-        sumOfFitnesses = new double[NN_POP_SIZE];
-        for (i = 0; i < GAME_POP_SIZE; i++) sumOfFitnesses[i] = 0.0;
+        fitnessOfSolutions = new double[NN_POP_SIZE];
+        for (i = 0; i < GAME_POP_SIZE; i++) fitnessOfSolutions[i] = 0.0;
 
         sortedfitnessGames = new double[GAME_POP_SIZE][2];
         for (i = 0; i < GAME_POP_SIZE; i++) {

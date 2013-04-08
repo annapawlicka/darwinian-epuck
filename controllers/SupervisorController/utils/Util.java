@@ -1,6 +1,9 @@
 package utils;
 
+import nn.NeuralNetwork;
+
 import java.nio.ByteBuffer;
+import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -260,6 +263,44 @@ public class Util {
     public static float bytearray2float(byte[] b) {
         ByteBuffer buf = ByteBuffer.wrap(b);
         return buf.getFloat();
+    }
+
+    /**
+     * Method to concatenate arrays
+     * @param arrays
+     * @return
+     */
+    public static NeuralNetwork[] concat(NeuralNetwork[][] arrays) {
+        int lengh = 0;
+        for (NeuralNetwork[] array : arrays) {
+            lengh += array.length;
+        }
+        NeuralNetwork[] result = new NeuralNetwork[lengh];
+        int pos = 0;
+        for (NeuralNetwork[] array : arrays) {
+            for (NeuralNetwork element : array) {
+                result[pos] = element;
+                pos++;
+            }
+        }
+        shuffleList(result);
+        return result;
+    }
+
+    public static void shuffleList(NeuralNetwork[] a) {
+        int n = a.length;
+        Random random = new Random();
+        random.nextInt();
+        for (int i = 0; i < n; i++) {
+            int change = i + random.nextInt(n - i);
+            swap(a, i, change);
+        }
+    }
+
+    private static void swap(NeuralNetwork[]a, int i, int change) {
+        NeuralNetwork helper = a[i];
+        a[i] =  a[change];
+        a[change] = helper;
     }
 
 }
