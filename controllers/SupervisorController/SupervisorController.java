@@ -369,8 +369,8 @@ public class SupervisorController extends Supervisor {
             System.out.println("Best fitness score: \n" + bestFitNN);
             System.out.println("Average fitness score: \n" + avgFitNN);
             System.out.println("Worst fitness score: \n" + minFitNN);
-            // Log
-
+            // log generation's fitness
+            FilesFunctions.logPopulation(out1, i, avgFitNN, generation, bestFitNN, minFitNN);
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
 
             for (int k = 0; k < subpop.length; k++) {
