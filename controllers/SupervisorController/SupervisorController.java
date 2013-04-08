@@ -658,7 +658,7 @@ public class SupervisorController extends Supervisor {
         try {
             out1.write("Generation");
             for (i = 0; i < GAME_POP_SIZE; i++) {
-                out1.write(",Average" + i + ",Worst" + i + ",Best" + i);
+                out1.write(",Average" + i + ",Best" + i + ",Worst" + i);
             }
             out1.write("\n");
             out1.flush();
