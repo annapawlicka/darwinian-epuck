@@ -147,6 +147,7 @@ public class SupervisorController extends Supervisor {
                     System.out.println("Best fitness score: \n" + bestFitNN);
                     System.out.println("Average fitness score: \n" + avgFitNN);
                     System.out.println("Worst fitness score: \n" + minFitNN);
+                    System.out.println("Absolute best index: " + absBestNN);
 
                     // Write data to files
                     FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,

@@ -21,7 +21,7 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 1;
+    private int GAME_POP_SIZE = 3;
     private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
@@ -154,6 +154,7 @@ public class EpuckController extends Robot {
                     System.out.println("Best game fitness score: \n" + bestFitGame);
                     System.out.println("Average game fitness score: \n" + avgFitGame);
                     System.out.println("Worst game fitness score: \n" + minFitGame);
+                    System.out.println("Absolute best index: " + absBestGame);
 
                     // 4. Write data to files
                     FilesFunctions.logFitnessCases(out1, avgFitGame, generation, bestFitGame, minFitGame);
@@ -284,12 +285,10 @@ public class EpuckController extends Robot {
         agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
 
         // Follow wall
-        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) ))
-        //        * Util.normalize(0, 4000, maxIRActivation);
+        agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT]-speed[RIGHT]))) ) * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation)))
-        //       *  (1-Util.normalize(0, 1100, floorColour)) );
+        agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))))) *  (1-Util.normalize(0, 1100, floorColour)) ;
 
         // Go to the light source and avoid obstacles
         //agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
@@ -381,18 +380,16 @@ public class EpuckController extends Robot {
      */
     private void normaliseFitnessScore(double[][] fitnessScores) {
         int i, j;
-        double min=0, max=0;
+        double min = -250000, max = 250000;
 
         for (i = 0; i < fitnessScores.length; i++) {
             //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
             //max = Util.max(fitnessScores[i]);
-            if(i==0) { min = -200000; max = 250000; }
-            if(i==1) { min = -60000; max = 40000; }
-            if(i==2) { min = 0; max = 500; }
             for (j = 0; j < fitnessScores[i].length; j++) {
                 double temp = 0;
                 try {
                     temp = Util.normalize(min, max, fitnessScores[i][j]);
+                    //if(i==0) System.out.println("Before: "+ fitnessScores[i][j]+". After: "+temp);
                 } catch (Exception e) {
                     System.err.println("Error while normalizing: " + e.getMessage());
                 }
@@ -574,18 +571,18 @@ public class EpuckController extends Robot {
         games[0].setConstants(3, 0);    // Ignore floor colour/light
 
 
-    /*    *//*Game 2: Follow black line *//*
+       /*Game 2: Follow black line */
         games[1].setConstants(0, 1);    // Drive fast
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
         games[1].setConstants(3, 1);    // Max black line /light
 
-        *//* Game 3: Follow the wall *//*
+        /* Game 3: Follow the wall */
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
-        games[2].setConstants(3, 0);    // Max black line/light*//*
-*/
+        games[2].setConstants(3, 0);    // Max black line/light
+
         /* Follow the light */
         //games[0].setConstants(0, 1);    // Drive fast
         //games[0].setConstants(1, 1);    // Drive straight
