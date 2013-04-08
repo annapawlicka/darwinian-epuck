@@ -342,6 +342,31 @@ public class SupervisorController extends Supervisor {
     }
 
     /**
+     * Normalise fitness scores to a value between 0 and 1
+     *
+     * @param fitnessScores
+     */
+    private void normaliseFitnessScore(double[][] fitnessScores) {
+        int i, j;
+        double min = -300000, max = 300000;
+
+        for (i = 0; i < fitnessScores.length; i++) {
+            //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
+            //max = Util.max(fitnessScores[i]);
+            for (j = 0; j < fitnessScores[i].length; j++) {
+                double temp = 0;
+                try {
+                    temp = Util.normalize(min, max, fitnessScores[i][j]);
+                    //if(i==0) System.out.println("Before: "+ fitnessScores[i][j]+". After: "+temp);
+                } catch (Exception e) {
+                    System.err.println("Error while normalizing: " + e.getMessage());
+                }
+                fitnessScores[i][j] = temp;
+            }
+        }
+    }
+
+    /**
      * Multi-objective optimisation, one-point crossover and mutation
      */
     private void optimiseAndCreateNewPop() {
@@ -350,11 +375,13 @@ public class SupervisorController extends Supervisor {
         // which are evaluated using a particular objective function
 
         int i, j;
+        double[][] stats = new double[GAME_POP_SIZE][3];
 
         NeuralNetwork[][] subpopulations = new NeuralNetwork[GAME_POP_SIZE][SUBSET_SIZE];
 
         for (i = 0; i < fitnessPerGame.length; i++) { // loop through games
             double[][] sortedFitness = new double[NN_POP_SIZE][2];
+            normaliseFitnessScore(fitnessPerGame[i]);   // Normalise
             for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
                 sortedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
                 sortedFitness[j][1] = j;                        // keep index
@@ -364,13 +391,15 @@ public class SupervisorController extends Supervisor {
             bestFitNN = sortedFitness[0][0];
             minFitNN = sortedFitness[NN_POP_SIZE - 1][0];
             bestNN = (int) sortedFitness[0][1];
-            avgFitNN = Util.mean(fitnessNN);
+            avgFitNN = Util.mean(fitnessPerGame[i]);
             System.out.println("Game: "+i+" stats");
-            System.out.println("Best fitness score: \n" + bestFitNN);
-            System.out.println("Average fitness score: \n" + avgFitNN);
-            System.out.println("Worst fitness score: \n" + minFitNN);
-            // log generation's fitness
-            FilesFunctions.logPopulation(out1, i, avgFitNN, generation, bestFitNN, minFitNN);
+            System.out.println("Best fitness score: " + bestFitNN);
+            System.out.println("Average fitness score: " + avgFitNN);
+            System.out.println("Worst fitness score: " + minFitNN);
+            // Update stats
+            stats[i][0]=avgFitNN;
+            stats[i][1]=bestFitNN;
+            stats[i][2]=minFitNN;
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
 
             for (int k = 0; k < subpop.length; k++) {
@@ -384,6 +413,9 @@ public class SupervisorController extends Supervisor {
             subpopulations[i] = subpop;
 
         }
+        // Log stats to the files
+        FilesFunctions.logPopulation(out1, generation, stats);
+
         // 2. All subpopulations are shuffled together
         NeuralNetwork[] population = Util.concat(subpopulations);
 
@@ -623,8 +655,12 @@ public class SupervisorController extends Supervisor {
 
         out1 = new BufferedWriter(file1);
         try {
-            out1.write("generation , Average fitness, Worst fitness, Best fitness");
+            out1.write("Generation");
+            for(i=0; i<GAME_POP_SIZE; i++){
+                out1.write(",Average"+i+",Worst"+i+",Best"+i);
+            }
             out1.write("\n");
+            out1.flush();
 
         } catch (IOException e) {
             System.out.println("" + e.getMessage());
