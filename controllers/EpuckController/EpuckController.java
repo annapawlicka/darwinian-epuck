@@ -378,11 +378,6 @@ public class EpuckController extends Robot {
 
     }
 
-
-    private void setGameFitnessMMO(){
-
-    }
-
     /**
      * Normalise fitness scores to a value between 0 and 1
      *
