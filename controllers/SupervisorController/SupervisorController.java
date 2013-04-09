@@ -219,12 +219,14 @@ public class SupervisorController extends Supervisor {
         translation = fldTranslation.getSFVec3f();
     }
 
-    private void normaliseFitnessScore(double[] fitnessScores) {
+    private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
 
-        double min, max;
+        double min=0, max=0;
 
-        min = -250000;
-        max = 250000;
+        if(gameNo==0) {min = -200000; max = 200000;}
+        if(gameNo==1) {min = -370000; max = 150000;}
+        if(gameNo==2) {min = -80000; max = 80000;}
+
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -344,7 +346,7 @@ public class SupervisorController extends Supervisor {
 
         for (i = 0; i < fitnessPerGame.length; i++) { // loop through games
             double[][] sortedFitness = new double[NN_POP_SIZE][2];
-            normaliseFitnessScore(fitnessPerGame[i]);   // Normalise
+            normaliseFitnessScore(fitnessPerGame[i], i);   // Normalise
             for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
                 sortedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
                 sortedFitness[j][1] = j;                        // keep index
@@ -424,7 +426,7 @@ public class SupervisorController extends Supervisor {
     private void createNewPopulation() {
 
         // Sort population
-        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
+        //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
         // Sort populationOfNN by fitness
         sortPopulation(sortedfitnessNN, fitnessNN);
         // Find and log current and absolute best individual
