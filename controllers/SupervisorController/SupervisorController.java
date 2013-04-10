@@ -67,6 +67,7 @@ public class SupervisorController extends Supervisor {
 
     //Log variables
     private double minFitNN = 0.0, avgFitNN = 0.0, bestFitNN = 0.0, absBestFitNN = -10000;
+    private double[][] stats;
     private int bestNN = -1, absBestNN = -1;
     private BufferedWriter out1, out2, out3;
     private BufferedReader in1, in2, in3;
@@ -447,7 +448,6 @@ public class SupervisorController extends Supervisor {
      */
     private void createNewVEGApopulation() {
         int i, j, counter=0;
-        double[][] stats = new double[GAME_POP_SIZE][3];
 
         // 1. Shuffle population
         Util.shuffleList(populationOfNN);
@@ -474,10 +474,14 @@ public class SupervisorController extends Supervisor {
             minFitNN = sortedFitness[NN_POP_SIZE - 1][0];
             bestNN = (int) sortedFitness[0][1];
             avgFitNN = Util.mean(fitnessPerGame[i]);
+            if (bestFitNN > stats[i][1]) {
+                stats[i][3] = bestNN;
+            }
             System.out.println("Game: " + i + " stats");
             System.out.println("Best fitness score: " + bestFitNN);
             System.out.println("Average fitness score: " + avgFitNN);
             System.out.println("Worst fitness score: " + minFitNN);
+            System.out.println("Absolute best index: " + stats[i][3]);
             // Update stats
             stats[i][0] = avgFitNN;
             stats[i][1] = bestFitNN;
@@ -522,17 +526,18 @@ public class SupervisorController extends Supervisor {
         NeuralNetwork[] tempPopulation = Util.concat(subpopulations);
 
         // 6. Create new population
-        NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
+        /*NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (i = 0; i < newpop.length; i++) {
             newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
-        }
+        }  */
 
-        // 7. Perform crossover
+        /*// 7. Perform crossover
         for (i = 0; i < NN_POP_SIZE; i++) {
+            // Copy from temp pop
             int ind1 = random.nextInt(NN_POP_SIZE);
             // If we will do crossover, select a second individual
             if (random.nextFloat() < CROSSOVER_PROBABILITY) {
-                int ind2;
+               int ind2;
                 do {
                     ind2 = random.nextInt(NN_POP_SIZE);
                 } while (ind1 == ind2);
@@ -541,14 +546,14 @@ public class SupervisorController extends Supervisor {
                 for (j = 0; j < NB_GENES; j++)
                     newpop[i].setWeights(j, tempPopulation[ind1].getWeights()[j]);
             }
-        }
+        } */
         // 8. Mutate new population and copy back to pop
         for (i = 0; i < NN_POP_SIZE; i++) {
             for (j = 0; j < NB_GENES; j++)
                 if (random.nextFloat() < MUTATION_PROBABILITY)
-                    populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
+                    populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, tempPopulation[i].getWeights()[j], MUTATION_SIGMA));
                 else
-                    populationOfNN[i].copy(newpop[i]);
+                    populationOfNN[i].copy(tempPopulation[i]);
         }
 
         // Reset fitness
@@ -764,6 +769,12 @@ public class SupervisorController extends Supervisor {
             }
         }
 
+        // Initialise stats
+        stats = new double[GAME_POP_SIZE][4];
+        for(i=0; i<stats.length; i++){
+            for(j=0; j<stats[i].length; j++) stats[i][j] = 0;
+        }
+
         // Nodes
         receiver = getReceiver("receiver");
         receiver.enable(TIME_STEP);
@@ -799,7 +810,7 @@ public class SupervisorController extends Supervisor {
         try {
             out1.write("Generation");
             for (i = 0; i < GAME_POP_SIZE; i++) {
-                out1.write(",Average" + i + ",Best" + i + ",Worst" + i);
+                out1.write(",Average" + i + ",Best" + i + ",Worst" + i+",Abs"+i);
             }
             out1.write("\n");
             out1.flush();
