@@ -143,8 +143,10 @@ public class SupervisorController extends Supervisor {
                     resetDisplay();
 
                     // Perform Multi-objective optimisation and create new generation
-                    optimiseAndCreateNewPop();
+                    //optimiseAndCreateNewPop();
 
+                    // VEGA based optimisation
+                    createNewVEGApopulation();
 
                     // Rank populationOfNN, select best individuals and create new generation
                     //createNewPopulation();
@@ -221,12 +223,20 @@ public class SupervisorController extends Supervisor {
 
     private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
 
-        double min=0, max=0;
+        double min = 0, max = 0;
 
-        if(gameNo==0) {min = -200000; max = 200000;}
-        if(gameNo==1) {min = -370000; max = 150000;}
-        if(gameNo==2) {min = -80000; max = 80000;}
-
+        if (gameNo == 0) {
+            min = -350000;
+            max = 200000;
+        }
+        if (gameNo == 1) {
+            min = -370000;
+            max = 150000;
+        }
+        if (gameNo == 2) {
+            min = -80000;
+            max = 80000;
+        }
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -398,7 +408,7 @@ public class SupervisorController extends Supervisor {
                 do {
                     ind2 = random.nextInt(NN_POP_SIZE);
                 } while (ind1 == ind2);
-                newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
+                newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, population);
             } else { //if no crossover was done, just copy selected individual directly
                 for (j = 0; j < NB_GENES; j++)
                     newpop[i].setWeights(j, population[ind1].getWeights()[j]);
@@ -417,6 +427,134 @@ public class SupervisorController extends Supervisor {
         for (i = 0; i < fitnessPerGame.length; i++) {
             for (j = 0; j < fitnessPerGame[i].length; j++) fitnessPerGame[i][i] = 0;
         }
+    }
+
+    /**
+     * Fitness proportional selection to create a mating pool
+     * @param subpopulation
+     * @return
+     */
+    private double[] rouletteSelect(NeuralNetwork[] subpopulation){
+
+        // 1. Sort
+        double[] fitness = new double[subpopulation.length];
+        for(int i=0; i<fitness.length; i++) fitness[i] = subpopulation[i].getFitness();
+        double[][] sortedFitness = new double[subpopulation.length][2];
+        sortPopulation(sortedFitness, fitness);
+
+        double total_fitness = 0;
+        // 2. Find minimum fitness to subtract it from sum
+        double min_fitness = sortedFitness[subpopulation.length - 1][0];
+        if (min_fitness < 0) min_fitness = 0;
+        int i, j;
+        // 3. Calculate total of fitness, used for roulette wheel selection
+        for (i = 0; i < subpopulation.length; i++) total_fitness += fitnessNN[i];
+        total_fitness -= min_fitness * subpopulation.length;
+        // 4. Create mating pool
+        double[] pool = new double[subpopulation.length];
+        for (i = 0; i < subpopulation.length; i++) {
+                int ind = 0;
+                float r = random.nextFloat();
+                double fitness_counter = (sortedFitness[ind][0] - min_fitness) / total_fitness;
+                while (r > fitness_counter && ind < subpopulation.length - 1) {
+                    ind++;
+                    fitness_counter += (sortedFitness[ind][0] - min_fitness) / total_fitness;
+                    if (ind == subpopulation.length - 1) break;
+                }
+            pool[i] = ind;
+        }
+        return pool;
+    }
+
+    /**
+     * Algorithm to perform VEGA Multi-Objective Optimisation
+     */
+    private void createNewVEGApopulation() {
+        int i, j, counter=0;
+
+        // 1. Shuffle population
+        Util.shuffleList(populationOfNN);
+
+        // 2. divide population into O subpopulations of size N/O
+        NeuralNetwork[][] subpopulations = new NeuralNetwork[GAME_POP_SIZE][SUBSET_SIZE];
+        for(i=0; i<subpopulations.length; i++){
+
+            // Create subpopulation
+            NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
+            for (int k = 0; k < subpop.length; k++) {
+                subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+            }
+            for (int l = 0; l < subpop.length; l++) {
+                for (int m = 0; m < subpop[l].getWeightsNo(); m++) {
+                    subpop[l].setWeights(m, populationOfNN[counter].getWeights()[m]);
+                }
+                // 3. Assign fitness to each member in each subpopulation using one objective per subpopulation
+                subpop[l].setFitness(fitnessPerGame[i][counter]);
+                counter++;
+            }
+
+            // 4. Use fitness proportionate selection to create a 'mating pool' for each subpopulation
+            double[] probTable = rouletteSelect(subpop);
+
+            // 5. Replace the subpopulation with a mating pool
+            NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE/GAME_POP_SIZE];
+            for (int k = 0; k < sub.length; k++) {
+                sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+            }
+            for(int k=0; k< sub.length; k++){
+                // add to mating pool in a fitness proportionate way
+                //Min + (int)(Math.random() * ((Max - Min) + 1))
+                int r = random.nextInt(probTable.length);
+                for(j=0; j<NB_GENES; j++){
+                    sub[k].setWeights(j, subpop[r].getWeights()[j]);
+                }
+            }
+            for(int k=0; k<subpopulations[i].length; k++){
+                subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+                for(int l=0; l<subpopulations[i][k].getWeightsNo(); l++){
+                    subpopulations[i][k].copy(sub[i]);
+                }
+            }
+        }
+
+        // 5. Merge 'mating pools' (i.e. the modified subpopulations)
+        NeuralNetwork[] tempPopulation = Util.concat(subpopulations);
+
+        // 6. Create new population
+        NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
+        for (i = 0; i < newpop.length; i++) {
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+        }
+
+        // 7. Perform crossover
+        for (i = 0; i < NN_POP_SIZE; i++) {
+            int ind1 = random.nextInt(NN_POP_SIZE);
+            // If we will do crossover, select a second individual
+            if (random.nextFloat() < CROSSOVER_PROBABILITY) {
+                int ind2;
+                do {
+                    ind2 = random.nextInt(NN_POP_SIZE);
+                } while (ind1 == ind2);
+                newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, tempPopulation);
+            } else { //if no crossover was done, just copy selected individual directly
+                for (j = 0; j < NB_GENES; j++)
+                    newpop[i].setWeights(j, tempPopulation[ind1].getWeights()[j]);
+            }
+        }
+        // 8. Mutate new population and copy back to pop
+        for (i = 0; i < NN_POP_SIZE; i++) {
+            for (j = 0; j < NB_GENES; j++)
+                if (random.nextFloat() < MUTATION_PROBABILITY)
+                    populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
+                else
+                    populationOfNN[i].copy(newpop[i]);
+        }
+
+        // Reset fitness
+        for (i = 0; i < fitnessPerGame.length; i++) {
+            for (j = 0; j < fitnessPerGame[i].length; j++) fitnessPerGame[i][i] = 0;
+        }
+
     }
 
 

@@ -24,6 +24,8 @@ public class NeuralNetwork {
 
     private float[] outputs;
 
+    private double fitness;
+
     private Random random = new Random();
 
     public NeuralNetwork(int inputsNo, int outputsNo) {
@@ -33,6 +35,7 @@ public class NeuralNetwork {
         this.weightsNo = this.inputsNo * this.outputsNo + this.outputsNo;
         this.weights = new float[weightsNo];
         this.outputs = new float[this.outputsNo];
+        this.fitness = -1;
         initialise();
     }
 
@@ -148,6 +151,14 @@ public class NeuralNetwork {
 
     public void setWeights(int index, float weight){
         weights[index] = weight;
+    }
+
+    public void setFitness(double f){
+        fitness = f;
+    }
+
+    public double getFitness(){
+        return fitness;
     }
 
 }

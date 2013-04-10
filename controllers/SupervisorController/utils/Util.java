@@ -283,7 +283,7 @@ public class Util {
                 pos++;
             }
         }
-        shuffleList(result);
+        //shuffleList(result);
         return result;
     }
 
