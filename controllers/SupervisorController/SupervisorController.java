@@ -471,6 +471,7 @@ public class SupervisorController extends Supervisor {
      */
     private void createNewVEGApopulation() {
         int i, j, counter=0;
+        double[][] stats = new double[GAME_POP_SIZE][3];
 
         // 1. Shuffle population
         Util.shuffleList(populationOfNN);
@@ -484,6 +485,28 @@ public class SupervisorController extends Supervisor {
             for (int k = 0; k < subpop.length; k++) {
                 subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
             }
+
+            normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
+            double[][] sortedFitness = new double[NN_POP_SIZE][2];
+            for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
+                sortedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
+                sortedFitness[j][1] = j;                        // keep index
+            }
+            quickSort(sortedFitness, 0, sortedFitness.length - 1); // sort for current game
+            // Find and log current and absolute best individual
+            bestFitNN = sortedFitness[0][0];
+            minFitNN = sortedFitness[NN_POP_SIZE - 1][0];
+            bestNN = (int) sortedFitness[0][1];
+            avgFitNN = Util.mean(fitnessPerGame[i]);
+            System.out.println("Game: " + i + " stats");
+            System.out.println("Best fitness score: " + bestFitNN);
+            System.out.println("Average fitness score: " + avgFitNN);
+            System.out.println("Worst fitness score: " + minFitNN);
+            // Update stats
+            stats[i][0] = avgFitNN;
+            stats[i][1] = bestFitNN;
+            stats[i][2] = minFitNN;
+
             for (int l = 0; l < subpop.length; l++) {
                 for (int m = 0; m < subpop[l].getWeightsNo(); m++) {
                     subpop[l].setWeights(m, populationOfNN[counter].getWeights()[m]);
@@ -516,6 +539,9 @@ public class SupervisorController extends Supervisor {
                 }
             }
         }
+
+        // Log stats to the files
+        FilesFunctions.logPopulation(out1, generation, stats);
 
         // 5. Merge 'mating pools' (i.e. the modified subpopulations)
         NeuralNetwork[] tempPopulation = Util.concat(subpopulations);
