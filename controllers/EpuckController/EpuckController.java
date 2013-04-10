@@ -206,8 +206,8 @@ public class EpuckController extends Robot {
                 runTrial();
             } else {
                 // Send message to indicate end of trial and send fitness values for each game - next actor will be called
-                float msg[] = new float[GAME_POP_SIZE+1]; // sending flag too
-                for(i=0; i<agentsFitness[indiv].length; i++) msg[i] = (float) agentsFitness[indiv][i];
+                float msg[] = new float[GAME_POP_SIZE + 1]; // sending flag too
+                for (i = 0; i < agentsFitness[indiv].length; i++) msg[i] = (float) agentsFitness[indiv][i];
                 msg[GAME_POP_SIZE] = 0.0f;
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
@@ -284,13 +284,13 @@ public class EpuckController extends Robot {
     public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) throws Exception {
 
         // Avoid obstacles:
-        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))) * (1-Util.normalize(0, 4000, maxIRActivation))) );
+        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
 
         // Follow wall
-        agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT]-speed[RIGHT]))) ) * Util.normalize(0, 4000, maxIRActivation);
+        agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt( (Math.abs((speed[LEFT]-speed[RIGHT]))))) *  (1-Util.normalize(0, 1100, floorColour)) ;
+        agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))))) * (1 - Util.normalize(0, 1100, floorColour));
 
         // Go to the light source and avoid obstacles
         //agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
@@ -323,12 +323,12 @@ public class EpuckController extends Robot {
         for (i = 0; i < sortedfitnessGames.length; i++) {
             for (j = 0; j < sortedfitnessGames[i].length; j++) sortedfitnessGames[i][j] = 0;
         }
-        for(i=0; i<actorFitPerGame.length; i++){
-            for(j=0; j<actorFitPerGame[i].length; j++) actorFitPerGame[i][j] = 0;
+        for (i = 0; i < actorFitPerGame.length; i++) {
+            for (j = 0; j < actorFitPerGame[i].length; j++) actorFitPerGame[i][j] = 0;
         }
     }
 
-    private void resetActorsFitArrays(){
+    private void resetActorsFitArrays() {
         int i, j;
         for (i = 0; i < agentsFitness.length; i++) {
             for (j = 0; j < agentsFitness[i].length; j++) agentsFitness[i][j] = 0;
@@ -341,14 +341,14 @@ public class EpuckController extends Robot {
     /**
      * Assigns fitness scores by adding component fitness values on each game
      */
-    private void setActorsFitness(){
+    private void setActorsFitness() {
         int i, j;
         for (i = 0; i < agentsFitness.length; i++) {
             for (j = 0; j < agentsFitness[i].length; j++) actorFitPerGame[j][i] = agentsFitness[i][j];
         }
 
         // Normalise
-        normaliseFitnessScore(actorFitPerGame);
+        //normaliseFitnessScore(actorFitPerGame);
 
         // Update (sum up) array of actors fitness scores so that it can be sent to supervisor
         for (i = 0; i < actorFitPerGame.length; i++) {
@@ -370,7 +370,7 @@ public class EpuckController extends Robot {
         }
 
         // Normalise
-        normaliseFitnessScore(actorFitPerGame);
+        for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
 
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
@@ -380,26 +380,32 @@ public class EpuckController extends Robot {
 
     /**
      * Normalise fitness scores to a value between 0 and 1
-     *
-     * @param fitnessScores
      */
-    private void normaliseFitnessScore(double[][] fitnessScores) {
-        int i, j;
-        double min = -250000, max = 250000;
+    private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
 
-        for (i = 0; i < fitnessScores.length; i++) {
-            //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
-            //max = Util.max(fitnessScores[i]);
-            for (j = 0; j < fitnessScores[i].length; j++) {
-                double temp = 0;
-                try {
-                    temp = Util.normalize(min, max, fitnessScores[i][j]);
-                    //if(i==0) System.out.println("Before: "+ fitnessScores[i][j]+". After: "+temp);
-                } catch (Exception e) {
-                    System.err.println("Error while normalizing: " + e.getMessage());
-                }
-                fitnessScores[i][j] = temp;
+        double min = 0, max = 0;
+
+        if (gameNo == 0) {
+            min = -350000;
+            max = 200000;
+        }
+        if (gameNo == 1) {
+            min = -370000;
+            max = 150000;
+        }
+        if (gameNo == 2) {
+            min = -80000;
+            max = 80000;
+        }
+
+        for (int i = 0; i < fitnessScores.length; i++) {
+            double temp = 0;
+            try {
+                temp = Util.normalize(min, max, fitnessScores[i]);  // add buffer of 0.5
+            } catch (Exception e) {
+                System.err.println("Error while normalizing: " + e.getMessage());
             }
+            fitnessScores[i] = temp;
         }
     }
 
@@ -631,8 +637,8 @@ public class EpuckController extends Robot {
         }
 
         actorFitPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
-        for(i=0; i<actorFitPerGame.length; i++){
-            for(j=0; j<actorFitPerGame[i].length; j++) actorFitPerGame[i][j] = 0;
+        for (i = 0; i < actorFitPerGame.length; i++) {
+            for (j = 0; j < actorFitPerGame[i].length; j++) actorFitPerGame[i][j] = 0;
         }
 
         /* Initialise IR proximity sensors */
@@ -674,7 +680,7 @@ public class EpuckController extends Robot {
             led[i] = getLED("led" + i);
         }
 
-        for(i=0; i<led.length; i++) led[i].set(1);
+        for (i = 0; i < led.length; i++) led[i].set(1);
 
         /* Initialise light sensor */
         //lightSensorRight = getLightSensor("ls0");

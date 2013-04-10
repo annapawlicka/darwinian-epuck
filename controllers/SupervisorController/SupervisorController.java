@@ -316,30 +316,6 @@ public class SupervisorController extends Supervisor {
         }
     }
 
-    /**
-     * Normalise fitness scores to a value between 0 and 1
-     *
-     * @param fitnessScores
-     */
-    private void normaliseFitnessScore(double[][] fitnessScores) {
-        int i, j;
-        double min = -300000, max = 300000;
-
-        for (i = 0; i < fitnessScores.length; i++) {
-            //min = Util.min(fitnessScores[i]);   // find min and max separately for each game
-            //max = Util.max(fitnessScores[i]);
-            for (j = 0; j < fitnessScores[i].length; j++) {
-                double temp = 0;
-                try {
-                    temp = Util.normalize(min, max, fitnessScores[i][j]);
-                    //if(i==0) System.out.println("Before: "+ fitnessScores[i][j]+". After: "+temp);
-                } catch (Exception e) {
-                    System.err.println("Error while normalizing: " + e.getMessage());
-                }
-                fitnessScores[i][j] = temp;
-            }
-        }
-    }
 
     /**
      * Multi-objective optimisation, one-point crossover and mutation
@@ -517,21 +493,20 @@ public class SupervisorController extends Supervisor {
             }
 
             // 4. Use fitness proportionate selection to create a 'mating pool' for each subpopulation
-            double[] probTable = rouletteSelect(subpop);
+            double[] probTable = rouletteSelect(subpop);    // add to mating pool in a fitness proportionate way
 
-            // 5. Replace the subpopulation with a mating pool
             NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE/GAME_POP_SIZE];
             for (int k = 0; k < sub.length; k++) {
                 sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
             }
             for(int k=0; k< sub.length; k++){
-                // add to mating pool in a fitness proportionate way
-                //Min + (int)(Math.random() * ((Max - Min) + 1))
+                // randomly select individual from a mating pool
                 int r = random.nextInt(probTable.length);
                 for(j=0; j<NB_GENES; j++){
                     sub[k].setWeights(j, subpop[r].getWeights()[j]);
                 }
             }
+            // 5. Replace the subpopulation with a mating pool
             for(int k=0; k<subpopulations[i].length; k++){
                 subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
                 for(int l=0; l<subpopulations[i][k].getWeightsNo(); l++){
