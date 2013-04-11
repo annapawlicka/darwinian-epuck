@@ -96,35 +96,59 @@ public class SupervisorController extends Supervisor {
             if (n > 0) {
                 nnFit = receiver.getData();
                 // Convert bytes into floats
-                if (nnFit.length == 16) {
+                if (nnFit.length == (GAME_POP_SIZE*4 + 4)) {
                     byte[] game0 = new byte[4];
                     for (int i = 0; i < 4; i++) {
                         game0[i] = nnFit[i];
+                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
                     }
-                    byte[] game1 = new byte[4];
-                    int m = 0;
-                    for (int k = 4; k < 8; k++) {
-                        game1[m] = nnFit[k];
-                        m++;
+                    if(GAME_POP_SIZE==2){
+                        byte[] game1 = new byte[4];
+                        int m = 0;
+                        for (int k = 4; k < 8; k++) {
+                            game1[m] = nnFit[k];
+                            m++;
+                        }
+                        fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
                     }
-                    byte[] game2 = new byte[4];
-                    int l = 0;
-                    for (int j = 8; j < 12; j++) {
-                        game2[l] = nnFit[j];
-                        l++;
+                    if(GAME_POP_SIZE==3){
+                        byte[] game2 = new byte[4];
+                        int l = 0;
+                        for (int j = 8; j < 12; j++) {
+                            game2[l] = nnFit[j];
+                            l++;
+                        }
+                        fitnessPerGame[2][evaluatedNN] = Util.bytearray2float(game2);
                     }
-                    byte[] flag = new byte[4];
-                    int p = 0;
-                    for (int o = 12; o < 16; o++) {
-                        flag[p] = nnFit[o];
-                        p++;
+                    if(GAME_POP_SIZE==1){
+                        byte[] flag = new byte[4];
+                        int p = 0;
+                        for (int o = 4; o < 8; o++) {
+                            flag[p] = nnFit[o];
+                            p++;
+                        }
+                        finished = Util.bytearray2float(flag);
                     }
-                    fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
-                    fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
-                    fitnessPerGame[2][evaluatedNN] = Util.bytearray2float(game2);
+                    else if(GAME_POP_SIZE==2){
+                        byte[] flag = new byte[4];
+                        int p = 0;
+                        for (int o = 8; o < 12; o++) {
+                            flag[p] = nnFit[o];
+                            p++;
+                        }
+                        finished = Util.bytearray2float(flag);
+                    }
+                    else if(GAME_POP_SIZE==3){
+                        byte[] flag = new byte[4];
+                        int p = 0;
+                        for (int o = 12; o < 16; o++) {
+                            flag[p] = nnFit[o];
+                            p++;
+                        }
+                        finished = Util.bytearray2float(flag);
+                    }
                     //int indIndex = (int) Util.bytearray2float(game1);
                     //fitnessNN[indIndex] = Util.bytearray2float(game1);
-                    finished = Util.bytearray2float(flag);
                     receiver.nextPacket();
                 } else if (nnFit.length == 4) {
                     byte[] flag = new byte[4];
@@ -235,8 +259,8 @@ public class SupervisorController extends Supervisor {
             max = 150000;
         }
         if (gameNo == 2) {
-            min = -80000;
-            max = 80000;
+            min = -200000;
+            max = 200000;
         }
 
         for (int i = 0; i < fitnessScores.length; i++) {

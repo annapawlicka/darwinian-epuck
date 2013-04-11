@@ -79,12 +79,6 @@ public class EpuckController extends Robot {
     private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
 
-    // Light sensor
-    //private LightSensor lightSensorRight;
-    //private LightSensor lightSensorLeft;
-    //private double ls_value_left;
-    //private double ls_value_right;
-
     // LEDs
     private int NB_LEDS = 8;
     private LED[] led = new LED[NB_LEDS];
@@ -265,10 +259,7 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-        // Used for moving towards the light game. Light values: 0 - white, approx 1400 - black
-        //double light = (ls_value_right + ls_value_left) / 2;
-        //System.out.println("Light: "+light);
-        //if(fs_value[1] > 1000) System.out.println(fs_value[1]);
+
         computeFitness(speed, position, maxIRActivation, fs_value[1]);
     }
 
@@ -291,10 +282,6 @@ public class EpuckController extends Robot {
 
         // Follow black line
         agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))))) * (1 - Util.normalize(0, 1100, floorColour));
-
-        // Go to the light source and avoid obstacles
-        //agentsFitness[indiv][2] += (1 - Util.normalize(0, 4200, light));
-
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
@@ -394,8 +381,8 @@ public class EpuckController extends Robot {
             max = 150000;
         }
         if (gameNo == 2) {
-            min = -80000;
-            max = 80000;
+            min = -200000;
+            max = 200000;
         }
 
         for (int i = 0; i < fitnessScores.length; i++) {
@@ -549,13 +536,6 @@ public class EpuckController extends Robot {
         //Get position of the e-puck
         position = gps.getValues();
 
-        // Get reading from light sensors
-        //ls_value_right = lightSensorRight.getValue();
-        //ls_value_left = lightSensorLeft.getValue();
-
-        //states[9] = ls_value_left;
-        //states[10] = ls_value_right;
-
     }
 
     private void run_neural_network(double[] inputs, double[] outputs) {
@@ -593,13 +573,6 @@ public class EpuckController extends Robot {
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
         games[2].setConstants(3, 0);    // Max black line/light
-
-        /* Follow the light */
-        //games[0].setConstants(0, 1);    // Drive fast
-        //games[0].setConstants(1, 1);    // Drive straight
-        //games[0].setConstants(2, 0);    // Min prox sensor activation
-        //games[0].setConstants(3, 1);    // Black line/light
-
 
     }
 
@@ -681,12 +654,6 @@ public class EpuckController extends Robot {
         }
 
         for (i = 0; i < led.length; i++) led[i].set(1);
-
-        /* Initialise light sensor */
-        //lightSensorRight = getLightSensor("ls0");
-        //lightSensorRight.enable(TIME_STEP);
-        //lightSensorLeft = getLightSensor("ls7");
-        //lightSensorLeft.enable(TIME_STEP);
 
         /* Initialise IR floor sensors */
         fs = new DistanceSensor[NB_FLOOR_SENSORS];
