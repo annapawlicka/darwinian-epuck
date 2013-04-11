@@ -96,13 +96,19 @@ public class SupervisorController extends Supervisor {
             if (n > 0) {
                 nnFit = receiver.getData();
                 // Convert bytes into floats
-                if (nnFit.length == (GAME_POP_SIZE*4 + 4)) {
-                    byte[] game0 = new byte[4];
-                    for (int i = 0; i < 4; i++) {
-                        game0[i] = nnFit[i];
+                if (nnFit.length == (GAME_POP_SIZE * 4 + 4)) {
+                    if (GAME_POP_SIZE == 2) {
+                        byte[] game0 = new byte[4];
+                        for (int i = 0; i < 4; i++) {
+                            game0[i] = nnFit[i];
+                        }
                         fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
-                    }
-                    if(GAME_POP_SIZE==2){
+                    } else if (GAME_POP_SIZE == 2) {
+                        byte[] game0 = new byte[4];
+                        for (int i = 0; i < 4; i++) {
+                            game0[i] = nnFit[i];
+                        }
+                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
                         byte[] game1 = new byte[4];
                         int m = 0;
                         for (int k = 4; k < 8; k++) {
@@ -110,8 +116,19 @@ public class SupervisorController extends Supervisor {
                             m++;
                         }
                         fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
-                    }
-                    if(GAME_POP_SIZE==3){
+                    } else if (GAME_POP_SIZE == 3) {
+                        byte[] game0 = new byte[4];
+                        for (int i = 0; i < 4; i++) {
+                            game0[i] = nnFit[i];
+                        }
+                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
+                        byte[] game1 = new byte[4];
+                        int m = 0;
+                        for (int k = 4; k < 8; k++) {
+                            game1[m] = nnFit[k];
+                            m++;
+                        }
+                        fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
                         byte[] game2 = new byte[4];
                         int l = 0;
                         for (int j = 8; j < 12; j++) {
@@ -120,7 +137,7 @@ public class SupervisorController extends Supervisor {
                         }
                         fitnessPerGame[2][evaluatedNN] = Util.bytearray2float(game2);
                     }
-                    if(GAME_POP_SIZE==1){
+                    if (GAME_POP_SIZE == 1) {
                         byte[] flag = new byte[4];
                         int p = 0;
                         for (int o = 4; o < 8; o++) {
@@ -128,8 +145,7 @@ public class SupervisorController extends Supervisor {
                             p++;
                         }
                         finished = Util.bytearray2float(flag);
-                    }
-                    else if(GAME_POP_SIZE==2){
+                    } else if (GAME_POP_SIZE == 2) {
                         byte[] flag = new byte[4];
                         int p = 0;
                         for (int o = 8; o < 12; o++) {
@@ -137,8 +153,7 @@ public class SupervisorController extends Supervisor {
                             p++;
                         }
                         finished = Util.bytearray2float(flag);
-                    }
-                    else if(GAME_POP_SIZE==3){
+                    } else if (GAME_POP_SIZE == 3) {
                         byte[] flag = new byte[4];
                         int p = 0;
                         for (int o = 12; o < 16; o++) {
@@ -206,16 +221,16 @@ public class SupervisorController extends Supervisor {
                     emitter.send(msgInBytes);
                 }
             }
-            if(TESTING==2){ // Send weights of best individual
-                float [] msg = new float[populationOfNN[0].getWeightsNo()+1];
-                for(int i=0; i<populationOfNN[0].getWeightsNo(); i++){
+            if (TESTING == 2) { // Send weights of best individual
+                float[] msg = new float[populationOfNN[0].getWeightsNo() + 1];
+                for (int i = 0; i < populationOfNN[0].getWeightsNo(); i++) {
                     msg[i] = populationOfNN[0].getWeights()[i];
                 }
                 msg[populationOfNN[0].getWeightsNo()] = 2.0f; // send flag
-                byte[] msgInBytes =  Util.float2Byte(msg);
+                byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
                 System.out.println("Sent best genome for testing.");
-                TESTING=-1;
+                TESTING = -1;
             }
         }
     }
@@ -260,15 +275,15 @@ public class SupervisorController extends Supervisor {
         double min = 0, max = 0;
 
         if (gameNo == 0) {
-            min = -1000000;
+            min = -2500000;
             max = 2500000;
         }
         if (gameNo == 1) {
-            min = -150000;
-            max = 100000;
+            min = -200000;
+            max = 600;
         }
         if (gameNo == 2) {
-            min = -700000;
+            min = -600000;
             max = 600000;
         }
 
@@ -441,14 +456,15 @@ public class SupervisorController extends Supervisor {
 
     /**
      * Fitness proportional selection to create a mating pool
+     *
      * @param subpopulation
      * @return
      */
-    private double[] rouletteSelect(NeuralNetwork[] subpopulation){
+    private double[] rouletteSelect(NeuralNetwork[] subpopulation) {
 
         // 1. Sort
         double[] fitness = new double[subpopulation.length];
-        for(int i=0; i<fitness.length; i++) fitness[i] = subpopulation[i].getFitness();
+        for (int i = 0; i < fitness.length; i++) fitness[i] = subpopulation[i].getFitness();
         double[][] sortedFitness = new double[subpopulation.length][2];
         sortPopulation(sortedFitness, fitness);
 
@@ -463,14 +479,14 @@ public class SupervisorController extends Supervisor {
         // 4. Create mating pool
         double[] pool = new double[subpopulation.length];
         for (i = 0; i < subpopulation.length; i++) {
-                int ind = 0;
-                float r = random.nextFloat();
-                double fitness_counter = (sortedFitness[ind][0] - min_fitness) / total_fitness;
-                while (r > fitness_counter && ind < subpopulation.length - 1) {
-                    ind++;
-                    fitness_counter += (sortedFitness[ind][0] - min_fitness) / total_fitness;
-                    if (ind == subpopulation.length - 1) break;
-                }
+            int ind = 0;
+            float r = random.nextFloat();
+            double fitness_counter = (sortedFitness[ind][0] - min_fitness) / total_fitness;
+            while (r > fitness_counter && ind < subpopulation.length - 1) {
+                ind++;
+                fitness_counter += (sortedFitness[ind][0] - min_fitness) / total_fitness;
+                if (ind == subpopulation.length - 1) break;
+            }
             pool[i] = ind;
         }
         return pool;
@@ -480,14 +496,14 @@ public class SupervisorController extends Supervisor {
      * Algorithm to perform VEGA Multi-Objective Optimisation
      */
     private void createNewVEGApopulation() {
-        int i, j, counter=0;
+        int i, j, counter = 0;
 
         // 1. Shuffle population
         Util.shuffleList(populationOfNN);
 
         // 2. divide population into O subpopulations of size N/O
         NeuralNetwork[][] subpopulations = new NeuralNetwork[GAME_POP_SIZE][SUBSET_SIZE];
-        for(i=0; i<subpopulations.length; i++){
+        for (i = 0; i < subpopulations.length; i++) {
 
             // Create subpopulation
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
@@ -495,7 +511,7 @@ public class SupervisorController extends Supervisor {
                 subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
             }
 
-            //normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
+            normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
             double[][] sortedFitness = new double[NN_POP_SIZE][2];
             for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
                 sortedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
@@ -512,7 +528,7 @@ public class SupervisorController extends Supervisor {
             }
             // Log best individual
             try {
-                FilesFunctions.logBestIndiv(populationOfNN, (int)stats[i][3]);
+                FilesFunctions.logBestIndiv(populationOfNN, (int) stats[i][3]);
             } catch (IOException e) {
                 System.err.println(e.getMessage());
             }
@@ -538,21 +554,21 @@ public class SupervisorController extends Supervisor {
             // 4. Use fitness proportionate selection to create a 'mating pool' for each subpopulation
             double[] probTable = rouletteSelect(subpop);    // add to mating pool in a fitness proportionate way
 
-            NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE/GAME_POP_SIZE];
+            NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE / GAME_POP_SIZE];
             for (int k = 0; k < sub.length; k++) {
                 sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
             }
-            for(int k=0; k< sub.length; k++){
+            for (int k = 0; k < sub.length; k++) {
                 // randomly select individual from a mating pool
                 int r = random.nextInt(probTable.length);
-                for(j=0; j<NB_GENES; j++){
+                for (j = 0; j < NB_GENES; j++) {
                     sub[k].setWeights(j, subpop[r].getWeights()[j]);
                 }
             }
             // 5. Replace the subpopulation with a mating pool
-            for(int k=0; k<subpopulations[i].length; k++){
+            for (int k = 0; k < subpopulations[i].length; k++) {
                 subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
-                for(int l=0; l<subpopulations[i][k].getWeightsNo(); l++){
+                for (int l = 0; l < subpopulations[i][k].getWeightsNo(); l++) {
                     subpopulations[i][k].copy(sub[i]);
                 }
             }
@@ -810,8 +826,8 @@ public class SupervisorController extends Supervisor {
 
         // Initialise stats
         stats = new double[GAME_POP_SIZE][4];
-        for(i=0; i<stats.length; i++){
-            for(j=0; j<stats[i].length; j++) stats[i][j] = 0;
+        for (i = 0; i < stats.length; i++) {
+            for (j = 0; j < stats[i].length; j++) stats[i][j] = 0;
         }
 
         // Nodes
@@ -849,7 +865,7 @@ public class SupervisorController extends Supervisor {
         try {
             out1.write("Generation");
             for (i = 0; i < GAME_POP_SIZE; i++) {
-                out1.write(",Average" + i + ",Best" + i + ",Worst" + i+",Abs"+i);
+                out1.write(",Average" + i + ",Best" + i + ",Worst" + i + ",Abs" + i);
             }
             out1.write("\n");
             out1.flush();

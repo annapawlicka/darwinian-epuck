@@ -1,6 +1,5 @@
 import com.cyberbotics.webots.controller.*;
 import games.Game;
-import util.BoundNumbers;
 import util.FilesFunctions;
 import util.Util;
 
@@ -283,7 +282,16 @@ public class EpuckController extends Robot {
         speed[LEFT] = SPEED_RANGE * outputs[0];
         speed[RIGHT] = SPEED_RANGE * outputs[1];
 
+        if(Double.isNaN(speed[LEFT])){
+            System.err.println("Trying to set speed to NaN: 500 * "+outputs[0]);
+            speed[LEFT] = speed[LEFT] / 250;
+        }
+        if(Double.isNaN(speed[RIGHT])){
+            System.err.println("Trying to set speed to NaN: 500 * "+outputs[1]);
+            speed[RIGHT] = speed[RIGHT] / 250;
+        }
         // Set wheel speeds to output values
+
         robot.setSpeed(speed[LEFT], speed[RIGHT]);
 
         // Stop the robot if it is against an obstacle
@@ -394,7 +402,7 @@ public class EpuckController extends Robot {
         }
 
         // Normalise
-        //for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
+        for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
 
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
@@ -410,15 +418,15 @@ public class EpuckController extends Robot {
         double min = 0, max = 0;
 
         if (gameNo == 0) {
-            min = -1000000;
+            min = -2500000;
             max = 2500000;
         }
         if (gameNo == 1) {
-            min = -150000;
-            max = 100000;
+            min = -200000;
+            max = 600;
         }
         if (gameNo == 2) {
-            min = -700000;
+            min = -600000;
             max = 600000;
         }
 
@@ -585,8 +593,25 @@ public class EpuckController extends Robot {
                 sum += inputs[j] * weights[weight_counter];
                 weight_counter++;
             }
-            outputs[i] = BoundNumbers.bound(Math.tanh(sum + weights[weight_counter]));
+            //if(Math.tanh(sum + weights[weight_counter]) == Double.NaN)
+            outputs[i] = bound(Math.tanh(sum + weights[weight_counter]));
+            if(Double.isNaN(outputs[i])){
+                outputs[i] = 0;
+                System.err.println("NaN bounded to 0.");
+            }
             weight_counter++;
+        }
+    }
+
+    private double bound(double d) {
+        double TOO_SMALL = -1.0E5;
+        double TOO_BIG = 1.0E5;
+        if (d < TOO_SMALL) {
+            return TOO_SMALL;
+        } else if (d > TOO_BIG) {
+            return TOO_BIG;
+        } else {
+            return d;
         }
     }
 
