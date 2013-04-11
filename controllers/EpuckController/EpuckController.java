@@ -1,5 +1,6 @@
 import com.cyberbotics.webots.controller.*;
 import games.Game;
+import util.BoundNumbers;
 import util.FilesFunctions;
 import util.Util;
 
@@ -106,6 +107,7 @@ public class EpuckController extends Robot {
     private Random random = new Random();
 
     private int indiv;
+    private int TESTING = 0;
 
 
     public void run() throws Exception {
@@ -187,21 +189,61 @@ public class EpuckController extends Robot {
                 // Wait for new genome
                 if (n > 0) {
                     byte[] genes = receiver.getData();
-                    // Set neural network weights
-                    for (i = 0; i < NB_WEIGHTS; i++) weights[i] = genes[i];
+                    if(genes.length == (NB_WEIGHTS-4)*4){  // 64
+                        // Set neural network weights
+                        int p=0;
+                        int r=0;
+                        byte[] weight = new byte[4];
+                        for(i=0; i< genes.length; i++){
+                            if(p<4){
+                                //weight = new byte[4];
+                                weight[p] = genes[i];
+                                p++;
+                            }
+                            else {
+                                weights[r] = Util.bytearray2float(weight);
+                                p=0;
+                                r++;
+                            }
+                        }
+                    }
+                    else{
+                        // Set neural network weights
+                        int p=0;
+                        int r=0;
+                        byte[] weight = new byte[4];
+                        for(i=0; i< genes.length-4; i++){
+                            if(p<4){
+                                //weight = new byte[4];
+                                weight[p] = genes[i];
+                                p++;
+                            }
+                            else {
+                                weights[r] = Util.bytearray2float(weight);
+                                p=0;
+                                r++;
+                            }
+                        }
+                        TESTING = 2;
+                        System.out.println("Received best genome for testing.");
+
+                    }
                     receiver.nextPacket();
                 }
             }
 
-            step++;
+            if(TESTING==0)step++;
 
-            if (step < TRIAL_DURATION / TIME_STEP) {
+            if (step < TRIAL_DURATION / TIME_STEP && TESTING == 0) {
                 // Drive robot
-                runTrial();
-            } else {
+                runTrial(true);
+            } else if (TESTING == 0) {
                 // Send message to indicate end of trial and send fitness values for each game - next actor will be called
                 float msg[] = new float[GAME_POP_SIZE + 1]; // sending flag too
-                for (i = 0; i < agentsFitness[indiv].length; i++) msg[i] = (float) agentsFitness[indiv][i];
+                for (i = 0; i < agentsFitness[indiv].length; i++) {
+                    msg[i] = (float) agentsFitness[indiv][i];
+                    //System.out.println(agentsFitness[indiv][i]);
+                }
                 msg[GAME_POP_SIZE] = 0.0f;
                 byte[] msgInBytes = Util.float2Byte(msg);
                 emitter.send(msgInBytes);
@@ -213,19 +255,14 @@ public class EpuckController extends Robot {
                     indiv++;
                 } else {
                     indiv = 0;
-                    // Add all fitnesses for each game
-                    //setActorsFitness();
-                    // Send normalised fitness scores to supervisor
-                    /*for (i = 0; i < fitnessOfSolutions.length; i++) {
-                        float message[] = {(float) fitnessOfSolutions[i], i, 2};
-                        byte[] messageInBytes = Util.float2Byte(message);
-                        emitter.send(messageInBytes);
-                    }*/
                     float end[] = {1};
                     byte[] endMsg = Util.float2Byte(end);
                     emitter.send(endMsg);
                     resetActorsFitArrays();
                 }
+            }
+            else if(TESTING == 2) {
+                runTrial(false);
             }
 
         }
@@ -236,13 +273,13 @@ public class EpuckController extends Robot {
      *
      * @return Returns current fitness score
      */
-    private void runTrial() throws Exception {
+    private void runTrial(boolean ifEvolved) throws Exception {
 
         double[] outputs = new double[NB_OUTPUTS];
 
         updateSenorReadings();
         run_neural_network(states, outputs);
-
+        //System.out.println("LEFT: "+outputs[0]+". RIGHT: "+outputs[1]);
         speed[LEFT] = SPEED_RANGE * outputs[0];
         speed[RIGHT] = SPEED_RANGE * outputs[1];
 
@@ -260,7 +297,7 @@ public class EpuckController extends Robot {
             }
         }
 
-        computeFitness(speed, position, maxIRActivation, fs_value[1]);
+        if(ifEvolved) computeFitness(speed, position, maxIRActivation, fs_value[1]);
     }
 
 
@@ -357,7 +394,7 @@ public class EpuckController extends Robot {
         }
 
         // Normalise
-        for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
+        //for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
 
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
@@ -373,16 +410,16 @@ public class EpuckController extends Robot {
         double min = 0, max = 0;
 
         if (gameNo == 0) {
-            min = -350000;
-            max = 200000;
+            min = -1000000;
+            max = 2500000;
         }
         if (gameNo == 1) {
-            min = -370000;
-            max = 150000;
+            min = -150000;
+            max = 100000;
         }
         if (gameNo == 2) {
-            min = -200000;
-            max = 200000;
+            min = -700000;
+            max = 600000;
         }
 
         for (int i = 0; i < fitnessScores.length; i++) {
@@ -548,7 +585,7 @@ public class EpuckController extends Robot {
                 sum += inputs[j] * weights[weight_counter];
                 weight_counter++;
             }
-            outputs[i] = Math.tanh(sum + weights[weight_counter]);
+            outputs[i] = BoundNumbers.bound(Math.tanh(sum + weights[weight_counter]));
             weight_counter++;
         }
     }

@@ -147,8 +147,6 @@ public class SupervisorController extends Supervisor {
                         }
                         finished = Util.bytearray2float(flag);
                     }
-                    //int indIndex = (int) Util.bytearray2float(game1);
-                    //fitnessNN[indIndex] = Util.bytearray2float(game1);
                     receiver.nextPacket();
                 } else if (nnFit.length == 4) {
                     byte[] flag = new byte[4];
@@ -208,6 +206,17 @@ public class SupervisorController extends Supervisor {
                     emitter.send(msgInBytes);
                 }
             }
+            if(TESTING==2){ // Send weights of best individual
+                float [] msg = new float[populationOfNN[0].getWeightsNo()+1];
+                for(int i=0; i<populationOfNN[0].getWeightsNo(); i++){
+                    msg[i] = populationOfNN[0].getWeights()[i];
+                }
+                msg[populationOfNN[0].getWeightsNo()] = 2.0f; // send flag
+                byte[] msgInBytes =  Util.float2Byte(msg);
+                emitter.send(msgInBytes);
+                System.out.println("Sent best genome for testing.");
+                TESTING=-1;
+            }
         }
     }
 
@@ -251,16 +260,16 @@ public class SupervisorController extends Supervisor {
         double min = 0, max = 0;
 
         if (gameNo == 0) {
-            min = -350000;
-            max = 200000;
+            min = -1000000;
+            max = 2500000;
         }
         if (gameNo == 1) {
-            min = -370000;
-            max = 150000;
+            min = -150000;
+            max = 100000;
         }
         if (gameNo == 2) {
-            min = -200000;
-            max = 200000;
+            min = -700000;
+            max = 600000;
         }
 
         for (int i = 0; i < fitnessScores.length; i++) {
@@ -486,7 +495,7 @@ public class SupervisorController extends Supervisor {
                 subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
             }
 
-            normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
+            //normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
             double[][] sortedFitness = new double[NN_POP_SIZE][2];
             for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
                 sortedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
@@ -500,6 +509,12 @@ public class SupervisorController extends Supervisor {
             avgFitNN = Util.mean(fitnessPerGame[i]);
             if (bestFitNN > stats[i][1]) {
                 stats[i][3] = bestNN;
+            }
+            // Log best individual
+            try {
+                FilesFunctions.logBestIndiv(populationOfNN, (int)stats[i][3]);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
             }
             System.out.println("Game: " + i + " stats");
             System.out.println("Best fitness score: " + bestFitNN);

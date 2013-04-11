@@ -1,5 +1,7 @@
 package util;
 
+import java.nio.ByteBuffer;
+
 /**
  * Created with IntelliJ IDEA.
  * User: annapawlicka
@@ -68,6 +70,17 @@ public class Util {
             b[i] = a[i];
         }
         return b;
+    }
+
+    /**
+     * bytearray2float method - converts bytes into a float
+     *
+     * @param b byte array
+     * @return float value
+     */
+    public static float bytearray2float(byte[] b) {
+        ByteBuffer buf = ByteBuffer.wrap(b);
+        return buf.getFloat();
     }
 
     /**
