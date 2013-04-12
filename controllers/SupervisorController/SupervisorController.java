@@ -17,7 +17,6 @@ import java.util.Random;
  * Fitness function of agents is how well they learn the games.
  */
 
-//TODO Test reading best indiv
 
 public class SupervisorController extends Supervisor {
 
@@ -338,7 +337,7 @@ public class SupervisorController extends Supervisor {
 
         if (TESTING == 2) { // Test best individual - whole population will be filled with the same individual's weights
             try {
-                while ((strLine = reader1.readLine()) != null) {    // Only one line in a file. TODO check if doesn't throw exception
+                while ((strLine = reader1.readLine()) != null) {
                     String[] weightsStr = strLine.split(",");
                     for (i = 0; i < NN_POP_SIZE; i++) {
                         for (int j = 0; j < populationOfNN[i].getWeightsNo(); j++) {
