@@ -581,12 +581,12 @@ public class SupervisorController extends Supervisor {
         NeuralNetwork[] tempPopulation = Util.concat(subpopulations);
 
         // 6. Create new population
-        /*NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
+        NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (i = 0; i < newpop.length; i++) {
             newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
-        }  */
+        }
 
-        /*// 7. Perform crossover
+        // 7. Perform crossover
         for (i = 0; i < NN_POP_SIZE; i++) {
             // Copy from temp pop
             int ind1 = random.nextInt(NN_POP_SIZE);
@@ -601,14 +601,14 @@ public class SupervisorController extends Supervisor {
                 for (j = 0; j < NB_GENES; j++)
                     newpop[i].setWeights(j, tempPopulation[ind1].getWeights()[j]);
             }
-        } */
+        }
         // 8. Mutate new population and copy back to pop
         for (i = 0; i < NN_POP_SIZE; i++) {
             for (j = 0; j < NB_GENES; j++)
                 if (random.nextFloat() < MUTATION_PROBABILITY)
-                    populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, tempPopulation[i].getWeights()[j], MUTATION_SIGMA));
+                    populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
                 else
-                    populationOfNN[i].copy(tempPopulation[i]);
+                    populationOfNN[i].copy(newpop[i]);
         }
 
         // Reset fitness

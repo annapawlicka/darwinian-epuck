@@ -241,7 +241,6 @@ public class EpuckController extends Robot {
                 float msg[] = new float[GAME_POP_SIZE + 1]; // sending flag too
                 for (i = 0; i < agentsFitness[indiv].length; i++) {
                     msg[i] = (float) agentsFitness[indiv][i];
-                    //System.out.println(agentsFitness[indiv][i]);
                 }
                 msg[GAME_POP_SIZE] = 0.0f;
                 byte[] msgInBytes = Util.float2Byte(msg);
