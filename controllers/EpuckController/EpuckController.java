@@ -29,7 +29,6 @@ public class EpuckController extends Robot {
     private final int PS_RANGE = 3800;
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
-    //private final int NB_LIGHT_SENS = 2;            // Number of light sensors used
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
     private final int NB_INPUTS = 9;
@@ -79,17 +78,10 @@ public class EpuckController extends Robot {
     private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
 
-    // LEDs
-    private int NB_LEDS = 8;
-    private LED[] led = new LED[NB_LEDS];
-
     // Differential Wheels
     private DifferentialWheels robot = new DifferentialWheels();
     private double[] speed;
 
-    // GPS
-    private GPS gps;
-    private double[] position;
     private double[] states = new double[NB_INPUTS];               // The sensor values  8+1
 
     // Emitter and Receiver
@@ -304,7 +296,7 @@ public class EpuckController extends Robot {
             }
         }
 
-        if(ifEvolved) computeFitness(speed, position, maxIRActivation, fs_value[1]);
+        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1]);
     }
 
 
@@ -312,11 +304,10 @@ public class EpuckController extends Robot {
      * Method to calculate fitness score - fitness function that have evolvable constants
      *
      * @param speed
-     * @param position
      * @param maxIRActivation
      * @param floorColour
      */
-    public void computeFitness(double[] speed, double[] position, double maxIRActivation, double floorColour) throws Exception {
+    public void computeFitness(double[] speed, double maxIRActivation, double floorColour) throws Exception {
 
         // Avoid obstacles:
         agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
@@ -575,11 +566,6 @@ public class EpuckController extends Robot {
         //states[8] = fs_value[0];
         states[8] = fs_value[1];
         //states[10] = fs_value[2];
-
-
-        //Get position of the e-puck
-        position = gps.getValues();
-
     }
 
     private void run_neural_network(double[] inputs, double[] outputs) {
@@ -700,21 +686,6 @@ public class EpuckController extends Robot {
         }
 
         maxIRActivation = 0;
-
-        /* Enable GPS sensor to determine position */
-        gps = new GPS("gps");
-        gps.enable(TIME_STEP);
-        position = new double[3];
-        for (i = 0; i < position.length; i++) {
-            position[i] = 0.0f;
-        }
-
-        /* Initialise LED lights */
-        for (i = 0; i < NB_LEDS; i++) {
-            led[i] = getLED("led" + i);
-        }
-
-        for (i = 0; i < led.length; i++) led[i].set(1);
 
         /* Initialise IR floor sensors */
         fs = new DistanceSensor[NB_FLOOR_SENSORS];

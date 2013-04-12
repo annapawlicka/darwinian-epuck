@@ -69,7 +69,6 @@ public class SupervisorController extends Supervisor {
     private double[][] stats;
     private int bestNN = -1, absBestNN = -1;
     private BufferedWriter out1, out2, out3;
-    private BufferedReader in1, in2, in3;
     private FileWriter file1, file2, file3;
     private BufferedReader reader1, reader3;
 
