@@ -43,7 +43,7 @@ public class NeuralNetwork {
 
         // Initialise weights
         for(int i=0; i< weightsNo; i++){
-            weights[i] = (float)((weightMax-weightMin)*random.nextFloat()-(weightMax-weightMin)/2.0);
+            weights[i] = (random.nextFloat() * (weightMax - weightMin) + weightMin);
         }
 
         // Initialise outputs
@@ -86,7 +86,7 @@ public class NeuralNetwork {
             w = x1 * x1 + x2 * x2;
         } while (w > 1.0 || w == 0);
 
-        y1 = (float) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w));
+        y1 = ((float) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w)));
 
         if (y1 > GENE_MAX) return GENE_MAX;
         if (y1 < GENE_MIN) return GENE_MIN;

@@ -21,8 +21,8 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 3;
-    private int NN_POP_SIZE = 30;
+    private int GAME_POP_SIZE = 1;
+    private int NN_POP_SIZE = 50;
     private final int LEFT = 0;
     private final int RIGHT = 1;
     private final int TIME_STEP = 128;              // [ms]
@@ -295,8 +295,10 @@ public class EpuckController extends Robot {
                 break;
             }
         }
+        int punishment = 0;
+        if(fs_value[1] > 600) punishment = 10;
 
-        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1]);
+        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1], punishment);
     }
 
 
@@ -307,16 +309,16 @@ public class EpuckController extends Robot {
      * @param maxIRActivation
      * @param floorColour
      */
-    public void computeFitness(double[] speed, double maxIRActivation, double floorColour) throws Exception {
+    public void computeFitness(double[] speed, double maxIRActivation, double floorColour, int p) throws Exception {
 
         // Avoid obstacles:
-        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
+        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
 
         // Follow wall
-        agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation);
+        //agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        agentsFitness[indiv][2] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))))) * (1 - Util.normalize(0, 1100, floorColour));
+        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))))) * (1 - Util.normalize(0, 1100, floorColour)) - p;
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
@@ -392,7 +394,7 @@ public class EpuckController extends Robot {
         }
 
         // Normalise
-        for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
+        //for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
 
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
@@ -578,19 +580,16 @@ public class EpuckController extends Robot {
                 sum += inputs[j] * weights[weight_counter];
                 weight_counter++;
             }
-            //if(Math.tanh(sum + weights[weight_counter]) == Double.NaN)
+            if(Double.isNaN(sum)) sum = bound(sum);
             outputs[i] = bound(Math.tanh(sum + weights[weight_counter]));
-            if(Double.isNaN(outputs[i])){
-                outputs[i] = 0;
-                System.err.println("NaN bounded to 0.");
-            }
+            if(Double.isNaN(outputs[i])) outputs[i] = 0;
             weight_counter++;
         }
     }
 
     private double bound(double d) {
-        double TOO_SMALL = -1.0E5;
-        double TOO_BIG = 1.0E5;
+        double TOO_SMALL = -1.0E19;
+        double TOO_BIG = 1.0E19;
         if (d < TOO_SMALL) {
             return TOO_SMALL;
         } else if (d > TOO_BIG) {
@@ -609,17 +608,17 @@ public class EpuckController extends Robot {
         games[0].setConstants(3, 0);    // Ignore floor colour/light
 
 
-       /*Game 2: Follow black line */
+       /*Game 2: Follow black line *//*
         games[1].setConstants(0, 1);    // Drive fast
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
         games[1].setConstants(3, 1);    // Max black line /light
 
-        /* Game 3: Follow the wall */
+        *//* Game 3: Follow the wall *//*
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
-        games[2].setConstants(3, 0);    // Max black line/light
+        games[2].setConstants(3, 0);    // Max black line/light*/
 
     }
 

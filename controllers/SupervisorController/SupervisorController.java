@@ -95,7 +95,7 @@ public class SupervisorController extends Supervisor {
                 nnFit = receiver.getData();
                 // Convert bytes into floats
                 if (nnFit.length == (GAME_POP_SIZE * 4 + 4)) {
-                    if (GAME_POP_SIZE == 2) {
+                    if (GAME_POP_SIZE == 1) {
                         byte[] game0 = new byte[4];
                         for (int i = 0; i < 4; i++) {
                             game0[i] = nnFit[i];
@@ -182,10 +182,10 @@ public class SupervisorController extends Supervisor {
                     //optimiseAndCreateNewPop();
 
                     // VEGA based optimisation
-                    createNewVEGApopulation();
+                    //createNewVEGApopulation();
 
                     // Rank populationOfNN, select best individuals and create new generation
-                    //createNewPopulation();
+                    createNewPopulation();
 
                     generation++;
                     System.out.println("\nGENERATION \n" + generation);
@@ -196,12 +196,12 @@ public class SupervisorController extends Supervisor {
                     minFitNN = 0;
 
                     resetRobotPosition();
-                    // Evolve games every 4 NN generations (gives them time to learn)
+                    /*// Evolve games every 4 NN generations (gives them time to learn)
                     if (generation % 5 == 0) {
                         // Send flag to start evolution of games
                         byte[] flag = {1};
                         gameEmitter.send(flag);
-                    }
+                    }*/
 
                     // Send new weights
                     byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
@@ -622,6 +622,10 @@ public class SupervisorController extends Supervisor {
      */
     private void createNewPopulation() {
 
+        // Set fitness
+        for(int i=0; i<fitnessPerGame.length; i++){
+            for (int j=0; j<fitnessPerGame[i].length; j++) fitnessNN[j]+=fitnessPerGame[i][j];
+        }
         // Sort population
         //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
         // Sort populationOfNN by fitness
@@ -802,8 +806,8 @@ public class SupervisorController extends Supervisor {
         int i, j;
 
         /* Population/Evolution parameters */
-        NN_POP_SIZE = 30;
-        GAME_POP_SIZE = 3;
+        NN_POP_SIZE = 50;
+        GAME_POP_SIZE = 1;
         SUBSET_SIZE = NN_POP_SIZE / GAME_POP_SIZE;
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 

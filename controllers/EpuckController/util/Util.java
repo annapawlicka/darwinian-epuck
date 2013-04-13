@@ -12,6 +12,9 @@ import java.nio.ByteBuffer;
 
 public class Util {
 
+    static double TOO_SMALL = -1.0E19;
+    static double TOO_BIG = 1.0E19;
+
     /**
      * Normal probability density function
      * Y = normpdf(X,mu,sigma) computes the pdf at each of the values in X using
@@ -303,5 +306,15 @@ public class Util {
         return outData;
     }
 
+    public static double bound(double d) {
+
+        if (d < TOO_SMALL) {
+            return TOO_SMALL;
+        } else if (d > TOO_BIG) {
+            return TOO_BIG;
+        } else {
+            return d;
+        }
+    }
 
 }

@@ -15,6 +15,9 @@ import java.util.Random;
 
 public class Util {
 
+    static float TOO_SMALL = -1.0E19f;
+    static float TOO_BIG = 1.0E19f;
+
     /**
      * Normal probability density function
      * Y = normpdf(X,mu,sigma) computes the pdf at each of the values in X using
@@ -301,6 +304,17 @@ public class Util {
         NeuralNetwork helper = a[i];
         a[i] =  a[change];
         a[change] = helper;
+    }
+
+    public static float bound(float d) {
+
+        if (d < TOO_SMALL) {
+            return TOO_SMALL;
+        } else if (d > TOO_BIG) {
+            return TOO_BIG;
+        } else {
+            return d;
+        }
     }
 
 }
