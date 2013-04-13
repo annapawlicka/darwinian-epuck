@@ -28,7 +28,6 @@ public class Util {
      */
     public static double normPdf(double x, double mean, double sd) {
         double y = (1 / (sd * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - mean, 2) / (2 * sd * sd));
-        //System.out.println("normPDF: "+y);
         return y;
     }
 
@@ -275,8 +274,11 @@ public class Util {
 
     }
 
-
-
+    /**
+     * Bounds float value to prevent from creating NaNs.
+     * @param d float value
+     * @return
+     */
     public static float bound(float d) {
 
         if (d < TOO_SMALL) {
@@ -288,6 +290,11 @@ public class Util {
         }
     }
 
+    /**
+     * Converts an array of bytes to an array of floats
+     * @param values    array of bytes
+     * @return
+     */
     public static float[] bytes2FloatArray(byte[] values){
 
         int p=0, r=0;
@@ -311,6 +318,11 @@ public class Util {
 
     }
 
+    /**
+     * Converts an array of float to an array of bytes
+     * @param values    array of floats
+     * @return
+     */
     public static byte [] float2ByteArray (float[] values)
     {
         byte[][] b = new byte[values.length][4];
@@ -328,33 +340,6 @@ public class Util {
 
         }
         return result;
-    }
-
-    public static void main(String[] args){
-
-        //byte[] b = {127,-64,-65,94};
-        //float f = bytearray2float(b);
-        //System.out.println(f);
-
-        //float[] floats= {0.20630264f,-0.062446f,-0.6959696f,0.3756733f,0.30890977f,0.3592105f,0.5308776f,0.5443175f,
-        //        -0.35577512f,0.72968745f,0.43952227f,-0.81068146f,-0.38986576f,-0.69835114f,0.5708624f,-0.5889871f};
-        /*float[] floats={1.0f};
-        byte[] bytes = float2ByteArray(floats);
-        System.out.println("FLOATS:");
-        for(int i=0; i< floats.length; i++) System.out.print(floats[i] + ",");
-        System.out.println();
-        System.out.println("BYTES: ");
-        for(int i=0; i< bytes.length; i++) System.out.print(bytes[i] + ",");
-
-        float[] f = bytes2FloatArray(bytes);
-        System.out.println();
-        System.out.println("Floats:");
-        for(int l=0; l<f.length; l++) System.out.println(f[l]);*/
-
-        byte b = 1;
-        float temp = b;
-        System.out.println(temp);
-
     }
 
 }
