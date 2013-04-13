@@ -64,7 +64,11 @@ public class Util {
         return b;
     }
 
-    /* Sum of array elements */
+    /**
+     * Sums up elements of an array
+     * @param in
+     * @return
+     */
     public static double sum(double in[]) {
         double sum = 0;
         for (int i = 0; i < in.length; i++)
@@ -237,6 +241,11 @@ public class Util {
         return temp / values.length;
     }
 
+    /**
+     * Converts an array of bytes into an array of floats
+     * @param values    array of bytes
+     * @return
+     */
     public static float[] bytes2FloatArray(byte[] values){
 
         int p=0, r=0;
@@ -260,6 +269,11 @@ public class Util {
 
     }
 
+    /**
+     * Converts an array of floats into an array of bytes
+     * @param values    array of floats
+     * @return
+     */
     public static byte [] float2ByteArray (float[] values)
     {
         byte[][] b = new byte[values.length][4];
@@ -297,10 +311,13 @@ public class Util {
                 pos++;
             }
         }
-        //shuffleList(result);
         return result;
     }
 
+    /**
+     * Shuffles elements of an array
+     * @param a
+     */
     public static void shuffleList(NeuralNetwork[] a) {
         int n = a.length;
         Random random = new Random();
@@ -311,12 +328,23 @@ public class Util {
         }
     }
 
+    /**
+     * Swaps two elements of an array
+     * @param a         Array of NeuralNetwork elements
+     * @param i         Index of one elements
+     * @param change    Index of second element
+     */
     private static void swap(NeuralNetwork[]a, int i, int change) {
         NeuralNetwork helper = a[i];
         a[i] =  a[change];
         a[change] = helper;
     }
 
+    /**
+     * Bounds a float value to prevent from producing NaNs
+     * @param d     float value
+     * @return
+     */
     public static float bound(float d) {
 
         if (d < TOO_SMALL) {
