@@ -96,77 +96,27 @@ public class SupervisorController extends Supervisor {
                 // Convert bytes into floats
                 if (nnFit.length == (GAME_POP_SIZE * 4 + 4)) {
                     if (GAME_POP_SIZE == 1) {
-                        byte[] game0 = new byte[4];
-                        for (int i = 0; i < 4; i++) {
-                            game0[i] = nnFit[i];
-                        }
-                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
+                        float[] f = Util.bytes2FloatArray(nnFit);
+                        fitnessPerGame[0][evaluatedNN] = f[0];
+                        finished = f[1];
+
                     } else if (GAME_POP_SIZE == 2) {
-                        byte[] game0 = new byte[4];
-                        for (int i = 0; i < 4; i++) {
-                            game0[i] = nnFit[i];
-                        }
-                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
-                        byte[] game1 = new byte[4];
-                        int m = 0;
-                        for (int k = 4; k < 8; k++) {
-                            game1[m] = nnFit[k];
-                            m++;
-                        }
-                        fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
+                        float[] f = Util.bytes2FloatArray(nnFit);
+                        fitnessPerGame[0][evaluatedNN] = f[0];
+                        fitnessPerGame[1][evaluatedNN] = f[1];
+                        finished = f[2];
+
                     } else if (GAME_POP_SIZE == 3) {
-                        byte[] game0 = new byte[4];
-                        for (int i = 0; i < 4; i++) {
-                            game0[i] = nnFit[i];
-                        }
-                        fitnessPerGame[0][evaluatedNN] = Util.bytearray2float(game0);
-                        byte[] game1 = new byte[4];
-                        int m = 0;
-                        for (int k = 4; k < 8; k++) {
-                            game1[m] = nnFit[k];
-                            m++;
-                        }
-                        fitnessPerGame[1][evaluatedNN] = Util.bytearray2float(game1);
-                        byte[] game2 = new byte[4];
-                        int l = 0;
-                        for (int j = 8; j < 12; j++) {
-                            game2[l] = nnFit[j];
-                            l++;
-                        }
-                        fitnessPerGame[2][evaluatedNN] = Util.bytearray2float(game2);
-                    }
-                    if (GAME_POP_SIZE == 1) {
-                        byte[] flag = new byte[4];
-                        int p = 0;
-                        for (int o = 4; o < 8; o++) {
-                            flag[p] = nnFit[o];
-                            p++;
-                        }
-                        finished = Util.bytearray2float(flag);
-                    } else if (GAME_POP_SIZE == 2) {
-                        byte[] flag = new byte[4];
-                        int p = 0;
-                        for (int o = 8; o < 12; o++) {
-                            flag[p] = nnFit[o];
-                            p++;
-                        }
-                        finished = Util.bytearray2float(flag);
-                    } else if (GAME_POP_SIZE == 3) {
-                        byte[] flag = new byte[4];
-                        int p = 0;
-                        for (int o = 12; o < 16; o++) {
-                            flag[p] = nnFit[o];
-                            p++;
-                        }
-                        finished = Util.bytearray2float(flag);
+                        float[] f = Util.bytes2FloatArray(nnFit);
+                        fitnessPerGame[0][evaluatedNN] = f[0];
+                        fitnessPerGame[1][evaluatedNN] = f[1];
+                        fitnessPerGame[2][evaluatedNN] = f[2];
+                        finished = f[3];
                     }
                     receiver.nextPacket();
-                } else if (nnFit.length == 4) {
-                    byte[] flag = new byte[4];
-                    for (int j = 0; j < 4; j++) {
-                        flag[j] = nnFit[j];
-                    }
-                    finished = Util.bytearray2float(flag);
+
+                } else if (nnFit.length == 1) {
+                    finished = nnFit[0];
                     receiver.nextPacket();
                 }
             }
@@ -204,7 +154,8 @@ public class SupervisorController extends Supervisor {
                     }*/
 
                     // Send new weights
-                    byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                    byte[] msgInBytes = Util.float2ByteArray(populationOfNN[evaluatedNN].getWeights());
+
                     emitter.send(msgInBytes);
                 }
             } else if (finished == 0.0) {
@@ -215,7 +166,7 @@ public class SupervisorController extends Supervisor {
                     System.out.println("Evaluated individual " + evaluatedNN);
                     // Send next genome to experiment
                     resetRobotPosition();
-                    byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+                    byte[] msgInBytes = Util.float2ByteArray(populationOfNN[evaluatedNN].getWeights());
                     emitter.send(msgInBytes);
                 }
             }
@@ -225,7 +176,7 @@ public class SupervisorController extends Supervisor {
                     msg[i] = populationOfNN[0].getWeights()[i];
                 }
                 msg[populationOfNN[0].getWeightsNo()] = 2.0f; // send flag
-                byte[] msgInBytes = Util.float2Byte(msg);
+                byte[] msgInBytes = Util.float2ByteArray(msg);
                 emitter.send(msgInBytes);
                 System.out.println("Sent best genome for testing.");
                 TESTING = -1;
@@ -312,7 +263,7 @@ public class SupervisorController extends Supervisor {
             resetRobotPosition();
 
             // Then, send weights of NNs to experiment
-            byte[] msgInBytes = Util.float2Byte(populationOfNN[evaluatedNN].getWeights());
+            byte[] msgInBytes = Util.float2ByteArray(populationOfNN[evaluatedNN].getWeights());
             emitter.send(msgInBytes);
         }
         int counter = 0;
@@ -812,9 +763,9 @@ public class SupervisorController extends Supervisor {
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 
         // Neural Networks
-        NB_INPUTS = 7;
+        NB_INPUTS = 9;
         NB_OUTPUTS = 2;
-        NB_GENES = 10;
+        NB_GENES = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;
         populationOfNN = new NeuralNetwork[NN_POP_SIZE];
         for (i = 0; i < NN_POP_SIZE; i++) populationOfNN[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
         fitnessNN = new double[NN_POP_SIZE];

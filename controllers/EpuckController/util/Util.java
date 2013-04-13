@@ -12,8 +12,8 @@ import java.nio.ByteBuffer;
 
 public class Util {
 
-    static double TOO_SMALL = -1.0E19;
-    static double TOO_BIG = 1.0E19;
+    static float TOO_SMALL = -1.0E19f;
+    static float TOO_BIG = 1.0E19f;
 
     /**
      * Normal probability density function
@@ -73,17 +73,6 @@ public class Util {
             b[i] = a[i];
         }
         return b;
-    }
-
-    /**
-     * bytearray2float method - converts bytes into a float
-     *
-     * @param b byte array
-     * @return float value
-     */
-    public static float bytearray2float(byte[] b) {
-        ByteBuffer buf = ByteBuffer.wrap(b);
-        return buf.getFloat();
     }
 
     /**
@@ -286,27 +275,9 @@ public class Util {
 
     }
 
-    /**
-     * float2Byte method - writes floats to byte array
-     *
-     * @param inData
-     * @return
-     */
-    public static byte[] float2Byte(float[] inData) {
-        int j = 0;
-        int length = inData.length;
-        byte[] outData = new byte[length * 4];
-        for (int i = 0; i < length; i++) {
-            int data = Float.floatToIntBits(inData[i]);
-            outData[j++] = (byte) (data >>> 24);
-            outData[j++] = (byte) (data >>> 16);
-            outData[j++] = (byte) (data >>> 8);
-            outData[j++] = (byte) (data >>> 0);
-        }
-        return outData;
-    }
 
-    public static double bound(double d) {
+
+    public static float bound(float d) {
 
         if (d < TOO_SMALL) {
             return TOO_SMALL;
@@ -315,6 +286,75 @@ public class Util {
         } else {
             return d;
         }
+    }
+
+    public static float[] bytes2FloatArray(byte[] values){
+
+        int p=0, r=0;
+        float[] floats = new float[values.length/4];
+         byte[] weight = new byte[4];
+        for(int i=0; i< values.length; i++){
+            if(p<4){
+                weight[p] = values[i];
+                p++;
+            }
+            else {
+                p=0;
+                float fl = ByteBuffer.wrap(weight).getFloat();
+                floats[r] = fl;
+                weight[p] = values[i];
+                p++;
+                r++;
+            }
+        }
+        return floats;
+
+    }
+
+    public static byte [] float2ByteArray (float[] values)
+    {
+        byte[][] b = new byte[values.length][4];
+
+        for(int i=0; i<values.length; i++){
+            b[i] = ByteBuffer.allocate(4).putFloat(values[i]).array();
+        }
+        byte[] result = new byte[b.length*4];
+        int counter = 0;
+        for(int i=0; i<b.length; i++){
+            for(int j=0; j<b[i].length; j++){
+                result[counter] = b[i][j];
+                counter++;
+            }
+
+        }
+        return result;
+    }
+
+    public static void main(String[] args){
+
+        //byte[] b = {127,-64,-65,94};
+        //float f = bytearray2float(b);
+        //System.out.println(f);
+
+        //float[] floats= {0.20630264f,-0.062446f,-0.6959696f,0.3756733f,0.30890977f,0.3592105f,0.5308776f,0.5443175f,
+        //        -0.35577512f,0.72968745f,0.43952227f,-0.81068146f,-0.38986576f,-0.69835114f,0.5708624f,-0.5889871f};
+        /*float[] floats={1.0f};
+        byte[] bytes = float2ByteArray(floats);
+        System.out.println("FLOATS:");
+        for(int i=0; i< floats.length; i++) System.out.print(floats[i] + ",");
+        System.out.println();
+        System.out.println("BYTES: ");
+        for(int i=0; i< bytes.length; i++) System.out.print(bytes[i] + ",");
+
+        float[] f = bytes2FloatArray(bytes);
+        System.out.println();
+        System.out.println("Floats:");
+        for(int l=0; l<f.length; l++) System.out.println(f[l]);*/
+
+        byte b = 1;
+        float temp = b;
+        System.out.println(temp);
+
     }
 
 }

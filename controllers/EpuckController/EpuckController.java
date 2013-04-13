@@ -180,26 +180,11 @@ public class EpuckController extends Robot {
                 // Wait for new genome
                 if (n > 0) {
                     byte[] genes = receiver.getData();
-                    if(genes.length == (NB_WEIGHTS-4)*4){  // 64
-                        // Set neural network weights
-                        int p=0;
-                        int r=0;
-                        byte[] weight = new byte[4];
-                        for(i=0; i< genes.length; i++){
-                            if(p<4){
-                                //weight = new byte[4];
-                                weight[p] = genes[i];
-                                p++;
-                            }
-                            else {
-                                weights[r] = Util.bytearray2float(weight);
-                                p=0;
-                                r++;
-                            }
-                        }
+                    if(genes.length == (NB_WEIGHTS)*4){  // 64
+                        weights = Util.bytes2FloatArray(genes);
                     }
-                    else{
-                        // Set neural network weights
+                    else {
+                        // Set neural network weights    TODO fix this
                         int p=0;
                         int r=0;
                         byte[] weight = new byte[4];
@@ -210,7 +195,7 @@ public class EpuckController extends Robot {
                                 p++;
                             }
                             else {
-                                weights[r] = Util.bytearray2float(weight);
+                                //weights[r] = Util.bytearray2float(weight);
                                 p=0;
                                 r++;
                             }
@@ -235,7 +220,7 @@ public class EpuckController extends Robot {
                     msg[i] = (float) agentsFitness[indiv][i];
                 }
                 msg[GAME_POP_SIZE] = 0.0f;
-                byte[] msgInBytes = Util.float2Byte(msg);
+                byte[] msgInBytes = Util.float2ByteArray(msg);
                 emitter.send(msgInBytes);
                 // Reinitialize counter
                 step = 0;
@@ -245,8 +230,8 @@ public class EpuckController extends Robot {
                     indiv++;
                 } else {
                     indiv = 0;
-                    float end[] = {1};
-                    byte[] endMsg = Util.float2Byte(end);
+                    //float end[] = {1.0f};
+                    byte[] endMsg = {1};
                     emitter.send(endMsg);
                     resetActorsFitArrays();
                 }
@@ -275,11 +260,9 @@ public class EpuckController extends Robot {
 
         if(Double.isNaN(speed[LEFT])){
             System.err.println("Trying to set speed to NaN: 500 * "+outputs[0]);
-            speed[LEFT] = speed[LEFT] / 250;
         }
         if(Double.isNaN(speed[RIGHT])){
             System.err.println("Trying to set speed to NaN: 500 * "+outputs[1]);
-            speed[RIGHT] = speed[RIGHT] / 250;
         }
         // Set wheel speeds to output values
 
@@ -295,10 +278,25 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-        int punishment = 0;
-        if(fs_value[1] > 600) punishment = 10;
+        int colourPunishment = 0;
+        if(fs_value[1] > 600) colourPunishment = 1;
+        int directionPunishment = 0;
+        //if(Math.abs(speed[LEFT] - speed[RIGHT]) > 500){
+        //    directionPunishment = 10;
+            //System.out.println("Direction punishment: "+ Math.abs(speed[LEFT] - speed[RIGHT]));
+        //}
+        int speedReward = 0;
+        if(Util.mean(speed) > 300) {
+            speedReward = 1;
+            //System.out.println("Speed reward: "+Util.mean(speed));
+        }
+        int colourReward = 0;
+        if(fs_value[1] < 500) {
+            colourReward = 1;
+            //System.out.println("Colour reward: "+fs_value[1] );
+        }
 
-        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1], punishment);
+        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1], colourPunishment, directionPunishment, speedReward, colourReward);
     }
 
 
@@ -309,7 +307,7 @@ public class EpuckController extends Robot {
      * @param maxIRActivation
      * @param floorColour
      */
-    public void computeFitness(double[] speed, double maxIRActivation, double floorColour, int p) throws Exception {
+    public void computeFitness(double[] speed, double maxIRActivation, double floorColour, int cP, int dP, int sR, int cR) throws Exception {
 
         // Avoid obstacles:
         //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
@@ -318,7 +316,7 @@ public class EpuckController extends Robot {
         //agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation);
 
         // Follow black line
-        agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))))) * (1 - Util.normalize(0, 1100, floorColour)) - p;
+        agentsFitness[indiv][0] +=  sR + cR - cP - dP;
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
@@ -582,7 +580,7 @@ public class EpuckController extends Robot {
             }
             if(Double.isNaN(sum)) sum = bound(sum);
             outputs[i] = bound(Math.tanh(sum + weights[weight_counter]));
-            if(Double.isNaN(outputs[i])) outputs[i] = 0;
+            //if(Double.isNaN(outputs[i])) outputs[i] = 0;
             weight_counter++;
         }
     }

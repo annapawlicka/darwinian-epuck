@@ -158,26 +158,6 @@ public class Util {
     }
 
     /**
-     * float2Byte method - writes floats to byte array
-     *
-     * @param inData float array
-     * @return byte array
-     */
-    public static byte[] float2Byte(float[] inData) {
-        int j = 0;
-        int length = inData.length;
-        byte[] outData = new byte[length * 4];
-        for (int i = 0; i < length; i++) {
-            int data = Float.floatToIntBits(inData[i]);
-            outData[j++] = (byte) (data >>> 24);
-            outData[j++] = (byte) (data >>> 16);
-            outData[j++] = (byte) (data >>> 8);
-            outData[j++] = (byte) (data >>> 0);
-        }
-        return outData;
-    }
-
-    /**
      * Returns the maximum vlaue in an array
      *
      * @param array
@@ -257,15 +237,46 @@ public class Util {
         return temp / values.length;
     }
 
-    /**
-     * bytearray2float method - converts bytes into a float
-     *
-     * @param b byte array
-     * @return float value
-     */
-    public static float bytearray2float(byte[] b) {
-        ByteBuffer buf = ByteBuffer.wrap(b);
-        return buf.getFloat();
+    public static float[] bytes2FloatArray(byte[] values){
+
+        int p=0, r=0;
+        float[] floats = new float[values.length/4];
+        byte[] weight = new byte[4];
+        for(int i=0; i< values.length; i++){
+            if(p<4){
+                weight[p] = values[i];
+                p++;
+            }
+            else {
+                p=0;
+                float fl = ByteBuffer.wrap(weight).getFloat();
+                floats[r] = fl;
+                weight[p] = values[i];
+                p++;
+                r++;
+            }
+        }
+        return floats;
+
+    }
+
+    public static byte [] float2ByteArray (float[] values)
+    {
+        byte[][] b = new byte[values.length][4];
+
+        for(int i=0; i<values.length; i++){
+            b[i] = ByteBuffer.allocate(4).putFloat(values[i]).array();
+        }
+        byte[] result = new byte[b.length*4];
+        int counter = 0;
+        for(int i=0; i<b.length; i++){
+            for(int j=0; j<b[i].length; j++){
+                result[counter] = b[i][j];
+                counter++;
+            }
+
+        }
+        return result;
     }
 
     /**
