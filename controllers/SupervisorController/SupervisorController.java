@@ -46,6 +46,7 @@ public class SupervisorController extends Supervisor {
     private int NB_INPUTS;
     private int NB_OUTPUTS;
     private int NB_GENES;
+    private int NB_HIDDEN_NEURONS;
     private NeuralNetwork[] populationOfNN;
     private double[] fitnessNN;
     private double[][] fitnessPerGame;
@@ -135,7 +136,9 @@ public class SupervisorController extends Supervisor {
                     //createNewVEGApopulation();
 
                     // Rank populationOfNN, select best individuals and create new generation
-                    createNewPopulation();
+                    //createNewPopulation();
+
+                    evolvePop();
 
                     generation++;
                     System.out.println("\nGENERATION \n" + generation);
@@ -217,6 +220,21 @@ public class SupervisorController extends Supervisor {
         groundDisplay.setColor(WHITE);
         groundDisplay.fillRectangle(0, 0, width, height);
         translation = fldTranslation.getSFVec3f();
+    }
+
+    private void normaliseFitnessScore(double[] fitnessScores) {
+
+        double min = -5700, max = 0;
+
+        for (int i = 0; i < fitnessScores.length; i++) {
+            double temp = 0;
+            try {
+                temp = Util.normalize(min, max, fitnessScores[i]);
+            } catch (Exception e) {
+                System.err.println("Error while normalizing: " + e.getMessage());
+            }
+            fitnessScores[i] = temp;
+        }
     }
 
     private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
@@ -352,7 +370,7 @@ public class SupervisorController extends Supervisor {
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
 
             for (int k = 0; k < subpop.length; k++) {
-                subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+                subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
             }
             for (int l = 0; l < subpop.length; l++) { // Copy best individuals in a current game
                 for (int m = 0; m < subpop[l].getWeightsNo(); m++) {
@@ -370,7 +388,7 @@ public class SupervisorController extends Supervisor {
 
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (i = 0; i < newpop.length; i++) {
-            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
         }
 
         // 3. Create new population and perform crossover
@@ -457,7 +475,7 @@ public class SupervisorController extends Supervisor {
             // Create subpopulation
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
             for (int k = 0; k < subpop.length; k++) {
-                subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+                subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
             }
 
             normaliseFitnessScore(fitnessPerGame[i], i); // Normalise fitness scores
@@ -505,7 +523,7 @@ public class SupervisorController extends Supervisor {
 
             NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE / GAME_POP_SIZE];
             for (int k = 0; k < sub.length; k++) {
-                sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+                sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
             }
             for (int k = 0; k < sub.length; k++) {
                 // randomly select individual from a mating pool
@@ -516,7 +534,7 @@ public class SupervisorController extends Supervisor {
             }
             // 5. Replace the subpopulation with a mating pool
             for (int k = 0; k < subpopulations[i].length; k++) {
-                subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+                subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
                 for (int l = 0; l < subpopulations[i][k].getWeightsNo(); l++) {
                     subpopulations[i][k].copy(sub[i]);
                 }
@@ -532,7 +550,7 @@ public class SupervisorController extends Supervisor {
         // 6. Create new population
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (i = 0; i < newpop.length; i++) {
-            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
         }
 
         // 7. Perform crossover
@@ -567,20 +585,49 @@ public class SupervisorController extends Supervisor {
 
     }
 
+    private void steadyStateSelection(){
+        //In every generation are selected a few (good - with high fitness) chromosomes for creating a new offspring.
+        //        Then some (bad - with low fitness) chromosomes are removed and the new offspring is placed in their place.
+         //       The rest of population survives to new generation.
+        int i,j;
+        NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
+        for (i = 0; i < newpop.length; i++) {
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
+        }
 
-    /**
-     * Based on the fitness of the last generation, generate a new population of genomes for the next generation.
-     */
-    private void createNewPopulation() {
+        // Set fitness - sum of fitness scores for all games
+        for(i=0; i<fitnessPerGame.length; i++){
+            for (j=0; j<fitnessPerGame[i].length; j++) fitnessNN[j]+=fitnessPerGame[i][j];
+        }
+        // Sort population
+        //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
+        sortPopulation(sortedfitnessNN, fitnessNN);
 
-        // Set fitness
+        //create new population
+        for(i=0; i<NN_POP_SIZE; i++) {
+
+        }
+
+
+    }
+
+    private void evolvePop()
+    {
+        NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
+        for (int i = 0; i < newpop.length; i++) {
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
+        }
+        int elitism_counter = (int) (NN_POP_SIZE*ELITISM_RATIO);
+        float total_fitness = 0;
+
+        // Set fitness - sum of fitness scores for all games
         for(int i=0; i<fitnessPerGame.length; i++){
             for (int j=0; j<fitnessPerGame[i].length; j++) fitnessNN[j]+=fitnessPerGame[i][j];
         }
         // Sort population
-        //normaliseFitnessScore(fitnessNN); // Normalise fitness scores
-        // Sort populationOfNN by fitness
+        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
         sortPopulation(sortedfitnessNN, fitnessNN);
+
         // Find and log current and absolute best individual
         bestFitNN = sortedfitnessNN[0][0];
         minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
@@ -591,9 +638,9 @@ public class SupervisorController extends Supervisor {
             absBestNN = bestNN;
             FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
         }
-        System.out.println("Best fitness score: \n" + bestFitNN);
-        System.out.println("Average fitness score: \n" + avgFitNN);
-        System.out.println("Worst fitness score: \n" + minFitNN);
+        System.out.println("Best fitness score: " + bestFitNN+". Index: "+bestNN);
+        System.out.println("Average fitness score: " + avgFitNN);
+        System.out.println("Worst fitness score: " + minFitNN);
         System.out.println("Absolute best index: " + absBestNN);
 
         // Write data to files
@@ -609,14 +656,145 @@ public class SupervisorController extends Supervisor {
         }
         // Log best individual
         try {
-            FilesFunctions.logBestIndiv(populationOfNN, absBestNN);
+            FilesFunctions.logBestIndiv(populationOfNN, bestNN);
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
+        // find minimum fitness to subtract it from sum
+        double min_fitness = sortedfitnessNN[NN_POP_SIZE-1][0];
+        if (min_fitness<0) min_fitness=0;
+        int i, j;
+        // calculate total of fitness, used for roulette wheel selection
+        for(i=0; i<NN_POP_SIZE; i++) total_fitness+=fitnessNN[i];
+        total_fitness-=min_fitness*NN_POP_SIZE;
+
+        //create new population
+        for(i=0; i<NN_POP_SIZE; i++) {
+
+            //the elitism_counter best individuals are simply copied to the new population
+            if (i < elitism_counter) {
+                for (j = 0; j < NB_GENES; j++)
+                    newpop[i].setWeights(j, populationOfNN[(int) sortedfitnessNN[i][1]].getWeights()[j]);
+            }
+            //the other individuals are generated through the crossover of two parents
+            else {
+
+                //select non-elitist individual
+                int ind1=0;
+                if (ROULETTE_WHEEL==1) {
+                    double r = random.nextDouble() * (total_fitness - 0) + 0;
+                    for(int m=0; m<NN_POP_SIZE; m++){
+                        r = r - fitnessNN[m];
+                        if(r <=0){
+                            ind1 = m;
+                            break;
+                        }
+                    }
+                }
+                else ind1= (int) (elitism_counter+random.nextFloat()*(NN_POP_SIZE*REPRODUCTION_RATIO-elitism_counter));
+
+                //if we will do crossover, select a second individual
+                if (random.nextFloat() < CROSSOVER_PROBABILITY) {
+                    int ind2=0;
+                    if (ROULETTE_WHEEL==1)
+                        if (random.nextFloat() < CROSSOVER_PROBABILITY) {
+                            double r = random.nextDouble() * (total_fitness - 0) + 0;
+                            for(int m=0; m<NN_POP_SIZE; m++){
+                                r = r - fitnessNN[m];
+                                if(r <=0){
+                                    ind2 = m;
+                                    break;
+                                }
+                            }
+                            newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
+                        } else { //if no crossover was done, just copy selected individual directly
+                            for (j = 0; j < NB_GENES; j++)
+                                newpop[i].setWeights(j, populationOfNN[(int) sortedfitnessNN[ind1][1]].getWeights()[j]);
+                        }
+                    else
+                        do {
+                            ind2=(int)(elitism_counter+random.nextFloat()*(NN_POP_SIZE*REPRODUCTION_RATIO-elitism_counter));
+                        } while (ind1==ind2);
+                    ind1=(int)sortedfitnessNN[ind1][1];
+                    ind2=(int)sortedfitnessNN[ind2][1];
+                    newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
+                }
+                else { //if no crossover was done, just copy selected individual directly
+                    for(j=0;j<NB_GENES;j++) newpop[i].setWeights(j, populationOfNN[(int) sortedfitnessNN[ind1][1]].getWeights()[j]);
+                }
+            }
+        }
+
+        //mutate new population and copy back to pop
+        for(i=0; i<NN_POP_SIZE; i++) {
+            if(i<elitism_counter) { //no mutation for elitists
+                for(j=0;j<NB_GENES;j++)
+                    populationOfNN[i].copy(newpop[i]);
+            }
+            else { //mutate others with probability per gene
+                for(j=0;j<NB_GENES;j++)
+                    if(random.nextFloat()<MUTATION_PROBABILITY)
+                        populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
+                    else
+                        populationOfNN[i].copy(newpop[i]);
+            }
+
+            //reset fitness
+            fitnessNN[i]=-1;
+        }
+        return;
+    }
+
+    /**
+     * Based on the fitness of the last generation, generate a new population of genomes for the next generation.
+     */
+    private void createNewPopulation() {
+
+        // Set fitness - sum of fitness scores for all games
+        for(int i=0; i<fitnessPerGame.length; i++){
+            for (int j=0; j<fitnessPerGame[i].length; j++) fitnessNN[j]+=fitnessPerGame[i][j];
+        }
+        // Sort population
+        normaliseFitnessScore(fitnessNN); // Normalise fitness scores
+        sortPopulation(sortedfitnessNN, fitnessNN);
+
+        // Find and log current and absolute best individual
+        bestFitNN = sortedfitnessNN[0][0];
+        minFitNN = sortedfitnessNN[NN_POP_SIZE - 1][0];
+        bestNN = (int) sortedfitnessNN[0][1];
+        avgFitNN = Util.mean(fitnessNN);
+        if (bestFitNN > absBestFitNN) {
+            absBestFitNN = bestFitNN;
+            absBestNN = bestNN;
+            FilesFunctions.logBest(out3, generation, NB_GENES, absBestNN, populationOfNN);
+        }
+        System.out.println("Best fitness score: " + bestFitNN+". Index: "+bestNN);
+        System.out.println("Average fitness score: " + avgFitNN);
+        System.out.println("Worst fitness score: " + minFitNN);
+        System.out.println("Absolute best index: " + absBestNN);
+
+        // Write data to files
+        //FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
+        //        bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
+        FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
+
+        // Log the generation data  - stores weights
+        try {
+            FilesFunctions.logLastGeneration(populationOfNN);
+        } catch (IOException e) {
+            e.getMessage();
+        }
+        // Log best individual
+        try {
+            FilesFunctions.logBestIndiv(populationOfNN, bestNN);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
 
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
-            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+            newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
         }
         double elitism_counter = NN_POP_SIZE * ELITISM_RATIO;
         double total_fitness = 0;
@@ -627,7 +805,8 @@ public class SupervisorController extends Supervisor {
         int i, j;
         // Calculate total of fitness, used for roulette wheel selection
         for (i = 0; i < NN_POP_SIZE; i++) total_fitness += fitnessNN[i];
-        total_fitness -= min_fitness * NN_POP_SIZE;
+        //total_fitness -= min_fitness * NN_POP_SIZE;
+
         // Create new population
         for (i = 0; i < NN_POP_SIZE; i++) {
 
@@ -641,29 +820,26 @@ public class SupervisorController extends Supervisor {
 
                 // Select non-elitist individual
                 int ind1 = 0;
-
-                float r = random.nextFloat();
-                double fitness_counter = (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                while (r > fitness_counter && ind1 < NN_POP_SIZE - 1) {
-                    ind1++;
-                    fitness_counter += (sortedfitnessNN[ind1][0] - min_fitness) / total_fitness;
-                    if (ind1 == NN_POP_SIZE - 1) break;
+                double r = random.nextDouble() * (total_fitness - 0) + 0;
+                for(int m=0; m<NN_POP_SIZE; m++){
+                    r = r - fitnessNN[m];
+                    if(r <=0){
+                        ind1 = m;
+                        break;
+                    }
                 }
 
                 // If we will do crossover, select a second individual
                 if (random.nextFloat() < CROSSOVER_PROBABILITY) {
                     int ind2 = 0;
-                    do {
-                        r = random.nextFloat();
-                        fitness_counter = (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                        while (r > fitness_counter && ind2 < NN_POP_SIZE - 1) {
-                            ind2++;
-                            fitness_counter += (sortedfitnessNN[ind2][0] - min_fitness) / total_fitness;
-                            if (ind2 == NN_POP_SIZE - 1) break;
+                    r = random.nextDouble() * (total_fitness - 0) + 0;
+                    for(int m=0; m<NN_POP_SIZE; m++){
+                        r = r - fitnessNN[m];
+                        if(r <=0){
+                            ind2 = m;
+                            break;
                         }
-                    } while (ind1 == ind2);
-                    ind1 = (int) sortedfitnessNN[ind1][1];
-                    ind2 = (int) sortedfitnessNN[ind2][1];
+                    }
                     newpop[i].crossover(ind1, ind2, newpop[i], NB_GENES, populationOfNN);
                 } else { //if no crossover was done, just copy selected individual directly
                     for (j = 0; j < NB_GENES; j++)
@@ -688,6 +864,16 @@ public class SupervisorController extends Supervisor {
             // Reset fitness
             fitnessNN[i] = 0;
         }
+    }
+
+    private int rouletteSelect(double total_fitness){
+        int index = 0;
+        double randNum = random.nextDouble() * total_fitness;
+        //int idx;
+        for (index=0; index<NN_POP_SIZE && randNum>0; ++index) {
+            randNum -= fitnessNN[index];
+        }
+        return index-1;
     }
 
 
@@ -757,17 +943,19 @@ public class SupervisorController extends Supervisor {
         int i, j;
 
         /* Population/Evolution parameters */
-        NN_POP_SIZE = 50;
+        NN_POP_SIZE = 30;
         GAME_POP_SIZE = 1;
         SUBSET_SIZE = NN_POP_SIZE / GAME_POP_SIZE;
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 
         // Neural Networks
-        NB_INPUTS = 9;
+        NB_INPUTS = 8;
         NB_OUTPUTS = 2;
-        NB_GENES = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;
+        NB_HIDDEN_NEURONS = 12;
+        NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
+
         populationOfNN = new NeuralNetwork[NN_POP_SIZE];
-        for (i = 0; i < NN_POP_SIZE; i++) populationOfNN[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS);
+        for (i = 0; i < NN_POP_SIZE; i++) populationOfNN[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
         fitnessNN = new double[NN_POP_SIZE];
         for (i = 0; i < NN_POP_SIZE; i++) fitnessNN[i] = 0.0;
         sortedfitnessNN = new double[NN_POP_SIZE][2];
