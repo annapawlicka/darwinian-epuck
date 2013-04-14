@@ -22,18 +22,18 @@ public class EpuckController extends Robot {
 
     // Global variables
     private int GAME_POP_SIZE = 1;
-    private int NN_POP_SIZE = 50;
+    private int NN_POP_SIZE = 30;
     private final int LEFT = 0;
     private final int RIGHT = 1;
-    private final int TIME_STEP = 128;              // [ms]
+    private final int TIME_STEP = 256;              // [ms]
     private final int PS_RANGE = 3800;
     private final int SPEED_RANGE = 500;
-    private final int NB_DIST_SENS = 8;             // Number of IR proximity sensors
-    private final double OBSTACLE_THRESHOLD = 3000;
-    private final int TRIAL_DURATION = 60000;       // Evaluation duration of one individual - 30 sec [ms]
-    private final int NB_INPUTS = 9;
+    private final int NB_DIST_SENS = 6;             // Number of IR proximity sensors
+    private final int TRIAL_DURATION = 120000;       // Evaluation duration of one individual - 1 minute [ms]
+    private final int NB_INPUTS = 8;
+    private final int NB_HIDDEN_NEURONS = 12;
     private final int NB_OUTPUTS = 2;
-    private int NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;   // No hidden layer
+    private int NB_WEIGHTS;
     private int NB_CONSTANTS = 4;
     private float weights[];
 
@@ -66,22 +66,22 @@ public class EpuckController extends Robot {
     private final int REALITY = 2;                  // for robot.get_mode() function
 
     // 8 IR proximity sensors
-    private int NB_PROXIMITY_SENSORS = 8;
+    private int NB_PROXIMITY_SENSORS = 6;
     private DistanceSensor[] ps;
     private float[] ps_offset;
     private int[] PS_OFFSET_SIMULATION = new int[]{300, 300, 300, 300, 300, 300, 300, 300};
     private int[] PS_OFFSET_REALITY = new int[]{480, 170, 320, 500, 600, 680, 210, 640};
 
     // 3 IR floor color sensors
-    private int NB_FLOOR_SENSORS = 3;
-    private DistanceSensor[] fs;
-    private double[] fs_value = new double[]{0, 0, 0};
+    //private int NB_FLOOR_SENSORS = 3;
+    //private DistanceSensor[] fs;
+    //private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
 
     // Differential Wheels
     private DifferentialWheels robot = new DifferentialWheels();
     private double[] speed;
-
+    private double[] previousSpeed;
     private double[] states = new double[NB_INPUTS];               // The sensor values  8+1
 
     // Emitter and Receiver
@@ -180,23 +180,21 @@ public class EpuckController extends Robot {
                 // Wait for new genome
                 if (n > 0) {
                     byte[] genes = receiver.getData();
-                    if(genes.length == (NB_WEIGHTS)*4){  // 64
+                    if (genes.length == (NB_WEIGHTS) * 4) {  // 64
                         weights = Util.bytes2FloatArray(genes);
-                    }
-                    else {
+                    } else {
                         // Set neural network weights    TODO fix this
-                        int p=0;
-                        int r=0;
+                        int p = 0;
+                        int r = 0;
                         byte[] weight = new byte[4];
-                        for(i=0; i< genes.length-4; i++){
-                            if(p<4){
+                        for (i = 0; i < genes.length - 4; i++) {
+                            if (p < 4) {
                                 //weight = new byte[4];
                                 weight[p] = genes[i];
                                 p++;
-                            }
-                            else {
+                            } else {
                                 //weights[r] = Util.bytearray2float(weight);
-                                p=0;
+                                p = 0;
                                 r++;
                             }
                         }
@@ -208,7 +206,7 @@ public class EpuckController extends Robot {
                 }
             }
 
-            if(TESTING==0)step++;
+            if (TESTING == 0) step++;
 
             if (step < TRIAL_DURATION / TIME_STEP && TESTING == 0) {
                 // Drive robot
@@ -230,13 +228,11 @@ public class EpuckController extends Robot {
                     indiv++;
                 } else {
                     indiv = 0;
-                    //float end[] = {1.0f};
                     byte[] endMsg = {1};
                     emitter.send(endMsg);
                     resetActorsFitArrays();
                 }
-            }
-            else if(TESTING == 2) {
+            } else if (TESTING == 2) {
                 runTrial(false);
             }
 
@@ -254,21 +250,13 @@ public class EpuckController extends Robot {
 
         updateSenorReadings();
         run_neural_network(states, outputs);
-        //System.out.println("LEFT: "+outputs[0]+". RIGHT: "+outputs[1]);
         speed[LEFT] = SPEED_RANGE * outputs[0];
         speed[RIGHT] = SPEED_RANGE * outputs[1];
 
-        if(Double.isNaN(speed[LEFT])){
-            System.err.println("Trying to set speed to NaN: 500 * "+outputs[0]);
-        }
-        if(Double.isNaN(speed[RIGHT])){
-            System.err.println("Trying to set speed to NaN: 500 * "+outputs[1]);
-        }
         // Set wheel speeds to output values
-
         robot.setSpeed(speed[LEFT], speed[RIGHT]);
 
-        // Stop the robot if it is against an obstacle
+        /*// Stop the robot if it is against an obstacle
         for (int i = 0; i < NB_DIST_SENS; i++) {
             double temp_ps = (((ps[i].getValue()) - ps_offset[i]) < 0) ? 0 : ((ps[i].getValue()) - ps_offset[i]);
 
@@ -277,26 +265,12 @@ public class EpuckController extends Robot {
                 speed[RIGHT] = 0;
                 break;
             }
-        }
-        int colourPunishment = 0;
-        if(fs_value[1] > 600) colourPunishment = 1;
-        int directionPunishment = 0;
-        //if(Math.abs(speed[LEFT] - speed[RIGHT]) > 500){
-        //    directionPunishment = 10;
-            //System.out.println("Direction punishment: "+ Math.abs(speed[LEFT] - speed[RIGHT]));
-        //}
-        int speedReward = 0;
-        if(Util.mean(speed) > 300) {
-            speedReward = 1;
-            //System.out.println("Speed reward: "+Util.mean(speed));
-        }
-        int colourReward = 0;
-        if(fs_value[1] < 500) {
-            colourReward = 1;
-            //System.out.println("Colour reward: "+fs_value[1] );
-        }
+        }*/
 
-        if(ifEvolved) computeFitness(speed, maxIRActivation, fs_value[1], colourPunishment, directionPunishment, speedReward, colourReward);
+        double[] nSpeed = new double[speed.length];
+        for (int i = 0; i < nSpeed.length; i++) nSpeed[i] = Util.normalize(-500, 500, speed[i]);
+
+        if (ifEvolved) computeFitness(speed, maxIRActivation);
     }
 
 
@@ -305,18 +279,28 @@ public class EpuckController extends Robot {
      *
      * @param speed
      * @param maxIRActivation
-     * @param floorColour
      */
-    public void computeFitness(double[] speed, double maxIRActivation, double floorColour, int cP, int dP, int sR, int cR) throws Exception {
+    public void computeFitness(double[] speed, double maxIRActivation) throws Exception {
+
+        int currentFitness = 0;
+        // punish oscillatory movement
+        if((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 200) currentFitness -=5;
+        // punish slow speed
+        if(speed[LEFT] < 300 && speed[RIGHT]< 300) currentFitness-=1;
+        // punish hitting obstacles
+        if(maxIRActivation > 3000) currentFitness-=5;
 
         // Avoid obstacles:
-        //agentsFitness[indiv][0] += Util.mean(speed) * (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation))));
+        agentsFitness[indiv][0] += currentFitness;
+
+        //agentsFitness[indiv][0] += (1 - (Util.normalize(0, 4096, maxIRActivation))) + (1 - (Util.normalize(-500, 500, speed[LEFT]))) + (1 - (Util.normalize(-500, 500, speed[RIGHT])))
+        //         + (1- (Math.abs(Util.normalize(-500, 500, speed[LEFT]) - Util.normalize(-500, 500, speed[RIGHT]))));
 
         // Follow wall
-        //agentsFitness[indiv][1] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation);
+        //agentsFitness[indiv][0] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation) * Util.mean(speed);
 
         // Follow black line
-        agentsFitness[indiv][0] +=  sR + cR - cP - dP;
+        //agentsFitness[indiv][0] +=  (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation)))) + cR - cP;
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
@@ -552,6 +536,8 @@ public class EpuckController extends Robot {
      */
     private void updateSenorReadings() {
 
+        previousSpeed[LEFT] = speed[LEFT];
+        previousSpeed[RIGHT] = speed[RIGHT];
         maxIRActivation = 0;
         for (int j = 0; j < NB_DIST_SENS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
@@ -559,12 +545,14 @@ public class EpuckController extends Robot {
             if (states[j] > maxIRActivation) maxIRActivation = states[j];
         }
 
-        for (int i = 0; i < NB_FLOOR_SENSORS; i++) {
-            fs_value[i] = fs[i].getValue();
-        }
+        states[6] = previousSpeed[LEFT];
+        states[7] = previousSpeed[RIGHT];
+        // for (int i = 0; i < NB_FLOOR_SENSORS; i++) {
+        //     fs_value[i] = fs[i].getValue();
+        // }
 
         //states[8] = fs_value[0];
-        states[8] = fs_value[1];
+        //states[8] = fs_value[1];
         //states[10] = fs_value[2];
     }
 
@@ -572,16 +560,40 @@ public class EpuckController extends Robot {
         int i, j;
         int weight_counter = 0;
 
-        for (i = 0; i < NB_OUTPUTS; i++) {
-            double sum = 0.0;
-            for (j = 0; j < NB_INPUTS; j++) {
-                sum += inputs[j] * weights[weight_counter];
+        if (NB_HIDDEN_NEURONS > 0) {
+            double[] hidden_neuron_out = new double[NB_HIDDEN_NEURONS];
+
+            for (i = 0; i < NB_HIDDEN_NEURONS; i++) {
+                float sum = 0;
+                for (j = 0; j < NB_INPUTS; j++) {
+                    sum += inputs[j] * weights[weight_counter];
+                    weight_counter++;
+                }
+                hidden_neuron_out[i] = Math.tanh(sum + weights[weight_counter]);
                 weight_counter++;
             }
-            if(Double.isNaN(sum)) sum = bound(sum);
-            outputs[i] = bound(Math.tanh(sum + weights[weight_counter]));
-            //if(Double.isNaN(outputs[i])) outputs[i] = 0;
-            weight_counter++;
+
+            for (i = 0; i < NB_OUTPUTS; i++) {
+                float sum = 0;
+                for (j = 0; j < NB_HIDDEN_NEURONS; j++) {
+                    sum += hidden_neuron_out[j] * weights[weight_counter];
+                    weight_counter++;
+                }
+                outputs[i] = Math.tanh(sum + weights[weight_counter]);
+                weight_counter++;
+            }
+        } else {
+
+            for (i = 0; i < NB_OUTPUTS; i++) {
+                double sum = 0.0;
+                for (j = 0; j < NB_INPUTS; j++) {
+                    sum += inputs[j] * weights[weight_counter];
+                    weight_counter++;
+                }
+                if (Double.isNaN(sum)) sum = bound(sum);
+                outputs[i] = Math.tanh(sum + weights[weight_counter]);
+                weight_counter++;
+            }
         }
     }
 
@@ -630,6 +642,9 @@ public class EpuckController extends Robot {
         step = 0;
         indiv = 0;
 
+        if (NB_HIDDEN_NEURONS == 0) NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;
+        else NB_WEIGHTS = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
+
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
         for (i = 0; i < GAME_POP_SIZE; i++) populationOfGames[i] = new Game(false, NB_CONSTANTS);
@@ -662,20 +677,20 @@ public class EpuckController extends Robot {
         ps = new DistanceSensor[NB_PROXIMITY_SENSORS];
         ps[0] = getDistanceSensor("ps0");
         ps[0].enable(TIME_STEP);
-        ps[1] = getDistanceSensor("ps1");
+        //ps[1] = getDistanceSensor("ps1");
+        //ps[1].enable(TIME_STEP);
+        ps[1] = getDistanceSensor("ps2");
         ps[1].enable(TIME_STEP);
-        ps[2] = getDistanceSensor("ps2");
+        ps[2] = getDistanceSensor("ps3");
         ps[2].enable(TIME_STEP);
-        ps[3] = getDistanceSensor("ps3");
+        ps[3] = getDistanceSensor("ps4");
         ps[3].enable(TIME_STEP);
-        ps[4] = getDistanceSensor("ps4");
+        ps[4] = getDistanceSensor("ps5");
         ps[4].enable(TIME_STEP);
-        ps[5] = getDistanceSensor("ps5");
+        //ps[6] = getDistanceSensor("ps6");
+        //ps[6].enable(TIME_STEP);
+        ps[5] = getDistanceSensor("ps7");
         ps[5].enable(TIME_STEP);
-        ps[6] = getDistanceSensor("ps6");
-        ps[6].enable(TIME_STEP);
-        ps[7] = getDistanceSensor("ps7");
-        ps[7].enable(TIME_STEP);
 
         ps_offset = new float[NB_DIST_SENS];
         for (i = 0; i < ps_offset.length; i++) {
@@ -683,13 +698,12 @@ public class EpuckController extends Robot {
         }
 
         maxIRActivation = 0;
-
         /* Initialise IR floor sensors */
-        fs = new DistanceSensor[NB_FLOOR_SENSORS];
-        for (i = 0; i < fs.length; i++) {
-            fs[i] = getDistanceSensor("fs" + i);
-            fs[i].enable(TIME_STEP);
-        }
+        // fs = new DistanceSensor[NB_FLOOR_SENSORS];
+        // for (i = 0; i < fs.length; i++) {
+        //    fs[i] = getDistanceSensor("fs" + i);
+        //    fs[i].enable(TIME_STEP);
+        //}
 
         /* Initialise states array */
         for (i = 0; i < states.length; i++) {
@@ -699,6 +713,9 @@ public class EpuckController extends Robot {
         // Speed initialization
         speed[LEFT] = 0;
         speed[RIGHT] = 0;
+        previousSpeed = new double[2];
+        previousSpeed[LEFT]= 0;
+        previousSpeed[RIGHT] = 0;
 
         emitter = getEmitter("emitterepuck");
         receiver = getReceiver("receiver");
