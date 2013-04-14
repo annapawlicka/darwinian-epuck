@@ -28,11 +28,12 @@ public class NeuralNetwork {
 
     private Random random = new Random();
 
-    public NeuralNetwork(int inputsNo, int outputsNo) {
+    public NeuralNetwork(int inputsNo, int outputsNo, int NB_HIDDEN_NEURONS) {
 
         this.inputsNo = inputsNo;
         this.outputsNo = outputsNo;
-        this.weightsNo = this.inputsNo * this.outputsNo + this.outputsNo;
+        if (NB_HIDDEN_NEURONS == 0) this.weightsNo = inputsNo * outputsNo + outputsNo;
+        else this.weightsNo = inputsNo * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * outputsNo + outputsNo;
         this.weights = new float[weightsNo];
         this.outputs = new float[this.outputsNo];
         this.fitness = -1;
@@ -81,8 +82,8 @@ public class NeuralNetwork {
         float x1, x2, w, y1;
 
         do {
-            x1 = (float) (GENE_MAX - GENE_MIN * random.nextFloat() - (GENE_MAX - GENE_MIN) / 2.0);
-            x2 = (float) (GENE_MAX - GENE_MIN * random.nextFloat() - (GENE_MAX - GENE_MIN) / 2.0);
+            x1 = (random.nextFloat() * (GENE_MAX - GENE_MIN) + GENE_MIN);
+            x2 = (random.nextFloat() * (GENE_MAX - GENE_MIN) + GENE_MIN);
             w = x1 * x1 + x2 * x2;
         } while (w > 1.0 || w == 0);
 
