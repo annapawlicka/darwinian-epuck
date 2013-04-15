@@ -97,10 +97,11 @@ public class NeuralNetwork {
 
     /**
      * Method to crossover two individuals
-     *
-     * @param ind1    Individual 1
-     * @param ind2    Individual 2
-     * @param new_ind New individual that will be updated with crossovered details.
+     * @param ind1       Index of Individual 1
+     * @param ind2       Index of Individual 2
+     * @param new_ind    New individual that will be updated with crossovered details
+     * @param NB_GENES   Number of genes (weights) that the individual consist of
+     * @param population Population that is being worked on
      */
     public void crossover(int ind1, int ind2, NeuralNetwork new_ind, float NB_GENES, NeuralNetwork[] population) {
 
