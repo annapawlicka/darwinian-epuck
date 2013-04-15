@@ -295,9 +295,9 @@ public class EpuckController extends Robot {
 
 
         // Follow wall
-        if(speed[LEFT] < 300 && speed[RIGHT] < 300) currentFitness-=1;  // Punish slow speed
-        if(states[1] > 3000 || states[2] > 300) currentFitness+=1;      // Reward max IR activation of side sensors
-        if(speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness-=1;
+        if(speed[LEFT] < 300 && speed[RIGHT] < 300) currentFitness-=1;      // Punish slow speed
+        if(states[1] > 3000 || states[2] > 3000) currentFitness+=1;         // Reward max IR activation of side sensors
+        if(speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness-=1;        // Penalise standing still
         agentsFitness[indiv][0] += currentFitness;
 
         // Follow black line
