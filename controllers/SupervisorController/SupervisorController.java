@@ -224,7 +224,7 @@ public class SupervisorController extends Supervisor {
 
     private void normaliseFitnessScore(double[] fitnessScores) {
 
-        double min = -5700, max = 0;
+       double min = -1000, max = 470;
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -949,7 +949,7 @@ public class SupervisorController extends Supervisor {
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 
         // Neural Networks
-        NB_INPUTS = 8;
+        NB_INPUTS = 3;
         NB_OUTPUTS = 2;
         NB_HIDDEN_NEURONS = 12;
         NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
@@ -997,7 +997,7 @@ public class SupervisorController extends Supervisor {
 
         // Logging
         try {
-            file1 = new FileWriter("results:fitness.txt");
+            file1 = new FileWriter("out/results:fitness.txt");
         } catch (IOException e) {
             System.out.println("Cannot open fitness.txt file.");
         }
@@ -1016,7 +1016,7 @@ public class SupervisorController extends Supervisor {
         }
 
         try {
-            file2 = new FileWriter("all_actor_fit.txt");
+            file2 = new FileWriter("out/all_actor_fit.txt");
         } catch (IOException e) {
             System.err.println("Error while opening file: all_actor_fit.txt " + e.getMessage());
         }
@@ -1035,7 +1035,7 @@ public class SupervisorController extends Supervisor {
         }
 
         try {
-            file3 = new FileWriter("results:bestgenome.txt");
+            file3 = new FileWriter("out/results:bestgenome.txt");
         } catch (IOException e) {
             System.out.println("Cannot open bestgenome.txt file.");
         }
@@ -1045,14 +1045,14 @@ public class SupervisorController extends Supervisor {
         /* Reading from file - for testing purposes */
 
         try {
-            reader3 = new BufferedReader(new FileReader("results:genomes.txt"));
+            reader3 = new BufferedReader(new FileReader("out/results:genomes.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Cannot read from file: results:genomes.txt");
             System.out.println(e.getMessage());
         }
 
         try {
-            reader1 = new BufferedReader(new FileReader("best_actor.txt"));
+            reader1 = new BufferedReader(new FileReader("out/best_actor.txt"));
         } catch (FileNotFoundException e) {
             System.out.println("Cannot read from file: best_actor.txt");
             System.out.println(e.getMessage());

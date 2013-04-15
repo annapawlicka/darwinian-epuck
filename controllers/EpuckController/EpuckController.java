@@ -30,7 +30,7 @@ public class EpuckController extends Robot {
     private final int SPEED_RANGE = 500;
     private final int NB_DIST_SENS = 6;             // Number of IR proximity sensors
     private final int TRIAL_DURATION = 120000;       // Evaluation duration of one individual - 1 minute [ms]
-    private final int NB_INPUTS = 8;
+    private final int NB_INPUTS = 3;
     private final int NB_HIDDEN_NEURONS = 12;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS;
@@ -73,9 +73,9 @@ public class EpuckController extends Robot {
     private int[] PS_OFFSET_REALITY = new int[]{480, 170, 320, 500, 600, 680, 210, 640};
 
     // 3 IR floor color sensors
-    //private int NB_FLOOR_SENSORS = 3;
-    //private DistanceSensor[] fs;
-    //private double[] fs_value = new double[]{0, 0, 0};
+    private int NB_FLOOR_SENSORS = 3;
+    private DistanceSensor[] fs;
+    private double[] fs_value = new double[]{0, 0, 0};
     private double maxIRActivation;
 
     // Differential Wheels
@@ -267,9 +267,6 @@ public class EpuckController extends Robot {
             }
         }*/
 
-        double[] nSpeed = new double[speed.length];
-        for (int i = 0; i < nSpeed.length; i++) nSpeed[i] = Util.normalize(-500, 500, speed[i]);
-
         if (ifEvolved) computeFitness(speed, maxIRActivation);
     }
 
@@ -284,23 +281,26 @@ public class EpuckController extends Robot {
 
         int currentFitness = 0;
         // punish oscillatory movement
-        if((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 200) currentFitness -=5;
+        //if((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 200) currentFitness -=1;
         // punish slow speed
-        if(speed[LEFT] < 300 && speed[RIGHT]< 300) currentFitness-=1;
+        //if(speed[LEFT] < 300 && speed[RIGHT]< 300) currentFitness-=1;
         // punish hitting obstacles
-        if(maxIRActivation > 3000) currentFitness-=5;
+        //if(maxIRActivation > 3000) currentFitness-=10;
 
         // Avoid obstacles:
-        agentsFitness[indiv][0] += currentFitness;
+        //agentsFitness[indiv][0] += currentFitness;
 
-        //agentsFitness[indiv][0] += (1 - (Util.normalize(0, 4096, maxIRActivation))) + (1 - (Util.normalize(-500, 500, speed[LEFT]))) + (1 - (Util.normalize(-500, 500, speed[RIGHT])))
-        //         + (1- (Math.abs(Util.normalize(-500, 500, speed[LEFT]) - Util.normalize(-500, 500, speed[RIGHT]))));
+        //agentsFitness[indiv][0] += (float)(Util.mean(speed) * (1 - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) * (1 - Util.normalize(0, 4000, maxIRActivation))));
+
 
         // Follow wall
         //agentsFitness[indiv][0] += (1 - (Math.abs((speed[LEFT] - speed[RIGHT])))) * Util.normalize(0, 4000, maxIRActivation) * Util.mean(speed);
 
         // Follow black line
-        //agentsFitness[indiv][0] +=  (1 - Math.sqrt((Math.abs((speed[LEFT] - speed[RIGHT]))) * (1 - Util.normalize(0, 4000, maxIRActivation)))) + cR - cP;
+        if(fs_value[0] < 400 || fs_value[1] < 400 || fs_value[2] < 400) currentFitness+=1; // Reward detection of black line
+        if(speed[LEFT] < 200 && speed[RIGHT] < 200) currentFitness-=1;  // Punish slow speed
+        if(fs_value[1] > 500) currentFitness-=1;   // Punish detection of white line
+        agentsFitness[indiv][0] += currentFitness;
 
         /*for (int i = 0; i < GAME_POP_SIZE; i++) {
             try {
@@ -538,18 +538,19 @@ public class EpuckController extends Robot {
 
         previousSpeed[LEFT] = speed[LEFT];
         previousSpeed[RIGHT] = speed[RIGHT];
-        maxIRActivation = 0;
+        /*maxIRActivation = 0;
         for (int j = 0; j < NB_DIST_SENS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
             //get max IR activation
             if (states[j] > maxIRActivation) maxIRActivation = states[j];
-        }
+        } */
 
-        states[6] = previousSpeed[LEFT];
-        states[7] = previousSpeed[RIGHT];
-        // for (int i = 0; i < NB_FLOOR_SENSORS; i++) {
-        //     fs_value[i] = fs[i].getValue();
-        // }
+        //states[6] = previousSpeed[LEFT];
+        //states[7] = previousSpeed[RIGHT];
+         for (int i = 0; i < NB_FLOOR_SENSORS; i++) {
+             fs_value[i] = fs[i].getValue();
+             states[i] = fs_value[i];
+         }
 
         //states[8] = fs_value[0];
         //states[8] = fs_value[1];
@@ -674,7 +675,7 @@ public class EpuckController extends Robot {
         }
 
         /* Initialise IR proximity sensors */
-        ps = new DistanceSensor[NB_PROXIMITY_SENSORS];
+        /*ps = new DistanceSensor[NB_PROXIMITY_SENSORS];
         ps[0] = getDistanceSensor("ps0");
         ps[0].enable(TIME_STEP);
         //ps[1] = getDistanceSensor("ps1");
@@ -690,7 +691,7 @@ public class EpuckController extends Robot {
         //ps[6] = getDistanceSensor("ps6");
         //ps[6].enable(TIME_STEP);
         ps[5] = getDistanceSensor("ps7");
-        ps[5].enable(TIME_STEP);
+        ps[5].enable(TIME_STEP);*/
 
         ps_offset = new float[NB_DIST_SENS];
         for (i = 0; i < ps_offset.length; i++) {
@@ -699,11 +700,11 @@ public class EpuckController extends Robot {
 
         maxIRActivation = 0;
         /* Initialise IR floor sensors */
-        // fs = new DistanceSensor[NB_FLOOR_SENSORS];
-        // for (i = 0; i < fs.length; i++) {
-        //    fs[i] = getDistanceSensor("fs" + i);
-        //    fs[i].enable(TIME_STEP);
-        //}
+        fs = new DistanceSensor[NB_FLOOR_SENSORS];
+        for (i = 0; i < fs.length; i++) {
+            fs[i] = getDistanceSensor("fs" + i);
+            fs[i].enable(TIME_STEP);
+        }
 
         /* Initialise states array */
         for (i = 0; i < states.length; i++) {
@@ -731,7 +732,7 @@ public class EpuckController extends Robot {
 
         // Logging
         try {
-            file1 = new FileWriter("results.txt");
+            file1 = new FileWriter("out/results.txt");
         } catch (IOException e) {
             System.out.println("Cannot open results.txt file.");
         }
@@ -746,7 +747,7 @@ public class EpuckController extends Robot {
         }
 
         try {
-            file2 = new FileWriter("results:fitness_games.txt");
+            file2 = new FileWriter("out/results:fitness_games.txt");
         } catch (IOException e) {
             System.err.println("Cannot write to file: fitness_games.txt");
         }
@@ -760,7 +761,7 @@ public class EpuckController extends Robot {
         }
 
         try {
-            file3 = new FileWriter("results:bestgenome_games.txt");
+            file3 = new FileWriter("out/results:bestgenome_games.txt");
         } catch (IOException e) {
             System.err.println("Cannot open bestgenome_games.txt file.");
         }
@@ -768,7 +769,7 @@ public class EpuckController extends Robot {
         out3 = new BufferedWriter(file3);
 
         try {
-            file4 = new FileWriter("results:comp_fitness.txt");
+            file4 = new FileWriter("out/results:comp_fitness.txt");
         } catch (IOException e) {
             System.err.println("Cannot open comp_fitness.txt file.");
         }
@@ -776,7 +777,7 @@ public class EpuckController extends Robot {
         out4 = new BufferedWriter(file4);
 
         try {
-            file5 = new FileWriter("all_games_genomes.txt");
+            file5 = new FileWriter("out/all_games_genomes.txt");
         } catch (IOException e) {
             System.err.println("Cannot open all_games_genomes.txt file.");
         }
