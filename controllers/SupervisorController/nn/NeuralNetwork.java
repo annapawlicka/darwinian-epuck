@@ -106,9 +106,8 @@ public class NeuralNetwork {
     public void crossover(int ind1, int ind2, NeuralNetwork new_ind, float NB_GENES, NeuralNetwork[] population) {
 
         int crossover_point;
-        float nb_genes = NB_GENES;
 
-        crossover_point = (int) Math.floor(nb_genes * random.nextFloat());
+        crossover_point = (int) Math.floor(NB_GENES * random.nextFloat());
 
         for (int i = 0; i < NB_GENES; i++) {
             if (i <= crossover_point) new_ind.setWeights(i, population[ind1].getWeights()[i]);
