@@ -72,10 +72,10 @@ public class NeuralNetwork {
 
     /**
      * Method to mutate weights of the neural network
-     * @param GENE_MIN
-     * @param GENE_MAX
-     * @param gene
-     * @param MUTATION_SIGMA
+     * @param GENE_MIN          Minimal value of a gene (weight)
+     * @param GENE_MAX          Maximal value of a gene (weight)
+     * @param gene              Weight to be mutated
+     * @param MUTATION_SIGMA    Determines the extent to which a value will be mutated (how far from its current value)
      * @return
      */
     public float mutate(float GENE_MIN, float GENE_MAX, float gene, double MUTATION_SIGMA) {
