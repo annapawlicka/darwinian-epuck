@@ -23,11 +23,10 @@ public class Util {
      * Y = normpdf(X,mu,sigma) computes the pdf at each of the values in X using
      * the normal distribution with mean mu and standard deviation sigma.
      * X, mu, and sigma can be vectors, matrices, or multidimensional arrays that all have the same size.
-     *
-     * @param x
-     * @param mean
-     * @param sd
-     * @return
+     * @param x     Values of x
+     * @param mean  Mean
+     * @param sd    Standard deviation sigma
+     * @return      Returns normal probability density
      */
     public static double normPdf(double x, double mean, double sd) {
         double y = (1 / (sd * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - mean, 2) / (2 * sd * sd));
@@ -37,8 +36,7 @@ public class Util {
 
     /**
      * Product of array elements
-     *
-     * @param a
+     * @param a Array of doubles that will be worked on
      * @return
      */
     public static double prod(double[] a) {
@@ -52,9 +50,8 @@ public class Util {
 
     /**
      * Copy one array into another
-     *
-     * @param a
-     * @return
+     * @param a  Array that needs to be copied over to a new array
+     * @return   New array
      */
     public static float[] copy(float[] a) {
         float[] b = new float[a.length];
@@ -66,8 +63,8 @@ public class Util {
 
     /**
      * Sums up elements of an array
-     * @param in
-     * @return
+     * @param in  Array that will have its elements summed up
+     * @return    Sum of array elements
      */
     public static double sum(double in[]) {
         double sum = 0;
@@ -81,10 +78,9 @@ public class Util {
      * Modulus after division
      * M = mod(X,Y) if Y ~= 0, returns X - n.*Y where n = floor(X./Y).
      * If Y is not an integer and the quotient X./Y is within roundoff error of an integer, then n is that integer.
-     *
-     * @param x
-     * @param y
-     * @return
+     * @param x  Value of x
+     * @param y  Value of y
+     * @return   Returns modulus after division
      */
     public static double mod(double x, double y) {
         double result = x % y;
@@ -96,9 +92,8 @@ public class Util {
 
     /**
      * Create an empty binary string of given length
-     *
-     * @param x
-     * @return
+     * @param x   Length of a string to be created
+     * @return    Returns string
      */
     public static String getEmptyBinaryString(int x) {
 
@@ -111,7 +106,6 @@ public class Util {
 
     /**
      * Computes the arithmetic mean of a set of values. Uses the definitional formula: mean = sum(x_i) / n
-     *
      * @param values An array of doubles
      * @return Arithmetic mean (double)
      */
@@ -125,7 +119,6 @@ public class Util {
 
     /**
      * Makes a three's rule to normalize a value in a 0..1 interval
-     *
      * @param min   lowest saturation point. Values below this will return 0
      * @param max   highest saturation point. Values above this will return 1
      * @param value
@@ -138,7 +131,6 @@ public class Util {
 
     /**
      * Makes a three's rule to normalize a value in a 0..1 interval
-     *
      * @param min   lowest saturation point. Values below this will return 0
      * @param max   highest saturation point. Values above this will return 1
      * @param value
@@ -163,9 +155,8 @@ public class Util {
 
     /**
      * Returns the maximum vlaue in an array
-     *
-     * @param array
-     * @return
+     * @param array   Array of doubles
+     * @return        Maximum value in an array
      */
     public static double max(double[] array) {
         // Validates input
@@ -191,9 +182,8 @@ public class Util {
 
     /**
      * Returns the minimum value in an array
-     *
-     * @param array
-     * @return
+     * @param array  Array that will be worked on
+     * @return       Minimum value in an array
      */
     public static double min(double[] array) {
         // Validates input
@@ -219,7 +209,6 @@ public class Util {
 
     /**
      * Method to calculate standard deviation
-     *
      * @param values An array of doubles
      * @return Standard deviation - double
      */
@@ -229,7 +218,6 @@ public class Util {
 
     /**
      * Method to calculate variance
-     *
      * @param values An array of doubles
      * @return Variance - double
      */
@@ -243,8 +231,8 @@ public class Util {
 
     /**
      * Converts an array of bytes into an array of floats
-     * @param values    array of bytes
-     * @return
+     * @param values    Array of bytes
+     * @return          Returns array of floats
      */
     public static float[] bytes2FloatArray(byte[] values){
 
@@ -271,8 +259,8 @@ public class Util {
 
     /**
      * Converts an array of floats into an array of bytes
-     * @param values    array of floats
-     * @return
+     * @param values    Array of floats
+     * @return          Returns array of bytes
      */
     public static byte [] float2ByteArray (float[] values)
     {
@@ -295,8 +283,8 @@ public class Util {
 
     /**
      * Method to concatenate arrays
-     * @param arrays
-     * @return
+     * @param arrays   Array of Neural Network arrays
+     * @return         Returns concatenated arrays into one array
      */
     public static NeuralNetwork[] concat(NeuralNetwork[][] arrays) {
         int lengh = 0;
@@ -316,7 +304,7 @@ public class Util {
 
     /**
      * Shuffles elements of an array
-     * @param a
+     * @param a     Array of neural networks
      */
     public static void shuffleList(NeuralNetwork[] a) {
         int n = a.length;
@@ -343,7 +331,7 @@ public class Util {
     /**
      * Bounds a float value to prevent from producing NaNs
      * @param d     float value
-     * @return
+     * @return      Returns bounded float value
      */
     public static float bound(float d) {
 
