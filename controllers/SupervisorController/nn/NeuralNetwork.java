@@ -118,30 +118,6 @@ public class NeuralNetwork {
 
     /* Getters and setters */
 
-    public float[] getOutputs(){
-        return outputs;
-    }
-
-    public void setOutputsNo(int n){
-        outputsNo = n;
-    }
-
-    public void setInputsNo(int n){
-        inputsNo = n;
-    }
-
-    public void setWeightsNo(int n){
-        weightsNo = n;
-    }
-
-    public int getOutputsNo(){
-        return outputsNo;
-    }
-
-    public int getInputsNo(){
-        return inputsNo;
-    }
-
     public int getWeightsNo(){
         return weightsNo;
     }
