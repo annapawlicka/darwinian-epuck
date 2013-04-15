@@ -40,7 +40,7 @@ public class FilesFunctions {
 
     public static void logBestIndiv(NeuralNetwork[] population, int index) throws  IOException{
 
-        FileWriter file = new FileWriter("best_actor.txt");
+        FileWriter file = new FileWriter("out/best_actor.txt");
         BufferedWriter out = new BufferedWriter(file);
         for(int i=0; i<population[index].getWeightsNo(); i++){
             out.write(""+population[index].getWeights()[i]+",");
@@ -52,7 +52,7 @@ public class FilesFunctions {
 
     public static void logLastGeneration(NeuralNetwork[] population) throws IOException {
 
-        FileWriter file = new FileWriter("results:genomes.txt");
+        FileWriter file = new FileWriter("out/results:genomes.txt");
 
         BufferedWriter out = new BufferedWriter(file);
 

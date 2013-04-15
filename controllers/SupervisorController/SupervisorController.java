@@ -224,7 +224,7 @@ public class SupervisorController extends Supervisor {
 
     private void normaliseFitnessScore(double[] fitnessScores) {
 
-       double min = -1000, max = 470;
+       double min = -940, max = 470;
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -245,13 +245,13 @@ public class SupervisorController extends Supervisor {
             min = -2500000;
             max = 2500000;
         }
-        if (gameNo == 1) {
-            min = -200000;
-            max = 600;
+        if (gameNo == 1) { // Following wall
+            min = -940;
+            max = 470;
         }
-        if (gameNo == 2) {
-            min = -600000;
-            max = 600000;
+        if (gameNo == 2) { // Following line
+            min = -1000;
+            max = 470;
         }
 
         for (int i = 0; i < fitnessScores.length; i++) {
@@ -949,7 +949,7 @@ public class SupervisorController extends Supervisor {
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 
         // Neural Networks
-        NB_INPUTS = 3;
+        NB_INPUTS = 4;
         NB_OUTPUTS = 2;
         NB_HIDDEN_NEURONS = 12;
         NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;

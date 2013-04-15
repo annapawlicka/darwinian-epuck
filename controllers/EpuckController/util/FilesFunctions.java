@@ -87,7 +87,7 @@ public class FilesFunctions {
 
     public static void logLastGeneration(Game[] population) throws IOException {
 
-        FileWriter file = new FileWriter("results:games_genomes.txt");
+        FileWriter file = new FileWriter("out/results:games_genomes.txt");
 
         BufferedWriter out = new BufferedWriter(file);
 
