@@ -16,9 +16,8 @@ public class FilesFunctions {
      * @param absBestInd
      * @param population
      */
-    public static void logBest(BufferedWriter out3, int generation, int NB_GENES, int absBestInd, NeuralNetwork[] population) {
-
-        //best genome
+    public static void logBest(BufferedWriter out3, int generation, int NB_GENES, int absBestInd, NeuralNetwork[] population)
+            throws IOException {
         try {
             out3.write("generation, absolute best ind index, weights");
             out3.write("\n");
@@ -33,13 +32,15 @@ public class FilesFunctions {
         } catch (IOException e) {
             System.out.println("Buffer Error: " + e.getMessage());
         }
-
-
-
     }
 
+    /**
+     *
+     * @param population
+     * @param index
+     * @throws IOException
+     */
     public static void logBestIndiv(NeuralNetwork[] population, int index) throws  IOException{
-
         FileWriter file = new FileWriter("out/best_actor.txt");
         BufferedWriter out = new BufferedWriter(file);
         for(int i=0; i<population[index].getWeightsNo(); i++){
@@ -47,15 +48,16 @@ public class FilesFunctions {
         }
         out.write("\n");
         out.flush();
-
     }
 
+    /**
+     *
+     * @param population
+     * @throws IOException
+     */
     public static void logLastGeneration(NeuralNetwork[] population) throws IOException {
-
         FileWriter file = new FileWriter("out/results:genomes.txt");
-
         BufferedWriter out = new BufferedWriter(file);
-
         try{
             for(int i=0; i< population.length; i++){
                 for (int j=0; j<population[i].getWeightsNo(); j++){
@@ -71,11 +73,12 @@ public class FilesFunctions {
     }
 
     /**
-     * Write all genomes and fitnesses to file
+     * Write all genomes and fitness scores to file
+     * @param out1
+     * @param generation
+     * @param stats
      */
-    public static void logPopulation(BufferedWriter out1, int generation, double[][] stats) {
-
-        //fitness
+    public static void logPopulation(BufferedWriter out1, int generation, double[][] stats) throws IOException {
         try {
             out1.write("" + generation);
             for(int i=0; i<stats.length; i++){
@@ -90,6 +93,31 @@ public class FilesFunctions {
         }
     }
 
+    /**
+     * Write worst, average and best fitness score of current generation
+     * @param out           BufferedWriter that is used to write into earlier initialised file
+     * @param generation    Number of generation
+     * @param worst         Worst fitness recorded
+     * @param avg           Average fitness recorded
+     * @param best          Best fitness recorded
+     */
+    public static void logFitnessScores(BufferedWriter out, int generation, double worst, double avg, double best)
+            throws IOException{
+        try {
+            out.write("" + generation+","+worst+","+avg+","+best);
+            out.write("\n");
+            out.flush();
+        } catch (IOException e) {
+            System.err.println("Buffer Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param out
+     * @param generation
+     * @param fitnessScores
+     */
     public static void logAllActorFitnesses(BufferedWriter out, int generation, double[] fitnessScores) {
         try{
             out.write(""+generation);
@@ -101,4 +129,3 @@ public class FilesFunctions {
         }
     }
 }
-

@@ -69,7 +69,7 @@ public class SupervisorController extends Supervisor {
     private double minFitNN = 0.0, avgFitNN = 0.0, bestFitNN = 0.0, absBestFitNN = -10000;
     private double[][] stats;
     private int bestNN = -1, absBestNN = -1;
-    private BufferedWriter out1, out2, out3;
+    private BufferedWriter out1, out2, out3, out4;
     private FileWriter file1, file2, file3;
     private BufferedReader reader1, reader3;
 
@@ -132,7 +132,11 @@ public class SupervisorController extends Supervisor {
                     // VEGA based optimisation
                     //createNewVEGApopulation();
 
-                    createNewPopulation();
+                    try {
+                        createNewPopulation();
+                    } catch (IOException e) {
+                        System.err.println(""+e.getMessage());
+                    }
 
                     generation++;
                     System.out.println("\nGENERATION \n" + generation);
@@ -373,7 +377,7 @@ public class SupervisorController extends Supervisor {
     /**
      * Algorithm to perform VEGA Multi-Objective Optimisation
      */
-    private void createNewVEGApopulation() {
+    private void createNewVEGApopulation() throws IOException {
         int i, j, counter = 0;
 
         // 1. Shuffle population
@@ -501,8 +505,7 @@ public class SupervisorController extends Supervisor {
      * array. New population is created using elitism, crossover and mutation.
      * This method also logs population's statistics into a file.
      */
-    private void createNewPopulation()
-    {
+    private void createNewPopulation() throws IOException {
         NeuralNetwork[] newpop = new NeuralNetwork[NN_POP_SIZE];
         for (int i = 0; i < newpop.length; i++) {
             newpop[i] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
@@ -532,34 +535,20 @@ public class SupervisorController extends Supervisor {
         System.out.println("Average fitness score: " + avgFitNN);
         System.out.println("Worst fitness score: " + minFitNN);
         System.out.println("Absolute best index: " + absBestNN);
-
         // Write data to files
-        //FilesFunctions.logPopulation(out1, avgFitNN, generation, fitnessNN,
-        //        bestFitNN, minFitNN, NB_GENES, populationOfNN, bestNN);
         FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
-
-        // Log the generation data  - stores weights
-        try {
-            FilesFunctions.logLastGeneration(populationOfNN);
-        } catch (IOException e) {
-            e.getMessage();
-        }
-        // Log best individual
-        try {
-            FilesFunctions.logBestIndiv(populationOfNN, bestNN);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-        }
-
-        // find minimum fitness to subtract it from sum
+        FilesFunctions.logFitnessScores(out4, generation, minFitNN, avgFitNN, bestFitNN);
+        FilesFunctions.logLastGeneration(populationOfNN);   // Log the generation data  - stores weights
+        FilesFunctions.logBestIndiv(populationOfNN, bestNN);// Log weights of best individual
+        // Find minimum fitness to subtract it from sum
         double min_fitness = sortedfitnessNN[NN_POP_SIZE-1][0];
         if (min_fitness<0) min_fitness=0;
         int i, j;
-        // calculate total of fitness, used for roulette wheel selection
+        // Calculate total of fitness, used for roulette wheel selection
         for(i=0; i<NN_POP_SIZE; i++) total_fitness+=fitnessNN[i];
         total_fitness-=min_fitness*NN_POP_SIZE;
 
-        //create new population
+        // Create new population
         for(i=0; i<NN_POP_SIZE; i++) {
 
             //the elitism_counter best individuals are simply copied to the new population
@@ -697,6 +686,9 @@ public class SupervisorController extends Supervisor {
         fldTranslation.setSFVec3f(initTranslation);
     }
 
+    /**
+     * Method to get handles on robot's devices and initialises variables/data structures.
+     */
     private void initialise() {
 
         int i, j;
@@ -772,6 +764,15 @@ public class SupervisorController extends Supervisor {
 
         } catch (IOException e) {
             System.out.println("" + e.getMessage());
+        }
+
+        out4 = new BufferedWriter(file1);
+        try{
+            out4.write("Generation,Worst,Average,Best");
+            out4.write("\n");
+            out4.flush();
+        }  catch (IOException e){
+            System.err.println("" + e.getMessage());
         }
 
         try {
