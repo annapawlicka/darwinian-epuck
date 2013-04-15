@@ -76,7 +76,7 @@ public class NeuralNetwork {
      * @param GENE_MAX          Maximal value of a gene (weight)
      * @param gene              Weight to be mutated
      * @param MUTATION_SIGMA    Determines the extent to which a value will be mutated (how far from its current value)
-     * @return
+     * @return                  Returns mutated gene
      */
     public float mutate(float GENE_MIN, float GENE_MAX, float gene, double MUTATION_SIGMA) {
         float x1, x2, w, y1;
