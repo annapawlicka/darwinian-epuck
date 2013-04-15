@@ -9,12 +9,12 @@ import java.io.IOException;
 public class FilesFunctions {
 
     /**
-     * Writes absolute best individual to file.
-     * @param out3
-     * @param generation
-     * @param NB_GENES
-     * @param absBestInd
-     * @param population
+     * Writes weights of absolute best individual to file.
+     * @param out3          BufferedWriter initialised with a file name it will be writing to
+     * @param generation    Number of current generation
+     * @param NB_GENES      Number of genes (weights)
+     * @param absBestInd    Index of absolute best individual
+     * @param population    Population of neural networks
      */
     public static void logBest(BufferedWriter out3, int generation, int NB_GENES, int absBestInd, NeuralNetwork[] population)
             throws IOException {
@@ -35,9 +35,9 @@ public class FilesFunctions {
     }
 
     /**
-     *
-     * @param population
-     * @param index
+     * Writes weights of current best individual to file - overwrites previous entry.
+     * @param population    Population of neural networks
+     * @param index         Index of current best individual
      * @throws IOException
      */
     public static void logBestIndiv(NeuralNetwork[] population, int index) throws  IOException{
@@ -51,8 +51,8 @@ public class FilesFunctions {
     }
 
     /**
-     *
-     * @param population
+     * Writes weights of every individual in current generation - overwrites previous entry.
+     * @param population    Population of neural networks
      * @throws IOException
      */
     public static void logLastGeneration(NeuralNetwork[] population) throws IOException {
@@ -74,9 +74,9 @@ public class FilesFunctions {
 
     /**
      * Write all genomes and fitness scores to file
-     * @param out1
-     * @param generation
-     * @param stats
+     * @param out1          BufferedWriter initialised with a file name
+     * @param generation    Number of current generation
+     * @param stats         Array with current statistics about worst, average and best individual for each game
      */
     public static void logPopulation(BufferedWriter out1, int generation, double[][] stats) throws IOException {
         try {
@@ -113,10 +113,10 @@ public class FilesFunctions {
     }
 
     /**
-     *
-     * @param out
-     * @param generation
-     * @param fitnessScores
+     * Writes fitness scores of every individual into a file. Appends data.
+     * @param out           BufferedWriter initialised with a file name
+     * @param generation    Number of current generation
+     * @param fitnessScores Array of fitness scores
      */
     public static void logAllActorFitnesses(BufferedWriter out, int generation, double[] fitnessScores) {
         try{
