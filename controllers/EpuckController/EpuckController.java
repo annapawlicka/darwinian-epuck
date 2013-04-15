@@ -21,18 +21,17 @@ import java.util.Random;
 public class EpuckController extends Robot {
 
     // Global variables
-    private int GAME_POP_SIZE = 1;
+    private int GAME_POP_SIZE = 3;
     private int NN_POP_SIZE = 30;
     private final int LEFT = 0;
     private final int RIGHT = 1;
     private final int TIME_STEP = 256;              // [ms]
     private final int PS_RANGE = 3800;
     private final int SPEED_RANGE = 500;
-    private final int NB_DIST_SENS = 4;             // Number of IR proximity sensors
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 120000;       // Evaluation duration of one individual - 1 minute [ms]
-    private final int NB_INPUTS = 4;
-    private final int NB_HIDDEN_NEURONS = 12;
+    private final int NB_INPUTS = 9;
+    private final int NB_HIDDEN_NEURONS = 14;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS;
     private int NB_CONSTANTS = 4;
@@ -67,7 +66,7 @@ public class EpuckController extends Robot {
     private final int REALITY = 2;                  // for robot.get_mode() function
 
     // 8 IR proximity sensors
-    private int NB_PROXIMITY_SENSORS = 4;
+    private int NB_PROXIMITY_SENSORS = 6;
     private DistanceSensor[] ps;
     private float[] ps_offset;
     private int[] PS_OFFSET_SIMULATION = new int[]{300, 300, 300, 300, 300, 300, 300, 300};
@@ -110,10 +109,10 @@ public class EpuckController extends Robot {
             if (mode != getMode()) {
                 mode = getMode();
                 if (mode == SIMULATION) {
-                    for (i = 0; i < NB_DIST_SENS; i++) ps_offset[i] = PS_OFFSET_SIMULATION[i];
+                    for (i = 0; i < NB_PROXIMITY_SENSORS; i++) ps_offset[i] = PS_OFFSET_SIMULATION[i];
                     System.out.println("Switching to SIMULATION.\n\n");
                 } else if (mode == REALITY) {
-                    for (i = 0; i < NB_DIST_SENS; i++) ps_offset[i] = PS_OFFSET_REALITY[i];
+                    for (i = 0; i < NB_PROXIMITY_SENSORS; i++) ps_offset[i] = PS_OFFSET_REALITY[i];
                     System.out.println("\nSwitching to REALITY.\n\n");
                 }
             }
@@ -258,7 +257,7 @@ public class EpuckController extends Robot {
         robot.setSpeed(speed[LEFT], speed[RIGHT]);
 
         // Stop the robot if it is against an obstacle
-        for (int i = 0; i < NB_DIST_SENS; i++) {
+        for (int i = 0; i < NB_PROXIMITY_SENSORS; i++) {
             double temp_ps = (((ps[i].getValue()) - ps_offset[i]) < 0) ? 0 : ((ps[i].getValue()) - ps_offset[i]);
 
             if (OBSTACLE_THRESHOLD < temp_ps) {// proximity sensors
@@ -267,57 +266,41 @@ public class EpuckController extends Robot {
                 break;
             }
         }
-
-        if (ifEvolved) computeFitness(speed, maxIRActivation);
+        if (ifEvolved) computeFitness(speed, maxIRActivation);  // Compute fitness if we evolve population
     }
 
 
     /**
-     * Method to calculate fitness score - fitness function that have evolvable constants
+     * Method to calculate fitness score - three hand-designed games (3 separate fitness functions)
      *
-     * @param speed
-     * @param maxIRActivation
+     * @param speed           Speed of both motors (array of doubles)
+     * @param maxIRActivation Maximal activation of IR proximity sensors
      */
     public void computeFitness(double[] speed, double maxIRActivation) throws Exception {
 
-        int currentFitness = 0;
-        // punish oscillatory movement
-        //if((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 200) currentFitness -=1;
-        // punish slow speed
-        //if(speed[LEFT] < 300 && speed[RIGHT]< 300) currentFitness-=1;
-        // punish hitting obstacles
-        //if(maxIRActivation > 3000) currentFitness-=10;
-
         // Avoid obstacles:
-        //agentsFitness[indiv][0] += currentFitness;
-
-        //agentsFitness[indiv][0] += (float)(Util.mean(speed) * (1 - Math.sqrt(Math.abs(speed[LEFT] - speed[RIGHT])) * (1 - Util.normalize(0, 4000, maxIRActivation))));
-
+        int currentFitness0 = 0;
+        if (maxIRActivation > OBSTACLE_THRESHOLD) currentFitness0 -= 1;   // Punish hitting obstacles
+        if ((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 50) currentFitness0 -= 1;    // Punish oscillatory movements
+        if (speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness0 -= 1;    // Punish standing still
+        if (speed[LEFT] > 300 && speed[RIGHT] > 300) currentFitness0 += 2; // Reward fast speed
+        agentsFitness[indiv][0] += currentFitness0;
 
         // Follow wall
-        if(speed[LEFT] < 300 && speed[RIGHT] < 300) currentFitness-=1;      // Punish slow speed
-        if(states[1] > 3000 || states[2] > 3000) currentFitness+=1;         // Reward max IR activation of side sensors
-        if(speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness-=1;        // Penalise standing still
-        agentsFitness[indiv][0] += currentFitness;
+        int currentFitness1 = 0;
+        if (speed[LEFT] < 300 && speed[RIGHT] < 300) currentFitness1 -= 1;      // Punish slow speed
+        if (states[0] > 3000) currentFitness1 += 1;                            // Reward max IR activation of side sensors
+        if (speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness1 -= 1;        // Penalise standing still
+        if ((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 50) currentFitness1 -= 2;// Penalise oscillatory movement
+        agentsFitness[indiv][1] += currentFitness1;
 
         // Follow black line
-        /*if(fs_value[0] < 400 || fs_value[1] < 400 || fs_value[2] < 400) currentFitness+=1; // Reward detection of black line
-        if(speed[LEFT] < 200 && speed[RIGHT] < 200) currentFitness-=1;  // Punish slow speed
-        if(fs_value[1] > 500) currentFitness-=1;   // Punish detection of white line
-        agentsFitness[indiv][0] += currentFitness;*/
-
-        /*for (int i = 0; i < GAME_POP_SIZE; i++) {
-            try {
-                agentsFitness[indiv][i] +=
-                        (populationOfGames[i].getConstants()[0] * Util.mean(speed)) *
-                                (1 - (populationOfGames[i].getConstants()[1] * Math.sqrt(Math.abs((speed[LEFT] - speed[RIGHT]))))) *
-                                (1 - (populationOfGames[i].getConstants()[2] * Util.normalize(0, 4000, maxIRActivation))) *
-                                (1 - (populationOfGames[i].getConstants()[3] * Util.normalize(0, 900, floorColour))) *
-                                (populationOfGames[i].getConstants()[4] * light);
-            } catch (Exception e) {
-                System.err.println("Error: " + e.getMessage());
-            }
-        }*/
+        int currentFitness2 = 0;
+        if (fs_value[0] < 400 || fs_value[1] < 400 || fs_value[2] < 400)
+            currentFitness2 += 1; // Reward detection of black line
+        if (speed[LEFT] < 200 && speed[RIGHT] < 200) currentFitness2 -= 1;  // Punish slow speed
+        if (fs_value[1] > 500) currentFitness2 -= 1;                        // Punish detection of white line
+        agentsFitness[indiv][2] += currentFitness2;
     }
 
     /**
@@ -387,38 +370,6 @@ public class EpuckController extends Robot {
         for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(actorFitPerGame[i]);
 
     }
-
-    /**
-     * Normalise fitness scores to a value between 0 and 1
-     */
-    private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
-
-        double min = 0, max = 0;
-
-        if (gameNo == 0) {
-            min = -2500000;
-            max = 2500000;
-        }
-        if (gameNo == 1) {
-            min = -200000;
-            max = 600;
-        }
-        if (gameNo == 2) {
-            min = -600000;
-            max = 600000;
-        }
-
-        for (int i = 0; i < fitnessScores.length; i++) {
-            double temp = 0;
-            try {
-                temp = Util.normalize(min, max, fitnessScores[i]);  // add buffer of 0.5
-            } catch (Exception e) {
-                System.err.println("Error while normalizing: " + e.getMessage());
-            }
-            fitnessScores[i] = temp;
-        }
-    }
-
 
     /**
      * Sort whole population according to fitness score of each individual. Uses quickSort.
@@ -540,25 +491,19 @@ public class EpuckController extends Robot {
      */
     private void updateSenorReadings() {
 
-        previousSpeed[LEFT] = speed[LEFT];
-        previousSpeed[RIGHT] = speed[RIGHT];
+        // Update IR proximity sensor readings
         maxIRActivation = 0;
         for (int j = 0; j < NB_PROXIMITY_SENSORS; j++) {
             states[j] = ps[j].getValue() - ps_offset[j] < 0 ? 0 : (ps[j].getValue() - (ps_offset[j]) / PS_RANGE);
             //get max IR activation
             if (states[j] > maxIRActivation) maxIRActivation = states[j];
         }
+        // Update floor colour readings
+        for (int i = ps.length; i < NB_FLOOR_SENSORS; i++) {
+            fs_value[i] = fs[i].getValue();
+            states[i] = fs_value[i];
+        }
 
-        //states[6] = previousSpeed[LEFT];
-        //states[7] = previousSpeed[RIGHT];
-         /*for (int i = ps.length; i < NB_FLOOR_SENSORS; i++) {
-             fs_value[i] = fs[i].getValue();
-             states[i] = fs_value[i];
-         }*/
-
-        //states[8] = fs_value[0];
-        //states[8] = fs_value[1];
-        //states[10] = fs_value[2];
     }
 
     private void run_neural_network(double[] inputs, double[] outputs) {
@@ -623,13 +568,13 @@ public class EpuckController extends Robot {
         games[0].setConstants(3, 0);    // Ignore floor colour/light
 
 
-       /*Game 2: Follow black line *//*
+       /*Game 2: Follow black line */
         games[1].setConstants(0, 1);    // Drive fast
         games[1].setConstants(1, 1);    // Drive straight
         games[1].setConstants(2, 0);    // Avoid obstacles/walls
         games[1].setConstants(3, 1);    // Max black line /light
 
-        *//* Game 3: Follow the wall *//*
+        /* Game 3: Follow the wall */
         games[2].setConstants(0, 1);    // Drive fast
         games[2].setConstants(1, 1);    // Drive straight
         games[2].setConstants(2, -0.5f);   // Maximise prox sensors activation
@@ -648,7 +593,8 @@ public class EpuckController extends Robot {
         indiv = 0;
 
         if (NB_HIDDEN_NEURONS == 0) NB_WEIGHTS = NB_INPUTS * NB_OUTPUTS + NB_OUTPUTS;
-        else NB_WEIGHTS = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
+        else
+            NB_WEIGHTS = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
 
         // Games
         populationOfGames = new Game[GAME_POP_SIZE];
@@ -682,28 +628,28 @@ public class EpuckController extends Robot {
         ps = new DistanceSensor[NB_PROXIMITY_SENSORS];
         ps[0] = getDistanceSensor("ps0");
         ps[0].enable(TIME_STEP);
-        //ps[0] = getDistanceSensor("ps1");
-        //ps[0].enable(TIME_STEP);
-        ps[1] = getDistanceSensor("ps2");
+        ps[1] = getDistanceSensor("ps1");
         ps[1].enable(TIME_STEP);
-        //ps[1] = getDistanceSensor("ps3");
+        //ps[1] = getDistanceSensor("ps2");
         //ps[1].enable(TIME_STEP);
-        //ps[2] = getDistanceSensor("ps4");
-        //ps[2].enable(TIME_STEP);
-        ps[2] = getDistanceSensor("ps5");
+        ps[2] = getDistanceSensor("ps3");
         ps[2].enable(TIME_STEP);
-        //ps[6] = getDistanceSensor("ps6");
-        //ps[6].enable(TIME_STEP);
-        ps[3] = getDistanceSensor("ps7");
+        ps[3] = getDistanceSensor("ps4");
         ps[3].enable(TIME_STEP);
+        //ps[2] = getDistanceSensor("ps5");
+        //ps[2].enable(TIME_STEP);
+        ps[4] = getDistanceSensor("ps6");
+        ps[4].enable(TIME_STEP);
+        ps[5] = getDistanceSensor("ps7");
+        ps[5].enable(TIME_STEP);
 
         ps_offset = new float[NB_PROXIMITY_SENSORS];
         for (i = 0; i < ps_offset.length; i++) {
             ps_offset[i] = PS_OFFSET_SIMULATION[i];
         }
-
         maxIRActivation = 0;
-        /* Initialise IR floor sensors */
+
+        /*Initialise IR floor sensors */
         fs = new DistanceSensor[NB_FLOOR_SENSORS];
         for (i = 0; i < fs.length; i++) {
             fs[i] = getDistanceSensor("fs" + i);
@@ -718,9 +664,6 @@ public class EpuckController extends Robot {
         // Speed initialization
         speed[LEFT] = 0;
         speed[RIGHT] = 0;
-        previousSpeed = new double[2];
-        previousSpeed[LEFT]= 0;
-        previousSpeed[RIGHT] = 0;
 
         emitter = getEmitter("emitterepuck");
         receiver = getReceiver("receiver");

@@ -130,13 +130,17 @@ public class SupervisorController extends Supervisor {
                     resetDisplay();
 
                     // VEGA based optimisation
-                    //createNewVEGApopulation();
-
                     try {
-                        createNewPopulation();
+                        createNewVEGApopulation();
                     } catch (IOException e) {
                         System.err.println(""+e.getMessage());
                     }
+
+                   /* try {
+                        createNewPopulation();
+                    } catch (IOException e) {
+                        System.err.println(""+e.getMessage());
+                    } */
 
                     generation++;
                     System.out.println("\nGENERATION \n" + generation);
@@ -147,13 +151,12 @@ public class SupervisorController extends Supervisor {
                     minFitNN = 0;
 
                     resetRobotPosition();
-                    /*// Evolve games every 4 NN generations (gives them time to learn)
+                    // Evolve games every 4 NN generations (gives them time to learn)
                     if (generation % 5 == 0) {
                         // Send flag to start evolution of games
                         byte[] flag = {1};
                         gameEmitter.send(flag);
-                    }*/
-
+                    }
                     // Send new weights
                     byte[] msgInBytes = Util.float2ByteArray(populationOfNN[evaluatedNN].getWeights());
 
@@ -248,15 +251,15 @@ public class SupervisorController extends Supervisor {
         double min = 0, max = 0;
 
         if (gameNo == 0) { // Avoiding obstacles
-            min = -2500000;
-            max = 2500000;
+            min = -1410;
+            max = 940;
         }
         if (gameNo == 1) { // Following wall
             min = -1890;
             max = 470;
         }
         if (gameNo == 2) { // Following line
-            min = -1000;
+            min = -940;
             max = 470;
         }
 
@@ -695,14 +698,14 @@ public class SupervisorController extends Supervisor {
 
         /* Population/Evolution parameters */
         NN_POP_SIZE = 30;
-        GAME_POP_SIZE = 1;
+        GAME_POP_SIZE = 3;
         SUBSET_SIZE = NN_POP_SIZE / GAME_POP_SIZE;
         fitnessPerGame = new double[GAME_POP_SIZE][NN_POP_SIZE];
 
         // Neural Networks
-        NB_INPUTS = 2;
+        NB_INPUTS = 9;
         NB_OUTPUTS = 2;
-        NB_HIDDEN_NEURONS = 18;
+        NB_HIDDEN_NEURONS = 14;
         NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
 
         populationOfNN = new NeuralNetwork[NN_POP_SIZE];
