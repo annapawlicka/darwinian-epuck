@@ -31,7 +31,7 @@ public class EpuckController extends Robot {
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 120000;       // Evaluation duration of one individual - 1 minute [ms]
     private final int NB_INPUTS = 9;
-    private final int NB_HIDDEN_NEURONS = 14;
+    private final int NB_HIDDEN_NEURONS = 10;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS;
     private int NB_CONSTANTS = 4;
@@ -81,8 +81,7 @@ public class EpuckController extends Robot {
     // Differential Wheels
     private DifferentialWheels robot = new DifferentialWheels();
     private double[] speed;
-    private double[] previousSpeed;
-    private double[] states = new double[NB_INPUTS];               // The sensor values  8+1
+    private double[] states = new double[NB_INPUTS];
 
     // Emitter and Receiver
     private Emitter emitter;
@@ -124,7 +123,7 @@ public class EpuckController extends Robot {
                 if (flag[0] == 1) { // is flag 1 is received, evolution can be started (the frequency is set by supervisor)
 
                     /* Start evolution of games */
-                    setGameFitness();
+                    //setGameFitness();
                     // 1. Sort populationOfGames by fitness
                     sortPopulation(sortedfitnessGames, gameFitness);
                     // 2. Find best, average and worst game
@@ -230,12 +229,12 @@ public class EpuckController extends Robot {
                     indiv = 0;
                     byte[] endMsg = {1};
                     emitter.send(endMsg);
+                    setGameFitness();
                     resetActorsFitArrays();
                 }
             } else if (TESTING == 2) {
                 runTrial(false);
             }
-
         }
     }
 
@@ -289,7 +288,7 @@ public class EpuckController extends Robot {
         // Follow wall
         int currentFitness1 = 0;
         if (speed[LEFT] < 300 && speed[RIGHT] < 300) currentFitness1 -= 1;      // Punish slow speed
-        if (states[0] > 3000) currentFitness1 += 1;                            // Reward max IR activation of side sensors
+        if (states[1] > OBSTACLE_THRESHOLD || states[4] > OBSTACLE_THRESHOLD) currentFitness1 += 1;         // Reward max IR activation of side sensors
         if (speed[LEFT] == 0 && speed[RIGHT] == 0) currentFitness1 -= 1;        // Penalise standing still
         if ((Math.abs(speed[LEFT]) - speed[RIGHT]) >= 50) currentFitness1 -= 2;// Penalise oscillatory movement
         agentsFitness[indiv][1] += currentFitness1;
@@ -363,12 +362,47 @@ public class EpuckController extends Robot {
         }
 
         // Normalise
-        //for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
+        for(i=0; i< actorFitPerGame.length; i++) normaliseFitnessScore(actorFitPerGame[i], i);
+        // Log component fitness scores on each game
+        FilesFunctions.logAllCompFit(out4, actorFitPerGame, generation);
 
         //Calculate fitness of each game by computing variance of actor fitnesses on that game
         // Fitness of games doesn't need to be normalised as it's a variance over already normalised actors fitness
         for (i = 0; i < gameFitness.length; i++) gameFitness[i] = Util.variance(actorFitPerGame[i]);
 
+    }
+
+    /**
+     * Method to normalise fitness scores. Scores are normalised according to given game.
+     * @param fitnessScores     Array of fitness scores
+     * @param gameNo            Number of the game that the fitness comes from
+     */
+    private void normaliseFitnessScore(double[] fitnessScores, int gameNo) {
+
+        double min = 0, max = 0;
+
+        if (gameNo == 0) { // Avoiding obstacles
+            min = -1410;
+            max = 940;
+        }
+        if (gameNo == 1) { // Following wall
+            min = -1890;
+            max = 470;
+        }
+        if (gameNo == 2) { // Following line
+            min = -940;
+            max = 470;
+        }
+
+        for (int i = 0; i < fitnessScores.length; i++) {
+            double temp = 0;
+            try {
+                temp = Util.normalize(min, max, fitnessScores[i]);
+            } catch (Exception e) {
+                System.err.println("Error while normalising: " + e.getMessage());
+            }
+            fitnessScores[i] = temp;
+        }
     }
 
     /**

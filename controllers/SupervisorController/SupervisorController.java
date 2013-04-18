@@ -70,7 +70,7 @@ public class SupervisorController extends Supervisor {
     private double[][] stats;
     private int bestNN = -1, absBestNN = -1;
     private BufferedWriter out1, out2, out3, out4;
-    private FileWriter file1, file2, file3;
+    private FileWriter file1, file2, file3, file4;
     private BufferedReader reader1, reader3;
 
     private Random random = new Random();
@@ -136,7 +136,7 @@ public class SupervisorController extends Supervisor {
                         System.err.println(""+e.getMessage());
                     }
 
-                   /* try {
+                   /*try {
                         createNewPopulation();
                     } catch (IOException e) {
                         System.err.println(""+e.getMessage());
@@ -152,7 +152,7 @@ public class SupervisorController extends Supervisor {
 
                     resetRobotPosition();
                     // Evolve games every 4 NN generations (gives them time to learn)
-                    if (generation % 5 == 0) {
+                    if (generation % 1 == 0) {
                         // Send flag to start evolution of games
                         byte[] flag = {1};
                         gameEmitter.send(flag);
@@ -228,7 +228,7 @@ public class SupervisorController extends Supervisor {
      */
     private void normaliseFitnessScore(double[] fitnessScores) {
 
-       double min = -1890, max = 470;
+       double min = -3800, max = 1880; // sum on all games
 
         for (int i = 0; i < fitnessScores.length; i++) {
             double temp = 0;
@@ -386,6 +386,17 @@ public class SupervisorController extends Supervisor {
         // 1. Shuffle population
         Util.shuffleList(populationOfNN);
 
+        // Set fitness - sum of fitness scores for all games - to be used for comparison with regular assessment
+        for(i=0; i<fitnessPerGame.length; i++){
+            for (j=0; j<fitnessPerGame[i].length; j++) {
+                fitnessNN[j]+=fitnessPerGame[i][j];
+            }
+        }
+        // Write sum of fitness scores to file - for comparison
+        normaliseFitnessScore(fitnessNN); // Normalise
+        FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
+        FilesFunctions.logFitnessScores(out4, generation, minFitNN, avgFitNN, bestFitNN);
+
         // 2. divide population into O subpopulations of size N/O
         NeuralNetwork[][] subpopulations = new NeuralNetwork[GAME_POP_SIZE][SUBSET_SIZE];
         for (i = 0; i < subpopulations.length; i++) {
@@ -421,7 +432,7 @@ public class SupervisorController extends Supervisor {
             System.out.println("Best fitness score: " + bestFitNN);
             System.out.println("Average fitness score: " + avgFitNN);
             System.out.println("Worst fitness score: " + minFitNN);
-            System.out.println("Absolute best index: " + stats[i][3]);
+            System.out.println("Best index: " + bestNN);
             // Update stats
             stats[i][0] = avgFitNN;
             stats[i][1] = bestFitNN;
@@ -496,7 +507,7 @@ public class SupervisorController extends Supervisor {
                     populationOfNN[i].copy(newpop[i]);
         }
 
-        // Reset fitness
+        // 9. Reset fitness
         for (i = 0; i < fitnessPerGame.length; i++) {
             for (j = 0; j < fitnessPerGame[i].length; j++) fitnessPerGame[i][i] = 0;
         }
@@ -518,7 +529,9 @@ public class SupervisorController extends Supervisor {
 
         // Set fitness - sum of fitness scores for all games
         for(int i=0; i<fitnessPerGame.length; i++){
-            for (int j=0; j<fitnessPerGame[i].length; j++) fitnessNN[j]+=fitnessPerGame[i][j];
+            for (int j=0; j<fitnessPerGame[i].length; j++) {
+                fitnessNN[j]+=fitnessPerGame[i][j];
+            }
         }
         // Sort population
         normaliseFitnessScore(fitnessNN); // Normalise fitness scores
@@ -608,13 +621,13 @@ public class SupervisorController extends Supervisor {
             }
         }
 
-        //mutate new population and copy back to pop
+        // Mutate new population and copy back to pop
         for(i=0; i<NN_POP_SIZE; i++) {
             if(i<elitism_counter) { //no mutation for elitists
                 for(j=0;j<NB_GENES;j++)
                     populationOfNN[i].copy(newpop[i]);
             }
-            else { //mutate others with probability per gene
+            else { // Mutate others with probability per gene
                 for(j=0;j<NB_GENES;j++)
                     if(random.nextFloat()<MUTATION_PROBABILITY)
                         populationOfNN[i].setWeights(j, populationOfNN[i].mutate(GENE_MIN, GENE_MAX, newpop[i].getWeights()[j], MUTATION_SIGMA));
@@ -622,7 +635,7 @@ public class SupervisorController extends Supervisor {
                         populationOfNN[i].copy(newpop[i]);
             }
 
-            //reset fitness
+            // Reset fitness
             fitnessNN[i]=-1;
         }
         return;
@@ -630,6 +643,8 @@ public class SupervisorController extends Supervisor {
 
     /**
      * Sort whole population according to fitness score of each individual. Uses quickSort.
+     * @param sortedfitness Array that will store sorted fitness and corresponding indexes (we do not sort actual fitness array)
+     * @param fitness       Fitness scores to be sorted
      */
     private void sortPopulation(double[][] sortedfitness, double[] fitness) {
         int i;
@@ -705,7 +720,7 @@ public class SupervisorController extends Supervisor {
         // Neural Networks
         NB_INPUTS = 9;
         NB_OUTPUTS = 2;
-        NB_HIDDEN_NEURONS = 14;
+        NB_HIDDEN_NEURONS = 10;
         NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
 
         populationOfNN = new NeuralNetwork[NN_POP_SIZE];
@@ -769,6 +784,11 @@ public class SupervisorController extends Supervisor {
             System.out.println("" + e.getMessage());
         }
 
+        try {
+            file4 = new FileWriter("out/sum_fitness.txt");
+        } catch (IOException e) {
+            System.out.println("Cannot open sum_fitness.txt file.");
+        }
         out4 = new BufferedWriter(file1);
         try{
             out4.write("Generation,Worst,Average,Best");

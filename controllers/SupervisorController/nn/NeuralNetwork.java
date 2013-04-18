@@ -85,9 +85,9 @@ public class NeuralNetwork {
             x1 = (random.nextFloat() * (GENE_MAX - GENE_MIN) + GENE_MIN);
             x2 = (random.nextFloat() * (GENE_MAX - GENE_MIN) + GENE_MIN);
             w = x1 * x1 + x2 * x2;
-        } while (w > 1.0 || w == 0);
+        } while (w > 1.0 || w == 0); // repeat until the value is not 0 or greater than 1.
 
-        y1 = ((float) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w)));
+        y1 = ((float) (gene + MUTATION_SIGMA * x1 * Math.sqrt((-2.0 * Math.log(w)) / w))); // Add to gene
 
         if (y1 > GENE_MAX) return GENE_MAX;
         if (y1 < GENE_MIN) return GENE_MIN;
