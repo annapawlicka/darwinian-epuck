@@ -770,7 +770,6 @@ public class SupervisorController extends Supervisor {
         } catch (IOException e) {
             System.out.println("Cannot open fitness.txt file.");
         }
-
         out1 = new BufferedWriter(file1);
         try {
             out1.write("Generation");
@@ -789,7 +788,7 @@ public class SupervisorController extends Supervisor {
         } catch (IOException e) {
             System.out.println("Cannot open sum_fitness.txt file.");
         }
-        out4 = new BufferedWriter(file1);
+        out4 = new BufferedWriter(file4);
         try{
             out4.write("Generation,Worst,Average,Best");
             out4.write("\n");
@@ -803,9 +802,7 @@ public class SupervisorController extends Supervisor {
         } catch (IOException e) {
             System.err.println("Error while opening file: all_actor_fit.txt " + e.getMessage());
         }
-
         out2 = new BufferedWriter(file2);
-
         try {
             out2.write("generation");
             for (i = 0; i < NN_POP_SIZE; i++) {
@@ -822,7 +819,6 @@ public class SupervisorController extends Supervisor {
         } catch (IOException e) {
             System.out.println("Cannot open bestgenome.txt file.");
         }
-
         out3 = new BufferedWriter(file3);
 
         /* Reading from file - for testing purposes */
