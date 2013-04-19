@@ -381,7 +381,7 @@ public class SupervisorController extends Supervisor {
      * Algorithm to perform VEGA Multi-Objective Optimisation
      */
     private void createNewVEGApopulation() throws IOException {
-        int i, j, counter = 0;
+        int i, j, k, counter = 0;
 
         // 1. Shuffle population
         Util.shuffleList(populationOfNN);
@@ -395,9 +395,9 @@ public class SupervisorController extends Supervisor {
         // Write sum of fitness scores to file - for comparison
         normaliseFitnessScore(fitnessNN); // Normalise
         double[][] sortedSummedFitness = new double[NN_POP_SIZE][2];
-        for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
-            sortedSummedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
-            sortedSummedFitness[j][1] = j;                        // keep index
+        for (k = 0; k < fitnessNN.length; k++) { // loop through actors
+            sortedSummedFitness[k][0] = fitnessNN[k];    // keep fitness score
+            sortedSummedFitness[k][1] = k;               // keep index
         }
         quickSort(sortedSummedFitness, 0, sortedSummedFitness.length - 1); // sort for current game
         // Find and log current and absolute best individual
@@ -413,7 +413,7 @@ public class SupervisorController extends Supervisor {
 
             // Create subpopulation
             NeuralNetwork[] subpop = new NeuralNetwork[SUBSET_SIZE];
-            for (int k = 0; k < subpop.length; k++) {
+            for (k = 0; k < subpop.length; k++) {
                 subpop[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
             }
 
@@ -461,10 +461,10 @@ public class SupervisorController extends Supervisor {
             double[] probTable = rouletteSelect(subpop);    // add to mating pool in a fitness proportionate way
 
             NeuralNetwork[] sub = new NeuralNetwork[NN_POP_SIZE / GAME_POP_SIZE];
-            for (int k = 0; k < sub.length; k++) {
+            for (k = 0; k < sub.length; k++) {
                 sub[k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
             }
-            for (int k = 0; k < sub.length; k++) {
+            for (k = 0; k < sub.length; k++) {
                 // randomly select individual from a mating pool
                 int r = random.nextInt(probTable.length);
                 for (j = 0; j < NB_GENES; j++) {
@@ -472,7 +472,7 @@ public class SupervisorController extends Supervisor {
                 }
             }
             // 5. Replace the subpopulation with a mating pool
-            for (int k = 0; k < subpopulations[i].length; k++) {
+            for (k = 0; k < subpopulations[i].length; k++) {
                 subpopulations[i][k] = new NeuralNetwork(NB_INPUTS, NB_OUTPUTS, NB_HIDDEN_NEURONS);
                 for (int l = 0; l < subpopulations[i][k].getWeightsNo(); l++) {
                     subpopulations[i][k].copy(sub[i]);
@@ -730,7 +730,7 @@ public class SupervisorController extends Supervisor {
         // Neural Networks
         NB_INPUTS = 9;
         NB_OUTPUTS = 2;
-        NB_HIDDEN_NEURONS = 10;
+        NB_HIDDEN_NEURONS = 8;
         NB_GENES = NB_INPUTS * NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS + NB_HIDDEN_NEURONS * NB_OUTPUTS + NB_OUTPUTS;
 
         populationOfNN = new NeuralNetwork[NN_POP_SIZE];
