@@ -31,7 +31,7 @@ public class EpuckController extends Robot {
     private final double OBSTACLE_THRESHOLD = 3000;
     private final int TRIAL_DURATION = 120000;       // Evaluation duration of one individual - 1 minute [ms]
     private final int NB_INPUTS = 9;
-    private final int NB_HIDDEN_NEURONS = 10;
+    private final int NB_HIDDEN_NEURONS = 8;
     private final int NB_OUTPUTS = 2;
     private int NB_WEIGHTS;
     private int NB_CONSTANTS = 4;
@@ -182,17 +182,15 @@ public class EpuckController extends Robot {
                     if (genes.length == (NB_WEIGHTS) * 4) {  // 64
                         weights = Util.bytes2FloatArray(genes);
                     } else {
-                        // Set neural network weights    TODO fix this
+                        // Set neural network weights
                         int p = 0;
                         int r = 0;
                         byte[] weight = new byte[4];
                         for (i = 0; i < genes.length - 4; i++) {
                             if (p < 4) {
-                                //weight = new byte[4];
                                 weight[p] = genes[i];
                                 p++;
                             } else {
-                                //weights[r] = Util.bytearray2float(weight);
                                 p = 0;
                                 r++;
                             }
