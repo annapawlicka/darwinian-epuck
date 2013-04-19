@@ -394,8 +394,18 @@ public class SupervisorController extends Supervisor {
         }
         // Write sum of fitness scores to file - for comparison
         normaliseFitnessScore(fitnessNN); // Normalise
+        double[][] sortedSummedFitness = new double[NN_POP_SIZE][2];
+        for (j = 0; j < fitnessPerGame[i].length; j++) { // loop through actors
+            sortedSummedFitness[j][0] = fitnessPerGame[i][j];    // keep fitness score
+            sortedSummedFitness[j][1] = j;                        // keep index
+        }
+        quickSort(sortedSummedFitness, 0, sortedSummedFitness.length - 1); // sort for current game
+        // Find and log current and absolute best individual
+        double best = sortedSummedFitness[0][0];
+        double min = sortedSummedFitness[NN_POP_SIZE - 1][0];
+        double avg = Util.mean(fitnessNN);
         FilesFunctions.logAllActorFitnesses(out2, generation, fitnessNN);
-        FilesFunctions.logFitnessScores(out4, generation, minFitNN, avgFitNN, bestFitNN);
+        FilesFunctions.logFitnessScores(out4, generation, min, avg, best);
 
         // 2. divide population into O subpopulations of size N/O
         NeuralNetwork[][] subpopulations = new NeuralNetwork[GAME_POP_SIZE][SUBSET_SIZE];
