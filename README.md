@@ -1,4 +1,5 @@
 # darwinian-epuck
+![Alt text](http://i.imgur.com/0NBekhn.png Robot following line)
 
 ### Simulation of a Playful Robot with a Darwinian Neurodynamic Brain
 October 2012 – April 2013
